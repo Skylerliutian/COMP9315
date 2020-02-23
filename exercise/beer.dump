@@ -1,0 +1,316 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET client_encoding = 'SQL_ASCII';
+SET standard_conforming_strings = off;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET escape_string_warning = off;
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: barname; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN barname AS character varying(30);
+
+
+--
+-- Name: beername; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN beername AS character varying(30);
+
+
+--
+-- Name: drinkername; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN drinkername AS character varying(20);
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: bars; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bars (
+    name barname NOT NULL,
+    addr character varying(20),
+    license integer
+);
+
+
+--
+-- Name: beers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE beers (
+    name barname NOT NULL,
+    manf character varying(20)
+);
+
+
+--
+-- Name: drinkers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE drinkers (
+    name drinkername NOT NULL,
+    addr character varying(30),
+    phone character(10)
+);
+
+
+--
+-- Name: frequents; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE frequents (
+    drinker drinkername NOT NULL,
+    bar barname NOT NULL
+);
+
+
+--
+-- Name: likes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE likes (
+    drinker drinkername NOT NULL,
+    beer beername NOT NULL
+);
+
+
+--
+-- Name: sells; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sells (
+    bar barname NOT NULL,
+    beer beername NOT NULL,
+    price double precision
+);
+
+
+--
+-- Data for Name: bars; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY bars (name, addr, license) FROM stdin;
+Australia Hotel	The Rocks	123456
+Coogee Bay Hotel	Coogee	966500
+Lord Nelson	The Rocks	123888
+Marble Bar	Sydney	122123
+Regent Hotel	Kingsford	987654
+Royal Hotel	Randwick	938500
+\.
+
+
+--
+-- Data for Name: beers; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY beers (name, manf) FROM stdin;
+80/-	Caledonian
+Amber Ale	,James Squire
+Bigfoot Barley Wine	Sierra Nevada
+Burragorang Bock	George IV Inn
+Chestnut Lager	Bridge Road Brewers
+Crown Lager	Carlton
+Fosters Lager	Carlton
+India Pale Ale	James Squire
+Invalid Stout	Carlton
+Melbourne Bitter	Carlton
+New	Toohey's
+Old	Toohey's
+Old Admiral	Lord Nelson
+Pale Ale	Sierra Nevada
+Pilsener	James Squire
+Pilsner	Murray's
+Porter	James Squire
+Premium Lager	Cascade
+Red	Toohey's
+Sheaf Stout	Toohey's
+Sparkling Ale	Cooper's
+Stout	Cooper's
+Three Sheets	Lord Nelson
+Victoria Bitter	Carlton
+\.
+
+
+--
+-- Data for Name: drinkers; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY drinkers (name, addr, phone) FROM stdin;
+Adam	Randwick	9385-4444 
+Gernot	Newtown	9415-3378 
+John	Clovelly	9665-1234 
+Justin	Mosman	9845-4321 
+\.
+
+
+--
+-- Data for Name: frequents; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY frequents (drinker, bar) FROM stdin;
+Adam	Coogee Bay Hotel
+Gernot	Lord Nelson
+John	Coogee Bay Hotel
+John	Lord Nelson
+John	Australia Hotel
+Justin	Regent Hotel
+Justin	Marble Bar
+\.
+
+
+--
+-- Data for Name: likes; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY likes (drinker, beer) FROM stdin;
+Adam	Crown Lager
+Adam	Fosters Lager
+Adam	New
+Gernot	Premium Lager
+Gernot	Sparkling Ale
+John	80/-
+John	Bigfoot Barley Wine
+John	Pale Ale
+John	Three Sheets
+Justin	Sparkling Ale
+Justin	Victoria Bitter
+\.
+
+
+--
+-- Data for Name: sells; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY sells (bar, beer, price) FROM stdin;
+Australia Hotel	Burragorang Bock	3.5
+Coogee Bay Hotel	New	2.25
+Coogee Bay Hotel	Old	2.5
+Coogee Bay Hotel	Sparkling Ale	2.7999999999999998
+Coogee Bay Hotel	Victoria Bitter	2.2999999999999998
+Lord Nelson	Three Sheets	3.75
+Lord Nelson	Old Admiral	3.75
+Marble Bar	New	2.7999999999999998
+Marble Bar	Old	2.7999999999999998
+Marble Bar	Victoria Bitter	2.7999999999999998
+Regent Hotel	New	2.2000000000000002
+Regent Hotel	Victoria Bitter	2.2000000000000002
+Royal Hotel	New	2.2999999999999998
+Royal Hotel	Old	2.2999999999999998
+Royal Hotel	Victoria Bitter	2.2999999999999998
+\.
+
+
+--
+-- Name: bars_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY bars
+    ADD CONSTRAINT bars_pkey PRIMARY KEY (name);
+
+
+--
+-- Name: beers_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY beers
+    ADD CONSTRAINT beers_pkey PRIMARY KEY (name);
+
+
+--
+-- Name: drinkers_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY drinkers
+    ADD CONSTRAINT drinkers_pkey PRIMARY KEY (name);
+
+
+--
+-- Name: frequents_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY frequents
+    ADD CONSTRAINT frequents_pkey PRIMARY KEY (drinker, bar);
+
+
+--
+-- Name: likes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY likes
+    ADD CONSTRAINT likes_pkey PRIMARY KEY (drinker, beer);
+
+
+--
+-- Name: sells_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY sells
+    ADD CONSTRAINT sells_pkey PRIMARY KEY (bar, beer);
+
+
+--
+-- Name: frequents_bar_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY frequents
+    ADD CONSTRAINT frequents_bar_fkey FOREIGN KEY (bar) REFERENCES bars(name);
+
+
+--
+-- Name: frequents_drinker_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY frequents
+    ADD CONSTRAINT frequents_drinker_fkey FOREIGN KEY (drinker) REFERENCES drinkers(name);
+
+
+--
+-- Name: likes_beer_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY likes
+    ADD CONSTRAINT likes_beer_fkey FOREIGN KEY (beer) REFERENCES beers(name);
+
+
+--
+-- Name: likes_drinker_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY likes
+    ADD CONSTRAINT likes_drinker_fkey FOREIGN KEY (drinker) REFERENCES drinkers(name);
+
+
+--
+-- Name: sells_bar_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY sells
+    ADD CONSTRAINT sells_bar_fkey FOREIGN KEY (bar) REFERENCES bars(name);
+
+
+--
+-- Name: sells_beer_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY sells
+    ADD CONSTRAINT sells_beer_fkey FOREIGN KEY (beer) REFERENCES beers(name);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
