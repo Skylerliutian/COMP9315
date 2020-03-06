@@ -19,20 +19,20 @@
 #include "libpq/pqformat.h"		/* needed for send/recv functions */
 #include <ctype.h>
 #include <string.h>
+#include "access/hash.h"
 PG_MODULE_MAGIC;
 
 typedef struct Pname
 {
-	char *family;
-	char *given;
+	int length;
+	// just define an array which is variable
+	char name[1];
 } PersonName;
 
 
 /*****************************************************************************
  * Input/Output functions
  *****************************************************************************/
-
-PG_FUNCTION_INFO_V1(pname_in);
 /**
  * Check the input is valid or not
  * return True/False
@@ -126,22 +126,23 @@ bool validName(char *str){
 	return True;
 }
 
+PG_FUNCTION_INFO_V1(pname_in);
+
 Datum
 pname_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
-	char *token;
 	PersonName *result;
+	int length = strlen(str) + 1;
 	// to check whether input is valid
 	if (!validName(str))
 		ereport(ERROR,
 				(errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
-				 errmsg("invalid input syntax for PersonName %s", str)));
-	result = (PersonName *) palloc(sizeof(PersonName));
-	token = strtok(str, ",");
-	strcpy(result->family, token);
-	token = strtok(NULL, ",");
-	strcpy(result->given, token);
+				 errmsg("invalid input syntax for type %s: \"%s\"",
+						"pname", str)));
+	result = (PersonName *) palloc(VARHDRSZ + length);
+	SET_VARSIZE = (result, VARHDRSZ + length);
+	snprintf(result->name, length , "%s", str);
 	PG_RETURN_POINTER(result);
 }
 
@@ -152,9 +153,7 @@ pname_out(PG_FUNCTION_ARGS)
 {
 	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
 	char *result;
-	result = (char *) palloc(sizeof(PersonName));
-	// sprintf(result, "%s,%s", result->family, result->given);
-	snprintf(result, sizeof(PersonName), "%s,%s", result->family, result->given);
+	result = psprintf("%s", pname->name);
 	PG_RETURN_CSTRING(result);
 }
 
@@ -171,10 +170,11 @@ pname_recv(PG_FUNCTION_ARGS)
 {
 	StringInfo	buf = (StringInfo) PG_GETARG_POINTER(0);
 	PersonName    *result;
-
-	result = (PersonName *) palloc(sizeof(PersonName));
-	strcpy(result->family, pq_getmsgstring(buf));
-	strcpy(result->given, pq_getmsgstring(buf));
+	char *personname = pq_getmsgstring(buf);
+	int length = strlen(buf) + 1;
+	result = (PersonName *) palloc(VARHDRSZ + length);
+	SET_VARSIZE = (result, VARHDRSZ + length);
+	snprintf(result->name, length , "%s", personname);
 	PG_RETURN_POINTER(result);
 }
 
@@ -185,73 +185,49 @@ pname_send(PG_FUNCTION_ARGS)
 {
 	PersonName    *pname = (PersonName *) PG_GETARG_POINTER(0);
 	StringInfoData buf;
-
 	pq_begintypsend(&buf);
-	pq_sendfloat8(&buf, pname->family);
-	pq_sendfloat8(&buf, pname->given);
+	pq_sendstring(&buf, pname->name);
 	PG_RETURN_BYTEA_P(pq_endtypsend(&buf));
 }
 
-// /*****************************************************************************
-//  * New Operators
-//  *
-//  * A practical Complex datatype would provide much more than this, of course.
-//  *****************************************************************************/
-
-// PG_FUNCTION_INFO_V1(complex_add);
-
-// Datum
-// complex_add(PG_FUNCTION_ARGS)
-// {
-// 	Complex    *a = (Complex *) PG_GETARG_POINTER(0);
-// 	Complex    *b = (Complex *) PG_GETARG_POINTER(1);
-// 	Complex    *result;
-
-// 	result = (Complex *) palloc(sizeof(Complex));
-// 	result->x = a->x + b->x;
-// 	result->y = a->y + b->y;
-// 	PG_RETURN_POINTER(result);
-// }
-
-
 /*****************************************************************************
- * Operator class for defining B-tree index
+ * Operators
  *
- * It's essential that the comparison operators and support function for a
- * B-tree index opclass always agree on the relative ordering of any two
- * data values.  Experience has shown that it's depressingly easy to write
- * unintentionally inconsistent functions.  One way to reduce the odds of
- * making a mistake is to make all the functions simple wrappers around
- * an internal three-way-comparison function, as we do here.
+ * A practical PersonName datatype would provide much more than this, of course.
  *****************************************************************************/
-
 
 static int
 pname_cmp_internal(PersonName * a, PersonName * b)
 {	
-	if (*(a->given) == ' ') {
-		a->given++;
-	}
-	if (*(b->given) == ' ') {
-		b->given++;
-	}
-	if (strcmp(a->family, b->family) > 0) {
-		return 1;	
-	}
-	else if (strcmp(a->family, b->family) < 0) {
-		return -1;
-	}
-	else {
-		if (strcmp(a->given, b->given) > 0) {
-			return 1;
-		}
-		else if (strcmp(a->given, b->given) < 0) {
-			return -1;
-		}
-		else {
-			return 0;
+	int a_divide, b_divide;
+	int result;
+	for (a_divide = 0; a_divide < strlen(a->name); a_divide++) {
+		if (a->name[a_divide] == ',') {
+			break;
 		}
 	}
+	for (a_divide = 0; a_divb_divideide < strlen(b->name); b_divide++) {
+		if (b->name[b_divide] == ',') {
+			break;
+		}
+	}
+	char *a_given = &a->name[a_divide + 1];
+	char *b_given = &b->name[b_divide + 1];
+	a->name[a_divide] = '\0';
+	b->name[b_divide] = '\0';
+	result = strcmp(a->name, b->name);
+	a->name[a_divide] = ',';
+	b->name[b_divide] = ',';
+	if (result == 0) {
+		if (*a_given == ' ') {
+			a_given++;
+		}
+		if (*b_given == ' ') {
+			b_given++;
+		}
+		result = strcmp(a_given, b_given);
+	}
+	return result;
 }
 
 PG_FUNCTION_INFO_V1(pname_lt);
@@ -314,34 +290,50 @@ pname_gt(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(pname_cmp_internal(a, b) > 0);
 }
 
-PG_FUNCTION_INFO_V1(pname_family);
+PG_FUNCTION_INFO_V1(family);
 
 Datum
-pname_family(PG_FUNCTION_ARGS)
+family(PG_FUNCTION_ARGS)
 {
 	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
-	char result[strlen(pname->family) + 1];
-	sttcpy(result, pname->family);
-	PG_RETURN_CSTRING(result);
-
-}
-
-PG_FUNCTION_INFO_V1(pname_given);
-
-Datum
-pname_given(PG_FUNCTION_ARGS)
-{
-	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
-	char result[strlen(pname->given) + 1];
-	sttcpy(result, pname->given);
+	char *result;
+	int divide;
+	for (divide = 0; divide < strlen(pname->name); divide++) {
+		if (pname->name[a_divide] == ',') {
+			break;
+		}
+	}
+	pname->name[divide] = '\0';
+	result = psprintf("%s", pname->name);
+	pname->name[divide] = ',';
 	PG_RETURN_CSTRING(result);
 }
 
+PG_FUNCTION_INFO_V1(given);
 
-// PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
-// 	char family[strlen(pname->family) + 1];
-// 	strcpy(family, pname->family); 
-// 	char *result;
-// 	char *delim = " ";
-// 	result = strtok(family, delim);
-// 	PG_RETURN_CSTRING(result);
+Datum
+given(PG_FUNCTION_ARGS)
+{
+	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
+	char *result;
+	result = strrchr(pname->name, ',');
+	result++;
+	if (*result == ' ') {
+		result++;
+	}
+	result = psprintf("%s", pname->name);
+	PG_RETURN_CSTRING(result);
+}
+
+PG_FUNCTION_INFO_V1(pname_hash);
+
+Datum
+pname_hash(PG_FUNCTION_ARGS)
+{
+	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
+	
+	int h_code;
+	h_code = DatumGetUInt32(hash_any((unsigned char *) pname->name, strlen(pname->name)));
+	
+	PG_RETURN_INT32(h_code);
+}
