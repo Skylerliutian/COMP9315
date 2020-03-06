@@ -29,7 +29,7 @@ typedef struct Pname
 	char name[1];
 } PersonName;
 
-
+int pname_cmp(PersonName * a, PersonName * b);
 /*****************************************************************************
  * Input/Output functions
  *****************************************************************************/
@@ -48,9 +48,9 @@ bool validName(char *str){
 	}
 	int total_len = i;
 	// check input contains comma 
-	if (divide == 0) {return False;}
+	if (divide == 0) {return false;}
 	// space before comma and in the begining are not allowed
-	if (str[divide - 1] == ' ' || str[0] == ' ') {return Flase;}
+	if (str[divide - 1] == ' ' || str[0] == ' ') {return flase;}
 	
 	// create family and given two lists
 	char family[divide + 1];
@@ -69,28 +69,28 @@ bool validName(char *str){
     char *p;
 	p = strtok(family, delim);
 	// names must at least 2 letters
-	if (strlen(p) < 2) {return False;}
+	if (strlen(p) < 2) {return false;}
 	// the first letter must be uppercase
-	if (!isupper(*p)) {return False;}
+	if (!isupper(*p)) {return false;}
 	p++;
 	while (*p != '\0') {
 		if (isalpha(*p)||*p == '-'|| *p == '\'') {
 			p++;
 		}
 		else {
-			return False;
+			return false;
 		}
 	}
 	while ((p = strtok(NULL, delim))) {
-		if (strlen(p) < 2) {return False;}
-		if (!isupper(*p)) {return False;}
+		if (strlen(p) < 2) {return false;}
+		if (!isupper(*p)) {return false;}
 		p++;
 		while (*p != '\0') {
 			if (isalpha(*p)||*p == '-'|| *p == '\'') {
 				p++;
 			}
 			else {
-				return False;
+				return false;
 			}
 		}
 	}
@@ -98,32 +98,32 @@ bool validName(char *str){
 	char *g;
 	g = strtok(given, delim);
 	// names must at least 2 letters
-	if (strlen(g) < 2) {return False;}
+	if (strlen(g) < 2) {return false;}
 	// the first letter must be uppercase
-	if (!isupper(*g)) {return False;}
+	if (!isupper(*g)) {return false;}
 	g++;
 	while (*g != '\0') {
-		if (isalpha(*g)||*gg == '-'|| *g == '\'') {
+		if (isalpha(*g)||*g == '-'|| *g == '\'') {
 			g++;
 		}
 		else {
-			return False;
+			return false;
 		}
 	}
 	while ((g = strtok(NULL, delim))) {
-		if (strlen(p) < 2) {return False;}
-		if (!isupper(*g)) {return False;}
+		if (strlen(p) < 2) {return false;}
+		if (!isupper(*g)) {return false;}
 		g++;
 		while (*g != '\0') {
 			if (isalpha(*g)||*g == '-'|| *g == '\'') {
 				g++;
 			}
 			else {
-				return False;
+				return false;
 			}
 		}
 	}
-	return True;
+	return true;
 }
 
 PG_FUNCTION_INFO_V1(pname_in);
@@ -133,6 +133,7 @@ pname_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
 	PersonName *result;
+	// plus 1 for '\0'
 	int length = strlen(str) + 1;
 	// to check whether input is valid
 	if (!validName(str))
@@ -170,8 +171,8 @@ pname_recv(PG_FUNCTION_ARGS)
 {
 	StringInfo	buf = (StringInfo) PG_GETARG_POINTER(0);
 	PersonName    *result;
-	char *personname = pq_getmsgstring(buf);
-	int length = strlen(buf) + 1;
+	const char *personname = pq_getmsgstring(buf);
+	int length = strlen(personname) + 1;
 	result = (PersonName *) palloc(VARHDRSZ + length);
 	SET_VARSIZE = (result, VARHDRSZ + length);
 	snprintf(result->name, length , "%s", personname);
@@ -196,8 +197,7 @@ pname_send(PG_FUNCTION_ARGS)
  * A practical PersonName datatype would provide much more than this, of course.
  *****************************************************************************/
 
-static int
-pname_cmp_internal(PersonName * a, PersonName * b)
+int pname_cmp(PersonName * a, PersonName * b)
 {	
 	int a_divide, b_divide;
 	int result;
@@ -206,13 +206,14 @@ pname_cmp_internal(PersonName * a, PersonName * b)
 			break;
 		}
 	}
-	for (a_divide = 0; a_divb_divideide < strlen(b->name); b_divide++) {
+	for (b_divide = 0; b_divide < strlen(b->name); b_divide++) {
 		if (b->name[b_divide] == ',') {
 			break;
 		}
 	}
-	char *a_given = &a->name[a_divide + 1];
-	char *b_given = &b->name[b_divide + 1];
+	char *a_given, *b_given;
+	a_given = &a->name[a_divide + 1];
+	b_given = &b->name[b_divide + 1];
 	a->name[a_divide] = '\0';
 	b->name[b_divide] = '\0';
 	result = strcmp(a->name, b->name);
@@ -299,7 +300,7 @@ family(PG_FUNCTION_ARGS)
 	char *result;
 	int divide;
 	for (divide = 0; divide < strlen(pname->name); divide++) {
-		if (pname->name[a_divide] == ',') {
+		if (pname->name[divide] == ',') {
 			break;
 		}
 	}
@@ -316,12 +317,45 @@ given(PG_FUNCTION_ARGS)
 {
 	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
 	char *result;
-	result = strrchr(pname->name, ',');
-	result++;
-	if (*result == ' ') {
-		result++;
+	char *given;
+	given = strrchr(pname->name, ',');
+	given++;
+	if (*given == ' ') {
+		given++;
 	}
-	result = psprintf("%s", pname->name);
+	result = psprintf("%s", given);
+	PG_RETURN_CSTRING(result);
+}
+
+PG_FUNCTION_INFO_V1(show);
+
+Datum
+show(PG_FUNCTION_ARGS)
+{
+	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
+	char *result;
+	char *given;
+	char *more_given;
+	int f_len = 0, g_len = 0;
+	given = strrchr(pname->name, ',');
+	f_len = strlen(pname->name) - strlen(given);
+	given++;
+	if (*given == ' ') {
+		given++;
+	}
+	more_given = strrchr(given, ' ');
+	pname->name[f_len] = '\0';
+	if (!more_given) {
+		result = psprintf("%s %s", given, pname->name);
+	}
+	else {
+		// compute length of the first part given name
+		g_len = strlen(given) - strlen(more_given);
+		*(given + g_len) = '\0';
+		result = psprintf("%s %s", given, pname->name);
+		*(given + g_len) = ' ';
+	}
+	pname->name[f_len] = ',';
 	PG_RETURN_CSTRING(result);
 }
 
@@ -332,6 +366,26 @@ pname_hash(PG_FUNCTION_ARGS)
 {
 	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
 	
+	// delete the space before comma if have
+	int divide;
+	for (divide = 0; divide < strlen(pname->name); divide++) {
+		if (pname->name[divide] == ',') {
+			break;
+		}
+	}
+	char *given_part = strrchr(pname->name, ',');
+	given_part++;
+	if (*given_part == ' ') {
+		given_part++;
+		divide++;
+		while(*given_part != '\0') {
+			pname->name[divide] = *given_part;
+			given_part++;
+			divide++;
+		}
+		pname->name[divide] = *given_part;
+	}
+
 	int h_code;
 	h_code = DatumGetUInt32(hash_any((unsigned char *) pname->name, strlen(pname->name)));
 	
