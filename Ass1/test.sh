@@ -1,7 +1,7 @@
 #!/bin/sh
-cp ~Documents/COMP9315/Ass1/pname.c .
-cp ~Documents/COMP9315/Ass1/pname.source .
-cp ~Documents/COMP9315/Ass1/data0.sql .
+cp ~/Documents/COMP9315/Ass1/pname.c .
+cp ~/Documents/COMP9315/Ass1/pname.source .
+cp ~/Documents/COMP9315/Ass1/data0.sql .
 
 
 make
