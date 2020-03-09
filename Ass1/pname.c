@@ -14,12 +14,13 @@
 ******************************************************************************/
 
 #include "postgres.h"
-
 #include "fmgr.h"
 #include "libpq/pqformat.h"		/* needed for send/recv functions */
 #include <ctype.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "access/hash.h"
 PG_MODULE_MAGIC;
 
@@ -41,14 +42,12 @@ bool validName(char *str);
  */
 bool validName(char *str){
 	int divide;
-	int total_len;
 	// find the comma and total length
 	for (divide = 0; str[divide] != '\0'; divide++) {
 		if (str[divide] == ',') {
 			break;
 		}
 	}
-	total_len = strlen(str);
 	// check input contains comma 
 	if (divide == 0) {return false;}
 	// space before comma and in the begining are not allowed
@@ -199,8 +198,8 @@ pname_send(PG_FUNCTION_ARGS)
 
 int pname_cmp(PersonName * a, PersonName * b)
 {	
-	int a_divide, b_divide;
-	int result;
+	int a_divide, b_divide, result;
+	char *a_given, *b_given;
 	for (a_divide = 0; a_divide < strlen(a->name); a_divide++) {
 		if (a->name[a_divide] == ',') {
 			break;
@@ -211,8 +210,6 @@ int pname_cmp(PersonName * a, PersonName * b)
 			break;
 		}
 	}
-	char *a_given;
-	char *b_given;
 	a_given = &a->name[a_divide + 1];
 	b_given = &b->name[b_divide + 1];
 	// a_given = strchr(a->name, ',');
@@ -371,12 +368,13 @@ pname_hash(PG_FUNCTION_ARGS)
 	
 	// delete the space after comma if have
 	int divide;
+	char *given_part;
+	int h_code;
 	for (divide = 0; divide < strlen(pname->name); divide++) {
 		if (pname->name[divide] == ',') {
 			break;
 		}
 	}
-	char *given_part;
 	given_part = strrchr(pname->name, ',');
 	given_part++;
 	if (*given_part == ' ') {
@@ -389,9 +387,7 @@ pname_hash(PG_FUNCTION_ARGS)
 		}
 		pname->name[divide] = *given_part;
 	}
-
-	int h_code;
-	h_code = DatumGetUInt32(hash_any((unsigned char *) pname->name, strlen(pname->name)));
+	DatumGetUInt32(hash_any((unsigned char *) pname->name, strlen(pname->name)));
 	
 	PG_RETURN_INT32(h_code);
 }
