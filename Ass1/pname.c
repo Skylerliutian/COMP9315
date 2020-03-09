@@ -19,9 +19,8 @@
 #include "libpq/pqformat.h"		/* needed for send/recv functions */
 #include <ctype.h>
 #include <string.h>
+#include <stdbool.h>
 #include "access/hash.h"
-#define true 1
-#define false 0
 PG_MODULE_MAGIC;
 
 typedef struct Pname
@@ -32,6 +31,7 @@ typedef struct Pname
 } PersonName;
 
 int pname_cmp(PersonName * a, PersonName * b);
+bool validName(char *str);
 /*****************************************************************************
  * Input/Output functions
  *****************************************************************************/
@@ -41,13 +41,14 @@ int pname_cmp(PersonName * a, PersonName * b);
  */
 bool validName(char *str){
 	int divide;
+	int total_len;
 	// find the comma and total length
 	for (divide = 0; str[divide] != '\0'; divide++) {
 		if (str[divide] == ',') {
 			break;
 		}
 	}
-	int total_len = strlen(str);
+	total_len = strlen(str);
 	// check input contains comma 
 	if (divide == 0) {return false;}
 	// space before comma and in the begining are not allowed
@@ -222,7 +223,8 @@ int pname_cmp(PersonName * a, PersonName * b)
 			break;
 		}
 	}
-	char *a_given, *b_given;
+	char *a_given;
+	char *b_given;
 	a_given = &a->name[a_divide + 1];
 	b_given = &b->name[b_divide + 1];
 	a->name[a_divide] = '\0';
@@ -249,7 +251,7 @@ pname_lt(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp_internal(a, b) < 0);
+	PG_RETURN_BOOL(pname_cmp(a, b) < 0);
 }
 
 PG_FUNCTION_INFO_V1(pname_le);
@@ -259,7 +261,7 @@ pname_le(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp_internal(a, b) <= 0);
+	PG_RETURN_BOOL(pname_cmp(a, b) <= 0);
 }
 
 PG_FUNCTION_INFO_V1(pname_eq);
@@ -269,7 +271,7 @@ pname_eq(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp_internal(a, b) == 0);
+	PG_RETURN_BOOL(pname_cmp(a, b) == 0);
 }
 
 PG_FUNCTION_INFO_V1(pname_neq);
@@ -279,7 +281,7 @@ pname_neq(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp_internal(a, b) != 0);
+	PG_RETURN_BOOL(pname_cmp(a, b) != 0);
 }
 
 PG_FUNCTION_INFO_V1(pname_ge);
@@ -289,7 +291,7 @@ pname_ge(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp_internal(a, b) >= 0);
+	PG_RETURN_BOOL(pname_cmp(a, b) >= 0);
 }
 
 PG_FUNCTION_INFO_V1(pname_gt);
@@ -299,7 +301,7 @@ pname_gt(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp_internal(a, b) > 0);
+	PG_RETURN_BOOL(pname_cmp(a, b) > 0);
 }
 
 PG_FUNCTION_INFO_V1(family);
@@ -377,14 +379,15 @@ pname_hash(PG_FUNCTION_ARGS)
 {
 	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
 	
-	// delete the space before comma if have
+	// delete the space after comma if have
 	int divide;
 	for (divide = 0; divide < strlen(pname->name); divide++) {
 		if (pname->name[divide] == ',') {
 			break;
 		}
 	}
-	char *given_part = strrchr(pname->name, ',');
+	char *given_part;
+	given_part = strrchr(pname->name, ',');
 	given_part++;
 	if (*given_part == ' ') {
 		given_part++;
