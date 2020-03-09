@@ -52,34 +52,21 @@ bool validName(char *str){
 	// check input contains comma 
 	if (divide == 0) {return false;}
 	// space before comma and in the begining are not allowed
-	if (str[divide - 1] == ' ' || str[0] == ' ') {return flase;}
+	if (str[divide - 1] == ' ' || str[0] == ' ') {return false;}
 	
-	// create family and given two lists
-	char family[divide + 1];
-	char given[total_len - divide + 1];
-	for (int i = 0; i < divide; i++) {
-		family[i] = str[i];
-	}
-	family[divide] = '\0';
-	int j = 0;
+	// split family and given two strings
+	// now str contains only family part and given contains only given part
+	char *given;
+	given = strchr(str, ',');
+	str[divide] = '\0'
 	// delete the space after comma
-	if (str[divide +1] == ' '){
-		for (int i = divide + 2; i <= total_len; i++) {
-			given[j] = str[i];
-			j++;
-		}
+	if (*given == ' ') {
+		given++;
 	}
-	else {
-		for (int i = divide + 1; i <= total_len; i++) {
-			given[j] = str[i];
-			j++;
-		}
-	}
-	
 	// split family by space
 	char *delim = " ";
     char *p;
-	p = strtok(family, delim);
+	p = strtok(str, delim);
 	// names must at least 2 letters
 	if (strlen(p) < 2) {return false;}
 	// the first letter must be uppercase
@@ -145,14 +132,15 @@ pname_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
 	PersonName *result;
-	// plus 1 for '\0'
-	int length = strlen(str) + 1;
+	int length;
 	// to check whether input is valid
 	if (!validName(str))
 		ereport(ERROR,
 				(errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
 				 errmsg("invalid input syntax for type %s: \"%s\"",
 						"pname", str)));
+	// plus 1 for '\0'
+	length = strlen(str) + 1;
 	result = (PersonName *) palloc(VARHDRSZ + length);
 	SET_VARSIZE = (result, VARHDRSZ + length);
 	snprintf(result->name, length , "%s", str);
@@ -227,6 +215,8 @@ int pname_cmp(PersonName * a, PersonName * b)
 	char *b_given;
 	a_given = &a->name[a_divide + 1];
 	b_given = &b->name[b_divide + 1];
+	// a_given = strchr(a->name, ',');
+	// b_given = strchr(b->name, ',');
 	a->name[a_divide] = '\0';
 	b->name[b_divide] = '\0';
 	result = strcmp(a->name, b->name);
