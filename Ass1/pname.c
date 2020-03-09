@@ -30,7 +30,6 @@ typedef struct Pname
 	char name[1];
 } PersonName;
 
-int pname_cmp(PersonName * a, PersonName * b);
 bool validName(char *str);
 /*****************************************************************************
  * Input/Output functions
@@ -195,10 +194,7 @@ pname_send(PG_FUNCTION_ARGS)
  * A practical PersonName datatype would provide much more than this, of course.
  *****************************************************************************/
 
-PG_FUNCTION_INFO_V1(pname_cmp);
-
-Datum
-int pname_cmp(PersonName * a, PersonName * b)
+static int pname_cmp_internal(PersonName * a, PersonName * b)
 {	
 	int a_divide, b_divide, result;
 	char *a_given, *b_given;
@@ -240,7 +236,7 @@ pname_lt(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp(a, b) < 0);
+	PG_RETURN_BOOL(pname_cmp_internal(a, b) < 0);
 }
 
 PG_FUNCTION_INFO_V1(pname_le);
@@ -250,7 +246,7 @@ pname_le(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp(a, b) <= 0);
+	PG_RETURN_BOOL(pname_cmp_internal(a, b) <= 0);
 }
 
 PG_FUNCTION_INFO_V1(pname_eq);
@@ -260,7 +256,7 @@ pname_eq(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp(a, b) == 0);
+	PG_RETURN_BOOL(pname_cmp_internal(a, b) == 0);
 }
 
 PG_FUNCTION_INFO_V1(pname_neq);
@@ -270,7 +266,7 @@ pname_neq(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp(a, b) != 0);
+	PG_RETURN_BOOL(pname_cmp_internal(a, b) != 0);
 }
 
 PG_FUNCTION_INFO_V1(pname_ge);
@@ -280,7 +276,7 @@ pname_ge(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp(a, b) >= 0);
+	PG_RETURN_BOOL(pname_cmp_internal(a, b) >= 0);
 }
 
 PG_FUNCTION_INFO_V1(pname_gt);
@@ -290,7 +286,17 @@ pname_gt(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp(a, b) > 0);
+	PG_RETURN_BOOL(pname_cmp_internal(a, b) > 0);
+}
+
+PG_FUNCTION_INFO_V1(pname_cmp);
+
+Datum
+pname_cmp(PG_FUNCTION_ARGS)
+{
+	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
+	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
+	PG_RETURN_BOOL(pname_cmp_internal(a, b));
 }
 
 PG_FUNCTION_INFO_V1(family);
