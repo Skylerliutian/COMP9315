@@ -39,7 +39,8 @@ bool validName(char *str);
  * use Regular expression
  */
 bool validName(char *str){
-	char *regex_pattern = "^[A-Z](['-][A-Z])?[a-z]+([ -]?[A-Z][a-z]+)*,[ ]?[A-Z][a-z]+([ ][A-Z][a-z]+)*$";
+	// char *regex_pattern = "^[A-Z](['-][A-Z])?[a-z]+([ -]?[A-Z][a-z]+)*,[ ]?[A-Z][a-z]+([ ][A-Z][a-z]+)*$";
+	char *regex_pattern = "^[A-Z][A-Za-z'-]+([ ][A-Z][A-Za-z'-]+)*,[ ]?[A-Z][A-Za-z'-]+([ ][A-Z][A-Za-z'-]+)*$";
 	regex_t regex;
 	int flag;
 	bool result = false;
