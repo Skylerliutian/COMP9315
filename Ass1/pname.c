@@ -38,15 +38,14 @@ int pname_cmp(PersonName * a, PersonName * b);
  * return True/False
  */
 bool validName(char *str){
-	int divide = 0;
-	int i;
+	int divide;
 	// find the comma and total length
-	for (i = 0; str[i] != '\0'; i++) {
-		if (str[i] == ',') {
-			divide = i;
+	for (divide = 0; str[divide] != '\0'; divide++) {
+		if (str[divide] == ',') {
+			break;
 		}
 	}
-	int total_len = i;
+	int total_len = strlen(str);
 	// check input contains comma 
 	if (divide == 0) {return false;}
 	// space before comma and in the begining are not allowed
@@ -60,10 +59,20 @@ bool validName(char *str){
 	}
 	family[divide] = '\0';
 	int j = 0;
-	for (int i = divide + 1; i <= total_len; i++) {
-		given[j] = str[i];
-		j++;
+	// delete the space after comma
+	if (str[divide +1] == ' '){
+		for (int i = divide + 2; i <= total_len; i++) {
+			given[j] = str[i];
+			j++;
+		}
 	}
+	else {
+		for (int i = divide + 1; i <= total_len; i++) {
+			given[j] = str[i];
+			j++;
+		}
+	}
+	
 	// split family by space
 	char *delim = " ";
     char *p;
