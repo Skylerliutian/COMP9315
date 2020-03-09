@@ -2,6 +2,8 @@ create table Students (
 	zid    integer primary key, 
 	name   PersonName not null
 );
+
+
 insert into Students(zid,name) values 
 (1001,'Simth,John'), 
 (1002,'Simth, John'), 

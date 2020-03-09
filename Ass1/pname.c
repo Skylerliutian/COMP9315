@@ -39,87 +39,88 @@ bool validName(char *str);
  * return True/False
  */
 bool validName(char *str){
-	int divide;
-	// find the comma and total length
-	for (divide = 0; str[divide] != '\0'; divide++) {
-		if (str[divide] == ',') {
-			break;
-		}
-	}
-	// check input contains comma 
-	if (divide == 0) {return false;}
-	// space before comma and in the begining are not allowed
-	if (str[divide - 1] == ' ' || str[0] == ' ') {return false;}
-	
-	// split family and given two strings
-	// now str contains only family part and given contains only given part
-	char *given;
-	given = strchr(str, ',');
-	str[divide] = '\0';
-	// delete the space after comma
-	if (*given == ' ') {
-		given++;
-	}
-	// split family by space
-	char *delim = " ";
-    char *p;
-	p = strtok(str, delim);
-	// names must at least 2 letters
-	if (strlen(p) < 2) {return false;}
-	// the first letter must be uppercase
-	if (!isupper(*p)) {return false;}
-	p++;
-	while (*p != '\0') {
-		if (isalpha(*p)||*p == '-'|| *p == '\'') {
-			p++;
-		}
-		else {
-			return false;
-		}
-	}
-	while ((p = strtok(NULL, delim))) {
-		if (strlen(p) < 2) {return false;}
-		if (!isupper(*p)) {return false;}
-		p++;
-		while (*p != '\0') {
-			if (isalpha(*p)||*p == '-'|| *p == '\'') {
-				p++;
-			}
-			else {
-				return false;
-			}
-		}
-	}
-	// split the given part
-	char *g;
-	g = strtok(given, delim);
-	// names must at least 2 letters
-	if (strlen(g) < 2) {return false;}
-	// the first letter must be uppercase
-	if (!isupper(*g)) {return false;}
-	g++;
-	while (*g != '\0') {
-		if (isalpha(*g)||*g == '-'|| *g == '\'') {
-			g++;
-		}
-		else {
-			return false;
-		}
-	}
-	while ((g = strtok(NULL, delim))) {
-		if (strlen(p) < 2) {return false;}
-		if (!isupper(*g)) {return false;}
-		g++;
-		while (*g != '\0') {
-			if (isalpha(*g)||*g == '-'|| *g == '\'') {
-				g++;
-			}
-			else {
-				return false;
-			}
-		}
-	}
 	return true;
+	// int divide;
+	// // find the comma and total length
+	// for (divide = 0; str[divide] != '\0'; divide++) {
+	// 	if (str[divide] == ',') {
+	// 		break;
+	// 	}
+	// }
+	// // check input contains comma 
+	// if (divide == 0) {return false;}
+	// // space before comma and in the begining are not allowed
+	// if (str[divide - 1] == ' ' || str[0] == ' ') {return false;}
+	
+	// // split family and given two strings
+	// // now str contains only family part and given contains only given part
+	// char *given;
+	// given = strchr(str, ',');
+	// str[divide] = '\0';
+	// // delete the space after comma
+	// if (*given == ' ') {
+	// 	given++;
+	// }
+	// // split family by space
+	// char *delim = " ";
+    // char *p;
+	// p = strtok(str, delim);
+	// // names must at least 2 letters
+	// if (strlen(p) < 2) {return false;}
+	// // the first letter must be uppercase
+	// if (!isupper(*p)) {return false;}
+	// p++;
+	// while (*p != '\0') {
+	// 	if (isalpha(*p)||*p == '-'|| *p == '\'') {
+	// 		p++;
+	// 	}
+	// 	else {
+	// 		return false;
+	// 	}
+	// }
+	// while ((p = strtok(NULL, delim))) {
+	// 	if (strlen(p) < 2) {return false;}
+	// 	if (!isupper(*p)) {return false;}
+	// 	p++;
+	// 	while (*p != '\0') {
+	// 		if (isalpha(*p)||*p == '-'|| *p == '\'') {
+	// 			p++;
+	// 		}
+	// 		else {
+	// 			return false;
+	// 		}
+	// 	}
+	// }
+	// // split the given part
+	// char *g;
+	// g = strtok(given, delim);
+	// // names must at least 2 letters
+	// if (strlen(g) < 2) {return false;}
+	// // the first letter must be uppercase
+	// if (!isupper(*g)) {return false;}
+	// g++;
+	// while (*g != '\0') {
+	// 	if (isalpha(*g)||*g == '-'|| *g == '\'') {
+	// 		g++;
+	// 	}
+	// 	else {
+	// 		return false;
+	// 	}
+	// }
+	// while ((g = strtok(NULL, delim))) {
+	// 	if (strlen(p) < 2) {return false;}
+	// 	if (!isupper(*g)) {return false;}
+	// 	g++;
+	// 	while (*g != '\0') {
+	// 		if (isalpha(*g)||*g == '-'|| *g == '\'') {
+	// 			g++;
+	// 		}
+	// 		else {
+	// 			return false;
+	// 		}
+	// 	}
+	// }
+	// return true;
 }
 
 PG_FUNCTION_INFO_V1(pname_in);
