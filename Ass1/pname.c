@@ -16,12 +16,11 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "libpq/pqformat.h"		/* needed for send/recv functions */
+#include "access/hash.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "access/hash.h"
+
 PG_MODULE_MAGIC;
 
 typedef struct Pname
@@ -141,7 +140,7 @@ pname_in(PG_FUNCTION_ARGS)
 	// plus 1 for '\0'
 	length = strlen(str) + 1;
 	result = (PersonName *) palloc(VARHDRSZ + length);
-	SET_VARSIZE = (result, VARHDRSZ + length);
+	SET_VARSIZE(result, VARHDRSZ + length);
 	snprintf(result->name, length , "%s", str);
 	PG_RETURN_POINTER(result);
 }
@@ -173,7 +172,7 @@ pname_recv(PG_FUNCTION_ARGS)
 	const char *personname = pq_getmsgstring(buf);
 	int length = strlen(personname) + 1;
 	result = (PersonName *) palloc(VARHDRSZ + length);
-	SET_VARSIZE = (result, VARHDRSZ + length);
+	SET_VARSIZE(result, VARHDRSZ + length);
 	snprintf(result->name, length , "%s", personname);
 	PG_RETURN_POINTER(result);
 }
