@@ -58,7 +58,7 @@ bool validName(char *str){
 	// now str contains only family part and given contains only given part
 	char *given;
 	given = strchr(str, ',');
-	str[divide] = '\0'
+	str[divide] = '\0';
 	// delete the space after comma
 	if (*given == ' ') {
 		given++;
