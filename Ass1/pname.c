@@ -195,6 +195,9 @@ pname_send(PG_FUNCTION_ARGS)
  * A practical PersonName datatype would provide much more than this, of course.
  *****************************************************************************/
 
+PG_FUNCTION_INFO_V1(pname_cmp);
+
+Datum
 int pname_cmp(PersonName * a, PersonName * b)
 {	
 	int a_divide, b_divide, result;
@@ -386,7 +389,7 @@ pname_hash(PG_FUNCTION_ARGS)
 		}
 		pname->name[divide] = *given_part;
 	}
-	DatumGetUInt32(hash_any((unsigned char *) pname->name, strlen(pname->name)));
+	h_code = DatumGetUInt32(hash_any((unsigned char *) pname->name, strlen(pname->name)));
 	
 	PG_RETURN_INT32(h_code);
 }

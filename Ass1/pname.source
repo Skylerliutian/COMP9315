@@ -119,7 +119,7 @@ CREATE OPERATOR = (
 CREATE OPERATOR <> (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_neq,
    commutator = <> , negator = =
-   restrict = eqsel, join = eqjoinsel
+   restrict = neqsel, join = neqjoinsel
 );
 CREATE OPERATOR >= (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_ge,
