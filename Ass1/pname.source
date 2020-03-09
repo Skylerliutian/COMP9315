@@ -113,12 +113,12 @@ CREATE OPERATOR <= (
 );
 CREATE OPERATOR = (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_eq,
-   commutator = = , negator = <> 
-   restrict = eqsel, join = eqjoinsel,HASHES
+   commutator = = , negator = <> ,
+   restrict = eqsel, join = eqjoinsel
 );
 CREATE OPERATOR <> (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_neq,
-   commutator = <> , negator = =
+   commutator = <> , negator = = ,
    restrict = neqsel, join = neqjoinsel
 );
 CREATE OPERATOR >= (
