@@ -20,6 +20,8 @@
 #include <ctype.h>
 #include <string.h>
 #include "access/hash.h"
+#define true 1
+#define false 0
 PG_MODULE_MAGIC;
 
 typedef struct Pname
