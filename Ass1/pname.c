@@ -70,7 +70,7 @@ pname_in(PG_FUNCTION_ARGS)
 		ereport(ERROR,
 				(errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
 				 errmsg("invalid input syntax for type %s: \"%s\"",
-						"pname", str)));
+						"PersonName", str)));
 	// plus 1 for '\0'
 	length = strlen(str) + 1;
 	result = (PersonName *) palloc(VARHDRSZ + length);
@@ -86,7 +86,17 @@ pname_out(PG_FUNCTION_ARGS)
 {
 	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
 	char *result;
-	result = psprintf("%s", pname->name);
+	//delete the space after comma when show the result of select queries the space should be ignored
+	char *given;
+	given = strchr(pname->name, ',');
+	int f_len = strlen(pname->name) - strlen(given);
+	given++;
+	if (*given == ' ') {
+		given++;
+	}
+	pname->name[f_len] = '\0';
+	result = psprintf("%s,%s", pname->name, given);
+	pname->name[f_len] = ',';
 	PG_RETURN_CSTRING(result);
 }
 
