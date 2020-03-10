@@ -136,13 +136,13 @@ CREATE OPERATOR > (
 CREATE FUNCTION pname_cmp(PersonName, PersonName) RETURNS int4
    AS '_OBJWD_/pname' LANGUAGE C IMMUTABLE STRICT;
 
-CREATE FUNCTION family(PersonName) RETURNS string
+CREATE FUNCTION family(PersonName) RETURNS cstring
    AS '_OBJWD_/pname' LANGUAGE C IMMUTABLE STRICT;
 
-CREATE FUNCTION given(PersonName) RETURNS string
+CREATE FUNCTION given(PersonName) RETURNS text
    AS '_OBJWD_/pname' LANGUAGE C IMMUTABLE STRICT;
 
-CREATE FUNCTION show(PersonName) RETURNS string
+CREATE FUNCTION show(PersonName) RETURNS cstring
    AS '_OBJWD_/pname' LANGUAGE C IMMUTABLE STRICT;
 
 CREATE FUNCTION pname_hash(PersonName) RETURNS int4

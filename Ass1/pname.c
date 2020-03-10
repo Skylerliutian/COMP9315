@@ -260,7 +260,7 @@ family(PG_FUNCTION_ARGS)
 	pname->name[divide] = '\0';
 	result = psprintf("%s", pname->name);
 	pname->name[divide] = ',';
-	PG_RETURN_STRING(result);
+	PG_RETURN_CSTRING(result);
 }
 
 PG_FUNCTION_INFO_V1(given);
@@ -269,15 +269,21 @@ Datum
 given(PG_FUNCTION_ARGS)
 {
 	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
-	char *result;
+	text *result;
+	char *name;
 	char *given;
+	int length;
 	given = strrchr(pname->name, ',');
 	given++;
 	if (*given == ' ') {
 		given++;
 	}
-	result = psprintf("%s", given);
-	PG_RETURN_TEXT_STRING(result);
+	name = psprintf("%s", given);
+	length = strlen(name);
+	result = (text *) palloc(VARHDRSZ + length);
+	SET_VARSIZE(result, VARHDRSZ + length);
+	memcpy(VARDATA(result), name, length);
+	PG_RETURN_TEXT_P(result);
 }
 
 PG_FUNCTION_INFO_V1(show);
@@ -309,7 +315,7 @@ show(PG_FUNCTION_ARGS)
 		*(given + g_len) = ' ';
 	}
 	pname->name[f_len] = ',';
-	PG_RETURN_STRING(result);
+	PG_RETURN_CSTRING(result);
 }
 
 PG_FUNCTION_INFO_V1(pname_hash);
