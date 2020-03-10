@@ -3,12 +3,11 @@
 -- pname.sql-
 --
 -- COMP9315 Database Systems Implementation   
--- Tian Liu   
+-- z5230310, Tian Liu 
+-- z5151539, Tianyu Deng  
 -- Ass1 create person name data type to Postgresql
 --
 -- 
--- Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
--- Portions Copyright (c) 1994, Regents of the University of California
 --
 -- src/tutorial/pname.source
 --
@@ -66,7 +65,7 @@ CREATE FUNCTION pname_send(PersonName)
 
 
 -- now, we can create the type. The internallength specifies the size of the
--- memory block required to hold the type (we need two 8-byte doubles).
+-- memory block required to hold the type.
 
 CREATE TYPE PersonName (
    internallength = variable,

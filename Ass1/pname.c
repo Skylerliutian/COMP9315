@@ -2,7 +2,8 @@
  * src/tutorial/pname.c
  * 
  * COMP9315 Database Systems Impmentation
- * Tian Liu
+ * z5230310, Tian Liu
+ * z5151539, Tianyu Deng
  * Assignment 1 Adding a PersonName Data Type to PostgreSQL
  * 
  * 
@@ -17,7 +18,6 @@
 #include "fmgr.h"
 #include "libpq/pqformat.h"		/* needed for send/recv functions */
 #include "access/hash.h"
-#include <ctype.h>
 #include <string.h>
 #include <stdbool.h>
 #include <regex.h>
@@ -266,6 +266,7 @@ family(PG_FUNCTION_ARGS)
 	result = (text *) palloc(VARHDRSZ + length);
 	SET_VARSIZE(result, VARHDRSZ + length);
 	memcpy(VARDATA(result), name, length);
+	// return text type in order to do order by operation
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -289,6 +290,7 @@ given(PG_FUNCTION_ARGS)
 	result = (text *) palloc(VARHDRSZ + length);
 	SET_VARSIZE(result, VARHDRSZ + length);
 	memcpy(VARDATA(result), name, length);
+	// return text type in order to do order by operation
 	PG_RETURN_TEXT_P(result);
 }
 
@@ -327,6 +329,7 @@ show(PG_FUNCTION_ARGS)
 	result = (text *) palloc(VARHDRSZ + length);
 	SET_VARSIZE(result, VARHDRSZ + length);
 	memcpy(VARDATA(result), name, length);
+	// return text type in order to do order by operation
 	PG_RETURN_TEXT_P(result);
 }
 
