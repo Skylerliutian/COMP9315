@@ -149,6 +149,15 @@ CREATE FUNCTION pname_hash(PersonName) RETURNS int4
    AS '_OBJWD_/pname' LANGUAGE C IMMUTABLE STRICT;
 
 -- now we can make the operator class
+CREATE OPERATOR CLASS pname_btree_ops
+    DEFAULT FOR TYPE PersonName USING btree AS
+        OPERATOR        1       <  (PersonName, PersonName),
+        OPERATOR        2       <= (PersonName, PersonName),
+        OPERATOR        3       =  (PersonName, PersonName),
+        OPERATOR        4       >= (PersonName, PersonName),
+        OPERATOR        5       >  (PersonName, PersonName),
+	FUNCTION        1       pname_cmp(PersonName, PersonName);
+
 CREATE OPERATOR CLASS pname_hash_ops
     DEFAULT FOR TYPE PersonName USING hash AS
         OPERATOR        1       = ,
