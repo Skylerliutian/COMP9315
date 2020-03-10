@@ -260,7 +260,7 @@ family(PG_FUNCTION_ARGS)
 	pname->name[divide] = '\0';
 	result = psprintf("%s", pname->name);
 	pname->name[divide] = ',';
-	PG_RETURN_CSTRING(result);
+	PG_RETURN_TEXT(result);
 }
 
 PG_FUNCTION_INFO_V1(given);
@@ -277,7 +277,7 @@ given(PG_FUNCTION_ARGS)
 		given++;
 	}
 	result = psprintf("%s", given);
-	PG_RETURN_CSTRING(result);
+	PG_RETURN_TEXT(result);
 }
 
 PG_FUNCTION_INFO_V1(show);
@@ -309,7 +309,7 @@ show(PG_FUNCTION_ARGS)
 		*(given + g_len) = ' ';
 	}
 	pname->name[f_len] = ',';
-	PG_RETURN_CSTRING(result);
+	PG_RETURN_TEXT(result);
 }
 
 PG_FUNCTION_INFO_V1(pname_hash);
