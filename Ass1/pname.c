@@ -250,7 +250,9 @@ Datum
 family(PG_FUNCTION_ARGS)
 {
 	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
-	char *result;
+	char *name;
+	text *result;
+	int length;
 	int divide;
 	for (divide = 0; divide < strlen(pname->name); divide++) {
 		if (pname->name[divide] == ',') {
@@ -258,9 +260,13 @@ family(PG_FUNCTION_ARGS)
 		}
 	}
 	pname->name[divide] = '\0';
-	result = psprintf("%s", pname->name);
+	name = psprintf("%s", pname->name);
 	pname->name[divide] = ',';
-	PG_RETURN_CSTRING(result);
+	length = strlen(name);
+	result = (text *) palloc(VARHDRSZ + length);
+	SET_VARSIZE(result, VARHDRSZ + length);
+	memcpy(VARDATA(result), name, length);
+	PG_RETURN_TEXT_P(result);
 }
 
 PG_FUNCTION_INFO_V1(given);
@@ -292,9 +298,11 @@ Datum
 show(PG_FUNCTION_ARGS)
 {
 	PersonName *pname = (PersonName *) PG_GETARG_POINTER(0);
-	char *result;
+	char *name;
 	char *given;
+	text *result;
 	char *more_given;
+	int length;
 	int f_len = 0, g_len = 0;
 	given = strchr(pname->name, ',');
 	f_len = strlen(pname->name) - strlen(given);
@@ -305,17 +313,21 @@ show(PG_FUNCTION_ARGS)
 	more_given = strchr(given, ' ');
 	pname->name[f_len] = '\0';
 	if (!more_given) {
-		result = psprintf("%s %s", given, pname->name);
+		name = psprintf("%s %s", given, pname->name);
 	}
 	else {
 		// compute length of the first part given name
 		g_len = strlen(given) - strlen(more_given);
 		*(given + g_len) = '\0';
-		result = psprintf("%s %s", given, pname->name);
+		name = psprintf("%s %s", given, pname->name);
 		*(given + g_len) = ' ';
 	}
 	pname->name[f_len] = ',';
-	PG_RETURN_CSTRING(result);
+	length = strlen(name);
+	result = (text *) palloc(VARHDRSZ + length);
+	SET_VARSIZE(result, VARHDRSZ + length);
+	memcpy(VARDATA(result), name, length);
+	PG_RETURN_TEXT_P(result);
 }
 
 PG_FUNCTION_INFO_V1(pname_hash);
