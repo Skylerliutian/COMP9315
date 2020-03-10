@@ -114,7 +114,7 @@ CREATE OPERATOR <= (
 CREATE OPERATOR = (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_eq,
    commutator = = , negator = <> ,
-   restrict = eqsel, join = eqjoinsel，
+   restrict = eqsel, join = eqjoinsel,
    HASHES, MERGES
 );
 CREATE OPERATOR <> (
