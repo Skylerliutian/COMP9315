@@ -104,38 +104,32 @@ CREATE FUNCTION pname_gt(PersonName, PersonName) RETURNS bool
 CREATE OPERATOR < (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_lt,
    commutator = > , negator = >= ,
-   restrict = scalarltsel, join = scalarltjoinsel,
-   HASHES, MERGES
+   restrict = scalarltsel, join = scalarltjoinsel
 );
 CREATE OPERATOR <= (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_le,
    commutator = >= , negator = > ,
-   restrict = scalarlesel, join = scalarlejoinsel,
-   HASHES, MERGES
+   restrict = scalarlesel, join = scalarlejoinsel
 );
 CREATE OPERATOR = (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_eq,
    commutator = = , negator = <> ,
-   restrict = eqsel, join = eqjoinsel,
-   HASHES, MERGES
+   restrict = eqsel, join = eqjoinsel
 );
 CREATE OPERATOR <> (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_neq,
    commutator = <> , negator = = ,
-   restrict = neqsel, join = neqjoinsel,
-   HASHES, MERGES
+   restrict = neqsel, join = neqjoinsel
 );
 CREATE OPERATOR >= (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_ge,
    commutator = <= , negator = < ,
-   restrict = scalargesel, join = scalargejoinsel,
-   HASHES, MERGES
+   restrict = scalargesel, join = scalargejoinsel
 );
 CREATE OPERATOR > (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_gt,
    commutator = < , negator = <= ,
-   restrict = scalargtsel, join = scalargtjoinsel,
-   HASHES, MERGES
+   restrict = scalargtsel, join = scalargtjoinsel
 );
 
 -- create the support function too
@@ -155,7 +149,15 @@ CREATE FUNCTION pname_hash(PersonName) RETURNS int4
    AS '_OBJWD_/pname' LANGUAGE C IMMUTABLE STRICT;
 
 -- now we can make the operator class
-CREATE OPERATOR CLASS pname_ops
+CREATE OPERATOR CLASS pname_btree_ops
+    DEFAULT FOR TYPE PersonName USING btree AS
+        OPERATOR        1       <  (PersonName, PersonName),
+        OPERATOR        2       <= (PersonName, PersonName),
+        OPERATOR        3       =  (PersonName, PersonName),
+        OPERATOR        4       >= (PersonName, PersonName),
+        OPERATOR        5       >  (PersonName, PersonName),
+	FUNCTION        1       pname_cmp(PersonName, PersonName);
+CREATE OPERATOR CLASS pname_hash_ops
     DEFAULT FOR TYPE PersonName USING hash AS
         OPERATOR        1       = ,
         FUNCTION        1       pname_hash(PersonName);
