@@ -241,7 +241,7 @@ pname_cmp(PG_FUNCTION_ARGS)
 {
 	PersonName *a = (PersonName *) PG_GETARG_POINTER(0);
 	PersonName *b = (PersonName *) PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(pname_cmp_internal(a, b));
+	PG_RETURN_INT32(pname_cmp_internal(a, b));
 }
 
 PG_FUNCTION_INFO_V1(family);
