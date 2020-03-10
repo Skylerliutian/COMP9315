@@ -104,12 +104,14 @@ CREATE FUNCTION pname_gt(PersonName, PersonName) RETURNS bool
 CREATE OPERATOR < (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_lt,
    commutator = > , negator = >= ,
-   restrict = scalarltsel, join = scalarltjoinsel
+   restrict = scalarltsel, join = scalarltjoinsel,
+   HASHES, MERGES
 );
 CREATE OPERATOR <= (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_le,
    commutator = >= , negator = > ,
-   restrict = scalarlesel, join = scalarlejoinsel
+   restrict = scalarlesel, join = scalarlejoinsel,
+   HASHES, MERGES
 );
 CREATE OPERATOR = (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_eq,
@@ -120,17 +122,20 @@ CREATE OPERATOR = (
 CREATE OPERATOR <> (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_neq,
    commutator = <> , negator = = ,
-   restrict = neqsel, join = neqjoinsel
+   restrict = neqsel, join = neqjoinsel,
+   HASHES, MERGES
 );
 CREATE OPERATOR >= (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_ge,
    commutator = <= , negator = < ,
-   restrict = scalargesel, join = scalargejoinsel
+   restrict = scalargesel, join = scalargejoinsel,
+   HASHES, MERGES
 );
 CREATE OPERATOR > (
    leftarg = PersonName, rightarg = PersonName, procedure = pname_gt,
    commutator = < , negator = <= ,
-   restrict = scalargtsel, join = scalargtjoinsel
+   restrict = scalargtsel, join = scalargtjoinsel,
+   HASHES, MERGES
 );
 
 -- create the support function too
