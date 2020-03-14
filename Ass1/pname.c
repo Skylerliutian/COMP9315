@@ -264,7 +264,7 @@ family(PG_FUNCTION_ARGS)
 	pname->name[divide] = ',';
 	length = strlen(name);
 	result = (text *) palloc(VARHDRSZ + length);
-	SET_VARSIZE(result, VARHDRSZ + length + 1);
+	SET_VARSIZE(result, VARHDRSZ + length);
 	memcpy(VARDATA(result), name, length + 1);
 	// return text type in order to do order by operation
 	PG_RETURN_TEXT_P(result);
@@ -288,7 +288,7 @@ given(PG_FUNCTION_ARGS)
 	name = psprintf("%s", given);
 	length = strlen(name);
 	result = (text *) palloc(VARHDRSZ + length);
-	SET_VARSIZE(result, VARHDRSZ + length + 1);
+	SET_VARSIZE(result, VARHDRSZ + length);
 	memcpy(VARDATA(result), name, length + 1);
 	// return text type in order to do order by operation
 	PG_RETURN_TEXT_P(result);
@@ -327,7 +327,7 @@ show(PG_FUNCTION_ARGS)
 	pname->name[f_len] = ',';
 	length = strlen(name);
 	result = (text *) palloc(VARHDRSZ + length);
-	SET_VARSIZE(result, VARHDRSZ + length + 1);
+	SET_VARSIZE(result, VARHDRSZ + length);
 	memcpy(VARDATA(result), name, length + 1);
 	// return text type in order to do order by operation
 	PG_RETURN_TEXT_P(result);
