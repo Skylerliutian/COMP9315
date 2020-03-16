@@ -265,7 +265,7 @@ family(PG_FUNCTION_ARGS)
 	length = strlen(name);
 	result = (text *) palloc(VARHDRSZ + length);
 	SET_VARSIZE(result, VARHDRSZ + length);
-	memcpy(VARDATA(result), name, length + 1);
+	memcpy(VARDATA(result), name, length);
 	// return text type in order to do order by operation
 	PG_RETURN_TEXT_P(result);
 }
@@ -289,7 +289,7 @@ given(PG_FUNCTION_ARGS)
 	length = strlen(name);
 	result = (text *) palloc(VARHDRSZ + length);
 	SET_VARSIZE(result, VARHDRSZ + length);
-	memcpy(VARDATA(result), name, length + 1);
+	memcpy(VARDATA(result), name, length);
 	// return text type in order to do order by operation
 	PG_RETURN_TEXT_P(result);
 }
@@ -328,7 +328,7 @@ show(PG_FUNCTION_ARGS)
 	length = strlen(name);
 	result = (text *) palloc(VARHDRSZ + length);
 	SET_VARSIZE(result, VARHDRSZ + length);
-	memcpy(VARDATA(result), name, length + 1);
+	memcpy(VARDATA(result), name, length);
 	// return text type in order to do order by operation
 	PG_RETURN_TEXT_P(result);
 }
