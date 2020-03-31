@@ -44,3 +44,51 @@ copy Enrolments(sid, cid, mark, grade) from stdin;
 5012345	1844	49	FL
 5123456	1844	75	DN
 5176543	1844	90	HD
+
+create table sales1 (
+	id integer,
+	location     text,
+	time    text,
+	item    text,
+	quantity   integer,
+	primary key (id)
+);
+copy sales(location, time, item, quantity) from stdin;
+ALL   ALL  XBox 360           1700
+ALL   ALL       PS2           2900
+ALL   ALL       Wii            500
+ALL   ALL       ALL           5100
+\.
+insert into sales values 
+(0,'Sydney', '2005','PS2', '1400'),
+	(1,'Sydney', '2005','ALL', '1400'),
+	(2,'Sydney', '2006','PS2', '1500'),
+	(3,'Sydney', '2006','Wii', '500'),
+	(4,'Sydney', '2006','ALL', '2000'),
+	(6,'Sydney', 'ALL','PS2', '2900'),
+	(7,'Sydney', 'ALL','Wii', '500'),
+	(8,'Sydney', 'ALL','ALL', '3400'),
+	(9,'Melbourne', '2005','XBox 360', '1700'),
+	(10,'Melbourne', '2005','ALL', '1700'),
+	(11,'Melbourne', 'ALL','XBox 360', '1700'),
+	(12,'Melbourne', 'ALL','ALL', '1700'),
+	(13,'ALL', '2005','XBox 360', '1700'),
+	(14,'ALL', '2005','PS2', '1400'),
+	(15,'ALL', '2005','ALL', '3100'),
+	(16,'ALL', '2006','PS2', '1500'),
+	(17,'ALL', '2006','Wii', '500'),
+	(18,'ALL', '2006','ALL', '2000'),
+	(19,'ALL', 'ALL','XBox 360', '1700'),
+	(20,'ALL', 'ALL','PS2', '2900'),
+	(21,'ALL', 'ALL','Wii', '500'),
+	(22,'ALL', 'ALL','ALL', '5100');
+
+insert into sales1 values 
+(0,'Sydney', '2005','PS2', 1400),
+	(1,'Sydney', '2006','PS2', 1500),
+	(2,'Sydney', '2006','Wii', 500),
+	(3,'Melbourne', '2005','XBox 360', 1700);
+
+
+
+
