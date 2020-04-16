@@ -1,0 +1,29 @@
+{
+    "files.associations": {
+        "tsig.h": "c",
+        "reln.h": "c",
+        "psig.h": "c",
+        "bsig.h": "c",
+        "bits.h": "c",
+        "hash.h": "c",
+        "__hash_table": "c",
+        "__locale": "c",
+        "bitset": "c",
+        "functional": "c",
+        "unordered_map": "c",
+        "memory": "c",
+        "optional": "c",
+        "string": "c",
+        "string_view": "c",
+        "system_error": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "vector": "c",
+        "tuple.h": "c",
+        "defs.h": "c",
+        "query.h": "c",
+        "unistd.h": "c",
+        "fcntl.h": "c",
+        "assert.h": "c"
+    }
+}

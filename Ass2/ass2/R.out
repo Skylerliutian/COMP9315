@@ -1,0 +1,90 @@
+./create R 10000 6 1000
+./insert R < R.in
+./stats R
+Global Info:
+Dynamic:
+  #items:  tuples: 10000  tsigs: 10000  psigs: 137  bsigs: 6304
+  #pages:  tuples: 137  tsigs: 27  psigs: 28  bsigs: 28
+Static:
+  tups   #attrs: 6  size: 56 bytes  max/page: 73
+  sigs   bits/attr: 9
+  tsigs  size: 88 bits (11 bytes)  max/page: 372
+  psigs  size: 6304 bits (788 bytes)  max/page: 5
+  bsigs  size: 144 bits (18 bytes)  max/page: 227
+./select R '?,?,?,?,?,?' x | tail -6
+Query Stats:
+# sig pages read:    0
+# signatures read:   0
+# data pages read:   137
+# tuples examined:   10000
+# false match pages: 0
+./select R '1234999,?,?,?,?,?' x
+1234999,uoJaryfGRruwAPWFPICh,a3-183,a4-100,a5-017,a6-432
+Query Stats:
+# sig pages read:    0
+# signatures read:   0
+# data pages read:   137
+# tuples examined:   10000
+# false match pages: 136
+./select R '1234999,?,?,?,?,?' t
+1234999,uoJaryfGRruwAPWFPICh,a3-183,a4-100,a5-017,a6-432
+Query Stats:
+# sig pages read:    27
+# signatures read:   10000
+# data pages read:   7
+# tuples examined:   511
+# false match pages: 6
+./select R '1234999,?,?,?,?,?' p
+1234999,uoJaryfGRruwAPWFPICh,a3-183,a4-100,a5-017,a6-432
+Query Stats:
+# sig pages read:    28
+# signatures read:   137
+# data pages read:   1
+# tuples examined:   73
+# false match pages: 0
+./select R '1234999,?,?,?,?,?' b
+1234999,uoJaryfGRruwAPWFPICh,a3-183,a4-100,a5-017,a6-432
+Query Stats:
+# sig pages read:    7
+# signatures read:   9
+# data pages read:   1
+# tuples examined:   73
+# false match pages: 0
+grep 'a3-241,a4-158,a5-407' R.data
+Binary file R.data matches
+./select R '?,?,a3-241,a4-158,a5-407,?' x
+1237049,NuNjiaBJPosMaDopkazN,a3-241,a4-158,a5-407,a6-490
+1242029,YaoJCaowEZYBxpbfntjv,a3-241,a4-158,a5-407,a6-490
+Query Stats:
+# sig pages read:    0
+# signatures read:   0
+# data pages read:   137
+# tuples examined:   10000
+# false match pages: 135
+./select R '?,?,a3-241,a4-158,a5-407,?' t
+1237049,NuNjiaBJPosMaDopkazN,a3-241,a4-158,a5-407,a6-490
+1242029,YaoJCaowEZYBxpbfntjv,a3-241,a4-158,a5-407,a6-490
+Query Stats:
+# sig pages read:    27
+# signatures read:   10000
+# data pages read:   2
+# tuples examined:   146
+# false match pages: 0
+./select R '?,?,a3-241,a4-158,a5-407,?' p
+1237049,NuNjiaBJPosMaDopkazN,a3-241,a4-158,a5-407,a6-490
+1242029,YaoJCaowEZYBxpbfntjv,a3-241,a4-158,a5-407,a6-490
+Query Stats:
+# sig pages read:    28
+# signatures read:   137
+# data pages read:   2
+# tuples examined:   146
+# false match pages: 0
+./select R '?,?,a3-241,a4-158,a5-407,?' b
+1237049,NuNjiaBJPosMaDopkazN,a3-241,a4-158,a5-407,a6-490
+1242029,YaoJCaowEZYBxpbfntjv,a3-241,a4-158,a5-407,a6-490
+Query Stats:
+# sig pages read:    17
+# signatures read:   27
+# data pages read:   2
+# tuples examined:   146
+# false match pages: 0
