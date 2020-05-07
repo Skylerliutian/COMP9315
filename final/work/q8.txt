@@ -1,0 +1,29 @@
+# COMP9315 20T1 Final Exam Q8
+  
+Type your answer(s) to replace the xxx's
+Submit this file as your answer for Q8
+
+a.
+
+<start T1>
+<start T2>
+<T1, X, 5, 6>
+<start T3>
+<T2, Y, 2, 4>
+<T1, Y, 2, 3>
+<commit T1>
+<T2, X, 6, 10>
+<abort T2>
+<abort T3>
+
+b.
+
+Redo lists: T1
+Undo lists: T2, T3
+Since T1 committed before system failure so redo T1, T2 and T3 are uncommitted, so undo T2 and T3.
+
+For T1, we setting X to 6 and Y to 3.
+For T2, we setting Y to 2 and X to 6.
+For T3, we do nothing.
+
+

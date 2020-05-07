@@ -1,0 +1,8043 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: has; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE has (
+    pizza integer NOT NULL,
+    topping integer NOT NULL
+);
+
+
+--
+-- Name: likes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE likes (
+    person integer NOT NULL,
+    pizza integer NOT NULL,
+    how_much character varying(20)
+);
+
+
+--
+-- Name: people; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE people (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    lives_in integer NOT NULL
+);
+
+
+--
+-- Name: pizzas; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE pizzas (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    part_of integer NOT NULL,
+    kilojoules integer NOT NULL,
+    CONSTRAINT pizzas_kilojoules_check CHECK ((kilojoules > 0))
+);
+
+
+--
+-- Name: ranges; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ranges (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    description character varying(100) NOT NULL,
+    base_price integer NOT NULL,
+    CONSTRAINT ranges_base_price_check CHECK ((base_price > 500))
+);
+
+
+--
+-- Name: soldin; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE soldin (
+    pizza integer NOT NULL,
+    store integer NOT NULL,
+    price integer NOT NULL,
+    CONSTRAINT soldin_price_check CHECK ((price > 500))
+);
+
+
+--
+-- Name: stores; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE stores (
+    id integer NOT NULL,
+    located_in integer NOT NULL
+);
+
+
+--
+-- Name: suburbs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE suburbs (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    postcode integer NOT NULL,
+    surcharge integer NOT NULL,
+    CONSTRAINT suburbs_postcode_check CHECK (((postcode >= 2000) AND (postcode <= 2999))),
+    CONSTRAINT suburbs_surcharge_check CHECK ((surcharge >= 0))
+);
+
+
+--
+-- Name: toppings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE toppings (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    type character varying(20) NOT NULL
+);
+
+
+--
+-- Data for Name: has; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY has (pizza, topping) FROM stdin;
+1	36
+1	18
+1	34
+1	10
+1	25
+1	19
+2	35
+2	28
+2	34
+2	10
+2	25
+2	14
+3	35
+3	21
+3	34
+3	32
+3	25
+3	5
+4	8
+4	24
+4	20
+4	9
+4	25
+4	12
+5	31
+5	34
+5	21
+5	5
+5	20
+5	1
+6	35
+6	15
+6	4
+6	29
+6	3
+6	25
+6	12
+6	20
+6	2
+7	4
+7	35
+7	13
+7	15
+7	5
+7	20
+7	1
+8	31
+8	10
+8	29
+8	3
+8	17
+8	23
+8	12
+8	20
+8	2
+9	28
+9	3
+9	10
+9	34
+9	12
+9	20
+9	2
+10	6
+10	4
+10	26
+10	15
+10	22
+10	21
+10	27
+10	7
+10	17
+10	20
+10	2
+11	26
+11	4
+11	13
+11	15
+11	6
+11	20
+11	1
+12	13
+12	27
+12	20
+12	2
+13	6
+13	16
+13	22
+13	37
+13	20
+13	2
+14	26
+14	16
+14	22
+14	37
+14	20
+14	2
+15	26
+15	21
+15	13
+15	17
+15	20
+15	2
+16	4
+16	6
+16	20
+16	1
+17	31
+17	29
+17	22
+17	23
+18	10
+18	27
+18	7
+18	22
+18	21
+18	23
+18	12
+18	20
+18	2
+19	3
+19	9
+19	34
+19	33
+19	12
+19	20
+19	2
+20	26
+20	20
+20	2
+21	15
+21	7
+21	22
+21	20
+22	6
+22	20
+22	1
+23	13
+23	20
+24	20
+24	8
+24	2
+25	37
+25	11
+25	23
+25	20
+25	2
+26	33
+26	7
+26	31
+26	20
+26	8
+26	2
+27	26
+27	20
+27	8
+27	2
+28	21
+28	22
+28	6
+28	20
+28	8
+28	2
+\.
+
+
+--
+-- Data for Name: likes; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY likes (person, pizza, how_much) FROM stdin;
+10000	18	Very nice
+10001	14	Tasty
+10002	13	Delicious
+10002	2	Very nice
+10003	24	Tasty
+10003	9	Delicious
+10003	2	Favourite
+10004	26	Very nice
+10004	20	Very nice
+10005	10	Tasty
+10006	26	Delicious
+10006	13	Favourite
+10006	27	Tasty
+10007	26	Tasty
+10008	3	Very nice
+10009	21	Tasty
+10009	8	Tasty
+10010	16	Tasty
+10011	21	Very nice
+10011	10	Delicious
+10011	9	Very nice
+10012	12	Tasty
+10012	11	Very nice
+10013	8	Very nice
+10014	6	Very nice
+10014	23	Very nice
+10015	23	Favourite
+10016	22	Very nice
+10017	16	Delicious
+10017	26	Favourite
+10018	22	Very nice
+10019	22	Very nice
+10020	21	Very nice
+10021	10	Delicious
+10021	21	Tasty
+10022	25	Tasty
+10022	1	Delicious
+10023	17	Fabulous
+10024	22	Very nice
+10024	21	Tasty
+10024	3	Tasty
+10025	18	Very nice
+10025	12	Favourite
+10025	3	Tasty
+10026	14	Tasty
+10026	25	Very nice
+10026	28	Favourite
+10027	11	Very nice
+10027	25	Very nice
+10028	16	Very nice
+10029	8	Very nice
+10030	17	Fabulous
+10031	3	Very nice
+10032	4	Tasty
+10032	26	Very nice
+10033	25	Tasty
+10033	28	Very nice
+10033	13	Very nice
+10034	24	Tasty
+10034	8	Very nice
+10035	28	Delicious
+10035	3	Very nice
+10036	27	Very nice
+10036	7	Very nice
+10036	5	Tasty
+10037	26	Delicious
+10038	1	Tasty
+10038	15	Tasty
+10039	8	Favourite
+10039	2	Tasty
+10040	15	Very nice
+10040	14	Very nice
+10040	28	Delicious
+10041	14	Very nice
+10041	25	Very nice
+10041	4	Tasty
+10042	20	Tasty
+10043	27	Very nice
+10044	25	Tasty
+10044	10	Very nice
+10045	26	Delicious
+10045	10	Very nice
+10046	9	Very nice
+10046	13	Delicious
+10046	21	Tasty
+10047	3	Tasty
+10048	2	Tasty
+10049	1	Tasty
+10049	13	Delicious
+10050	4	Delicious
+10051	1	Delicious
+10051	15	Tasty
+10051	17	Fabulous
+10052	23	Favourite
+10054	4	Very nice
+10054	9	Very nice
+10055	15	Delicious
+10056	24	Tasty
+10056	1	Favourite
+10057	14	Favourite
+10058	27	Very nice
+10060	22	Fabulous
+10061	7	Fabulous
+10061	24	Delicious
+10062	18	Favourite
+10062	17	Delicious
+10062	11	Very nice
+10063	26	Tasty
+10063	22	Tasty
+10063	14	Very nice
+10064	28	Very nice
+10064	9	Very nice
+10065	12	Very nice
+10065	2	Delicious
+10066	22	Very nice
+10066	26	Very nice
+10067	13	Tasty
+10068	8	Very nice
+10069	1	Favourite
+10069	12	Delicious
+10069	17	Delicious
+10070	24	Tasty
+10070	16	Very nice
+10070	26	Tasty
+10071	28	Very nice
+10071	2	Favourite
+10072	14	Tasty
+10072	21	Tasty
+10073	13	Tasty
+10074	3	Tasty
+10074	21	Favourite
+10074	6	Tasty
+10075	16	Very nice
+10075	28	Very nice
+10076	24	Delicious
+10076	28	Very nice
+10077	9	Very nice
+10077	21	Delicious
+10078	5	Delicious
+10078	23	Fabulous
+10078	17	Favourite
+10079	15	Very nice
+10080	2	Very nice
+10080	12	Favourite
+10080	4	Very nice
+10081	22	Tasty
+10082	23	Tasty
+10082	22	Very nice
+10083	1	Tasty
+10083	16	Very nice
+10084	15	Tasty
+10084	14	Favourite
+10084	28	Very nice
+10085	14	Tasty
+10086	18	Tasty
+10086	20	Very nice
+10087	16	Favourite
+10088	21	Tasty
+10088	2	Delicious
+10089	4	Very nice
+10089	1	Delicious
+10089	23	Tasty
+10090	24	Very nice
+10090	6	Tasty
+10091	21	Very nice
+10091	27	Tasty
+10091	7	Delicious
+10092	11	Fabulous
+10092	6	Favourite
+10093	3	Favourite
+10094	27	Delicious
+10095	21	Fabulous
+10096	1	Delicious
+10096	15	Tasty
+10097	1	Very nice
+10098	23	Favourite
+10099	8	Delicious
+10099	16	Fabulous
+10100	3	Tasty
+10101	10	Tasty
+10101	6	Delicious
+10101	26	Very nice
+10102	9	Tasty
+10103	18	Tasty
+10104	24	Tasty
+10104	10	Delicious
+10104	15	Delicious
+10105	3	Tasty
+10105	13	Very nice
+10105	1	Delicious
+10106	11	Very nice
+10107	24	Fabulous
+10107	20	Very nice
+10108	25	Tasty
+10108	2	Tasty
+10108	26	Very nice
+10109	17	Delicious
+10110	7	Delicious
+10111	20	Delicious
+10112	23	Favourite
+10113	7	Tasty
+10113	26	Very nice
+10113	6	Very nice
+10114	24	Delicious
+10114	25	Fabulous
+10115	7	Tasty
+10116	9	Favourite
+10116	17	Delicious
+10117	5	Tasty
+10117	4	Tasty
+10117	18	Very nice
+10118	7	Delicious
+10119	20	Tasty
+10119	3	Favourite
+10120	9	Tasty
+10120	5	Tasty
+10120	10	Delicious
+10121	25	Fabulous
+10121	26	Tasty
+10122	12	Very nice
+10123	1	Favourite
+10123	22	Fabulous
+10123	11	Tasty
+10124	27	Favourite
+10125	2	Very nice
+10125	24	Fabulous
+10125	10	Fabulous
+10126	6	Tasty
+10127	1	Delicious
+10127	2	Tasty
+10128	28	Fabulous
+10128	22	Delicious
+10128	25	Delicious
+10129	17	Very nice
+10129	23	Very nice
+10130	28	Tasty
+10131	4	Tasty
+10132	22	Tasty
+10132	8	Very nice
+10132	4	Tasty
+10133	9	Very nice
+10133	16	Delicious
+10133	28	Tasty
+10134	5	Favourite
+10134	24	Tasty
+10135	9	Very nice
+10136	2	Delicious
+10136	22	Very nice
+10137	23	Delicious
+10137	13	Tasty
+10138	10	Tasty
+10138	20	Tasty
+10139	28	Tasty
+10139	24	Very nice
+10140	13	Fabulous
+10140	21	Tasty
+10140	18	Tasty
+10141	11	Tasty
+10141	2	Very nice
+10142	1	Tasty
+10143	21	Tasty
+10143	12	Delicious
+10143	11	Tasty
+10144	21	Tasty
+10144	12	Very nice
+10145	1	Very nice
+10145	3	Very nice
+10146	14	Tasty
+10146	3	Very nice
+10146	10	Tasty
+10147	26	Delicious
+10147	14	Tasty
+10147	25	Very nice
+10148	9	Fabulous
+10149	7	Delicious
+10149	10	Very nice
+10149	5	Tasty
+10150	17	Tasty
+10150	5	Favourite
+10151	26	Delicious
+10152	17	Favourite
+10152	2	Fabulous
+10152	7	Very nice
+10153	17	Tasty
+10154	2	Tasty
+10154	28	Tasty
+10155	26	Very nice
+10156	9	Very nice
+10156	8	Delicious
+10157	14	Fabulous
+10157	24	Fabulous
+10158	7	Tasty
+10158	25	Tasty
+10158	16	Favourite
+10159	28	Tasty
+10160	20	Very nice
+10160	3	Favourite
+10161	12	Tasty
+10161	9	Fabulous
+10161	3	Tasty
+10162	21	Favourite
+10162	28	Very nice
+10162	3	Very nice
+10163	16	Very nice
+10164	20	Very nice
+10165	23	Tasty
+10165	6	Tasty
+10166	15	Delicious
+10167	17	Tasty
+10167	16	Tasty
+10168	16	Tasty
+10168	9	Fabulous
+10168	10	Tasty
+10169	26	Fabulous
+10169	7	Delicious
+10169	2	Very nice
+10170	3	Tasty
+10170	16	Favourite
+10170	7	Tasty
+10171	21	Very nice
+10171	22	Very nice
+10171	4	Favourite
+10172	26	Tasty
+10173	6	Fabulous
+10173	20	Tasty
+10173	8	Delicious
+10174	21	Delicious
+10174	20	Favourite
+10174	25	Tasty
+10175	26	Tasty
+10176	7	Tasty
+10177	25	Delicious
+10178	24	Very nice
+10178	25	Very nice
+10179	21	Fabulous
+10180	6	Tasty
+10181	28	Delicious
+10181	27	Tasty
+10181	8	Tasty
+10182	9	Tasty
+10182	14	Tasty
+10182	16	Very nice
+10183	26	Very nice
+10183	7	Fabulous
+10184	2	Tasty
+10185	27	Favourite
+10185	10	Delicious
+10186	6	Delicious
+10186	24	Very nice
+10186	1	Very nice
+10187	9	Tasty
+10187	3	Tasty
+10187	12	Very nice
+10188	4	Very nice
+10189	27	Tasty
+10189	12	Very nice
+10190	4	Delicious
+10190	20	Favourite
+10191	7	Favourite
+10191	4	Very nice
+10191	2	Very nice
+10192	6	Delicious
+10192	15	Delicious
+10193	27	Tasty
+10194	1	Tasty
+10195	11	Delicious
+10195	17	Delicious
+10196	6	Delicious
+10196	2	Favourite
+10196	28	Very nice
+10197	25	Delicious
+10197	1	Very nice
+10198	10	Very nice
+10198	2	Delicious
+10198	7	Favourite
+10199	23	Very nice
+10199	11	Very nice
+10200	9	Very nice
+10200	27	Delicious
+10200	20	Very nice
+10201	18	Very nice
+10202	18	Favourite
+10203	28	Delicious
+10203	27	Favourite
+10203	5	Delicious
+10204	23	Tasty
+10205	1	Fabulous
+10205	10	Very nice
+10206	7	Very nice
+10206	17	Fabulous
+10206	18	Tasty
+10207	18	Very nice
+10207	15	Very nice
+10207	10	Delicious
+10208	11	Delicious
+10209	28	Very nice
+10210	15	Delicious
+10210	11	Very nice
+10210	10	Very nice
+10211	25	Tasty
+10211	1	Very nice
+10212	8	Favourite
+10212	3	Fabulous
+10212	9	Very nice
+10213	11	Very nice
+10213	26	Delicious
+10213	23	Delicious
+10214	16	Fabulous
+10215	4	Delicious
+10215	18	Tasty
+10216	25	Very nice
+10216	24	Favourite
+10216	8	Tasty
+10217	12	Very nice
+10217	28	Very nice
+10218	7	Tasty
+10219	22	Delicious
+10220	8	Tasty
+10221	10	Delicious
+10221	22	Very nice
+10221	27	Fabulous
+10222	8	Very nice
+10223	2	Delicious
+10223	18	Very nice
+10224	15	Tasty
+10224	1	Very nice
+10225	24	Delicious
+10225	12	Tasty
+10226	8	Tasty
+10226	10	Tasty
+10227	17	Tasty
+10227	27	Delicious
+10228	18	Tasty
+10228	10	Tasty
+10228	2	Very nice
+10229	2	Tasty
+10229	9	Very nice
+10230	28	Fabulous
+10230	18	Very nice
+10231	4	Delicious
+10231	6	Favourite
+10232	7	Very nice
+10232	22	Tasty
+10233	15	Very nice
+10233	28	Fabulous
+10233	25	Very nice
+10234	8	Tasty
+10234	22	Very nice
+10235	18	Fabulous
+10236	23	Favourite
+10236	13	Tasty
+10237	17	Tasty
+10238	17	Fabulous
+10239	26	Tasty
+10240	14	Very nice
+10240	18	Tasty
+10241	28	Tasty
+10241	24	Very nice
+10241	3	Tasty
+10242	6	Very nice
+10242	10	Tasty
+10243	27	Favourite
+10244	23	Very nice
+10245	13	Very nice
+10245	28	Delicious
+10245	8	Favourite
+10246	23	Very nice
+10246	28	Tasty
+10247	7	Very nice
+10247	3	Tasty
+10248	24	Fabulous
+10249	2	Favourite
+10249	5	Very nice
+10250	17	Tasty
+10251	21	Tasty
+10251	13	Favourite
+10252	5	Favourite
+10252	18	Tasty
+10253	9	Very nice
+10253	18	Favourite
+10254	28	Tasty
+10254	8	Tasty
+10254	11	Fabulous
+10255	15	Tasty
+10256	13	Delicious
+10256	20	Tasty
+10256	27	Tasty
+10257	5	Favourite
+10257	13	Fabulous
+10258	24	Delicious
+10258	2	Tasty
+10258	14	Tasty
+10259	13	Very nice
+10259	1	Very nice
+10259	28	Delicious
+10260	26	Very nice
+10260	18	Delicious
+10261	23	Very nice
+10261	21	Very nice
+10261	26	Delicious
+10262	14	Tasty
+10262	28	Favourite
+10262	1	Fabulous
+10263	23	Very nice
+10263	3	Tasty
+10264	4	Very nice
+10264	23	Favourite
+10264	9	Tasty
+10265	9	Tasty
+10266	23	Favourite
+10266	14	Delicious
+10267	23	Delicious
+10268	17	Fabulous
+10268	15	Very nice
+10268	27	Tasty
+10269	13	Very nice
+10270	4	Very nice
+10270	24	Delicious
+10270	8	Fabulous
+10271	1	Very nice
+10271	16	Delicious
+10271	7	Tasty
+10272	23	Delicious
+10272	27	Delicious
+10273	28	Very nice
+10273	5	Tasty
+10274	17	Fabulous
+10275	27	Favourite
+10275	12	Fabulous
+10275	10	Fabulous
+10276	18	Delicious
+10277	17	Tasty
+10277	2	Delicious
+10278	1	Tasty
+10279	24	Fabulous
+10280	28	Delicious
+10280	26	Favourite
+10281	17	Favourite
+10281	6	Tasty
+10282	5	Fabulous
+10282	22	Fabulous
+10282	20	Delicious
+10283	6	Delicious
+10283	4	Tasty
+10283	15	Tasty
+10284	10	Favourite
+10285	20	Favourite
+10285	26	Tasty
+10286	13	Very nice
+10286	3	Very nice
+10287	11	Very nice
+10288	18	Tasty
+10289	27	Favourite
+10289	24	Delicious
+10290	15	Favourite
+10290	20	Tasty
+10291	16	Very nice
+10292	9	Favourite
+10292	26	Delicious
+10293	15	Tasty
+10293	6	Tasty
+10294	20	Delicious
+10294	17	Tasty
+10294	9	Very nice
+10295	28	Fabulous
+10296	1	Delicious
+10296	9	Favourite
+10296	20	Tasty
+10297	26	Delicious
+10298	12	Very nice
+10298	16	Fabulous
+10299	12	Very nice
+10300	12	Very nice
+10300	23	Tasty
+10300	20	Fabulous
+10301	17	Tasty
+10302	1	Favourite
+10302	11	Tasty
+10303	6	Very nice
+10304	7	Tasty
+10304	14	Delicious
+10304	12	Very nice
+10305	20	Fabulous
+10306	11	Delicious
+10307	16	Tasty
+10307	28	Delicious
+10308	28	Tasty
+10308	26	Tasty
+10309	21	Fabulous
+10310	20	Very nice
+10311	26	Fabulous
+10311	2	Tasty
+10312	22	Very nice
+10312	8	Favourite
+10313	22	Delicious
+10313	8	Delicious
+10313	12	Favourite
+10314	26	Very nice
+10314	9	Very nice
+10315	14	Fabulous
+10316	3	Tasty
+10316	6	Very nice
+10317	26	Very nice
+10317	18	Tasty
+10317	3	Tasty
+10318	28	Tasty
+10319	6	Tasty
+10320	12	Fabulous
+10320	1	Delicious
+10321	18	Very nice
+10321	26	Very nice
+10321	9	Fabulous
+10322	26	Favourite
+10323	5	Tasty
+10324	8	Tasty
+10324	16	Tasty
+10325	25	Delicious
+10326	5	Very nice
+10326	14	Very nice
+10327	20	Very nice
+10327	9	Delicious
+10328	18	Fabulous
+10328	26	Delicious
+10328	14	Tasty
+10329	23	Tasty
+10329	14	Delicious
+10330	11	Tasty
+10330	4	Fabulous
+10330	20	Fabulous
+10331	15	Very nice
+10331	9	Favourite
+10332	22	Tasty
+10332	8	Tasty
+10334	4	Tasty
+10334	10	Very nice
+10334	9	Very nice
+10335	17	Tasty
+10335	27	Tasty
+10336	9	Very nice
+10337	28	Very nice
+10337	21	Tasty
+10338	28	Very nice
+10339	6	Delicious
+10339	28	Delicious
+10340	17	Tasty
+10341	6	Delicious
+10341	20	Very nice
+10342	11	Tasty
+10343	5	Delicious
+10343	22	Delicious
+10343	17	Favourite
+10344	9	Very nice
+10344	16	Tasty
+10345	13	Delicious
+10346	11	Tasty
+10346	27	Tasty
+10347	3	Fabulous
+10348	25	Favourite
+10348	7	Delicious
+10349	17	Very nice
+10350	28	Tasty
+10350	11	Delicious
+10350	24	Tasty
+10351	8	Very nice
+10352	23	Fabulous
+10352	3	Delicious
+10353	2	Very nice
+10353	22	Delicious
+10354	23	Delicious
+10354	18	Tasty
+10355	21	Delicious
+10356	1	Very nice
+10357	17	Very nice
+10358	14	Delicious
+10358	13	Fabulous
+10359	3	Very nice
+10359	14	Delicious
+10359	6	Delicious
+10360	25	Very nice
+10360	9	Fabulous
+10360	14	Very nice
+10361	14	Fabulous
+10362	28	Tasty
+10363	10	Very nice
+10363	3	Tasty
+10364	9	Favourite
+10364	18	Tasty
+10364	10	Fabulous
+10365	13	Tasty
+10366	26	Very nice
+10367	2	Very nice
+10367	21	Very nice
+10367	24	Very nice
+10368	28	Tasty
+10368	10	Tasty
+10369	15	Favourite
+10369	13	Very nice
+10370	16	Fabulous
+10370	14	Very nice
+10371	6	Delicious
+10371	20	Favourite
+10372	25	Very nice
+10373	7	Tasty
+10373	24	Tasty
+10374	2	Delicious
+10375	27	Fabulous
+10376	8	Delicious
+10377	12	Tasty
+10377	1	Delicious
+10378	23	Tasty
+10379	16	Tasty
+10380	17	Very nice
+10380	5	Very nice
+10380	12	Fabulous
+10381	21	Tasty
+10382	2	Tasty
+10382	9	Favourite
+10383	23	Delicious
+10383	20	Delicious
+10383	21	Tasty
+10384	1	Very nice
+10384	12	Tasty
+10385	15	Tasty
+10385	20	Delicious
+10385	3	Favourite
+10386	17	Tasty
+10387	20	Tasty
+10387	17	Very nice
+10387	27	Fabulous
+10388	14	Very nice
+10388	3	Delicious
+10388	10	Fabulous
+10389	3	Delicious
+10390	4	Favourite
+10390	2	Tasty
+10390	13	Fabulous
+10391	5	Very nice
+10391	11	Delicious
+10392	21	Tasty
+10393	12	Very nice
+10394	14	Fabulous
+10395	11	Delicious
+10395	24	Very nice
+10395	6	Fabulous
+10396	7	Very nice
+10396	21	Fabulous
+10397	16	Fabulous
+10398	5	Favourite
+10398	9	Tasty
+10398	8	Delicious
+10399	25	Fabulous
+10399	12	Delicious
+10400	10	Very nice
+10400	25	Very nice
+10401	20	Very nice
+10401	14	Tasty
+10402	6	Very nice
+10402	22	Very nice
+10403	26	Delicious
+10403	13	Very nice
+10404	26	Tasty
+10404	12	Delicious
+10404	18	Tasty
+10405	23	Very nice
+10405	5	Tasty
+10406	21	Delicious
+10407	18	Very nice
+10408	9	Delicious
+10408	15	Tasty
+10409	7	Fabulous
+10410	14	Fabulous
+10410	28	Very nice
+10410	20	Favourite
+10411	18	Fabulous
+10411	15	Delicious
+10411	13	Fabulous
+10412	27	Very nice
+10412	6	Tasty
+10413	4	Tasty
+10413	10	Very nice
+10414	26	Favourite
+10414	14	Delicious
+10415	20	Delicious
+10415	2	Tasty
+10416	6	Delicious
+10416	5	Very nice
+10416	24	Tasty
+10417	6	Tasty
+10418	9	Fabulous
+10418	8	Tasty
+10418	22	Delicious
+10419	10	Very nice
+10419	15	Tasty
+10420	23	Very nice
+10421	7	Delicious
+10421	6	Very nice
+10422	16	Tasty
+10422	11	Tasty
+10423	15	Very nice
+10424	3	Tasty
+10424	9	Very nice
+10424	24	Fabulous
+10425	9	Delicious
+10425	2	Very nice
+10426	13	Delicious
+10427	8	Tasty
+10427	2	Tasty
+10427	16	Very nice
+10428	18	Very nice
+10428	16	Favourite
+10429	10	Fabulous
+10429	3	Delicious
+10429	17	Tasty
+10430	14	Tasty
+10430	16	Very nice
+10430	6	Very nice
+10431	25	Tasty
+10431	2	Very nice
+10432	28	Tasty
+10433	24	Very nice
+10433	12	Favourite
+10434	6	Delicious
+10435	15	Tasty
+10435	5	Favourite
+10435	18	Delicious
+10436	14	Tasty
+10436	5	Tasty
+10436	9	Tasty
+10437	20	Tasty
+10438	17	Tasty
+10439	9	Very nice
+10439	24	Fabulous
+10439	14	Tasty
+10440	5	Very nice
+10440	11	Delicious
+10440	20	Very nice
+10441	23	Very nice
+10441	26	Very nice
+10441	20	Very nice
+10443	10	Very nice
+10443	11	Delicious
+10444	2	Tasty
+10444	14	Very nice
+10444	25	Tasty
+10445	20	Very nice
+10446	7	Tasty
+10446	11	Tasty
+10446	6	Tasty
+10447	28	Very nice
+10447	27	Very nice
+10448	2	Very nice
+10448	20	Very nice
+10449	23	Tasty
+10449	24	Very nice
+10449	13	Very nice
+10450	7	Delicious
+10450	22	Very nice
+10451	8	Tasty
+10451	25	Tasty
+10452	26	Tasty
+10453	6	Very nice
+10453	15	Very nice
+10453	5	Tasty
+10454	1	Tasty
+10455	24	Very nice
+10455	2	Very nice
+10455	16	Tasty
+10456	9	Very nice
+10456	16	Very nice
+10457	28	Very nice
+10458	17	Very nice
+10458	12	Tasty
+10459	3	Tasty
+10460	7	Tasty
+10460	27	Very nice
+10461	23	Tasty
+10462	24	Very nice
+10462	10	Tasty
+10463	11	Very nice
+10463	8	Very nice
+10463	3	Delicious
+10464	27	Tasty
+10464	5	Tasty
+10464	10	Tasty
+10465	21	Delicious
+10465	27	Very nice
+10465	26	Very nice
+10466	11	Tasty
+10466	15	Tasty
+10467	25	Favourite
+10467	6	Very nice
+10468	7	Tasty
+10468	23	Very nice
+10469	5	Tasty
+10469	3	Tasty
+10470	23	Tasty
+10470	3	Tasty
+10471	18	Very nice
+10471	26	Very nice
+10472	20	Tasty
+10473	16	Very nice
+10474	2	Delicious
+10474	22	Tasty
+10475	9	Delicious
+10476	5	Very nice
+10477	4	Delicious
+10478	18	Very nice
+10478	4	Tasty
+10479	18	Very nice
+10480	5	Delicious
+10481	10	Tasty
+10481	26	Very nice
+10481	5	Very nice
+10482	18	Delicious
+10482	3	Fabulous
+10483	8	Fabulous
+10484	26	Delicious
+10484	1	Very nice
+10484	22	Tasty
+10485	27	Delicious
+10486	21	Delicious
+10487	20	Tasty
+10488	20	Tasty
+10488	22	Tasty
+10489	6	Favourite
+10489	17	Very nice
+10489	27	Fabulous
+10490	21	Delicious
+10490	26	Very nice
+10490	28	Delicious
+10491	15	Very nice
+10491	6	Favourite
+10491	20	Delicious
+10492	22	Tasty
+10492	4	Very nice
+10493	20	Tasty
+10494	23	Very nice
+10494	20	Delicious
+10494	1	Delicious
+10495	10	Delicious
+10496	9	Tasty
+10496	12	Tasty
+10496	20	Tasty
+10497	23	Very nice
+10497	26	Favourite
+10498	15	Very nice
+10498	12	Very nice
+10498	8	Delicious
+10499	17	Tasty
+10500	24	Delicious
+10500	20	Very nice
+10501	17	Delicious
+10502	4	Very nice
+10503	17	Very nice
+10504	5	Favourite
+10504	10	Tasty
+10504	16	Very nice
+10505	21	Very nice
+10505	18	Tasty
+10505	14	Delicious
+10506	22	Very nice
+10506	11	Fabulous
+10507	21	Tasty
+10507	13	Tasty
+10507	6	Tasty
+10508	17	Delicious
+10508	3	Very nice
+10509	5	Delicious
+10510	2	Delicious
+10511	1	Delicious
+10512	16	Very nice
+10512	1	Delicious
+10513	26	Fabulous
+10514	4	Tasty
+10514	26	Very nice
+10514	9	Very nice
+10515	24	Delicious
+10515	12	Delicious
+10515	20	Very nice
+10516	26	Tasty
+10516	13	Favourite
+10516	23	Tasty
+10517	1	Very nice
+10518	24	Fabulous
+10518	27	Tasty
+10519	5	Very nice
+10520	12	Tasty
+10521	15	Favourite
+10521	11	Very nice
+10521	22	Very nice
+10522	10	Very nice
+10523	18	Very nice
+10523	23	Very nice
+10524	4	Very nice
+10524	7	Very nice
+10524	18	Fabulous
+10525	12	Favourite
+10525	23	Tasty
+10526	6	Tasty
+10526	26	Very nice
+10526	20	Very nice
+10527	2	Favourite
+10528	16	Very nice
+10528	15	Delicious
+10528	4	Tasty
+10529	26	Favourite
+10529	5	Tasty
+10530	7	Fabulous
+10530	26	Favourite
+10531	20	Delicious
+10532	26	Delicious
+10533	23	Very nice
+10533	4	Very nice
+10534	26	Delicious
+10535	13	Very nice
+10535	4	Very nice
+10535	11	Tasty
+10536	15	Delicious
+10537	26	Very nice
+10537	12	Very nice
+10537	4	Tasty
+10538	5	Tasty
+10538	25	Tasty
+10539	25	Fabulous
+10540	2	Tasty
+10541	14	Delicious
+10542	1	Fabulous
+10542	22	Very nice
+10543	4	Very nice
+10544	16	Very nice
+10544	23	Delicious
+10545	8	Delicious
+10545	14	Tasty
+10546	6	Tasty
+10547	12	Tasty
+10547	8	Delicious
+10548	9	Fabulous
+10549	2	Tasty
+10550	18	Very nice
+10551	7	Tasty
+10552	23	Fabulous
+10552	2	Tasty
+10553	12	Fabulous
+10554	7	Very nice
+10554	12	Very nice
+10555	8	Very nice
+10555	10	Delicious
+10555	5	Tasty
+10556	5	Delicious
+10556	4	Favourite
+10557	20	Tasty
+10558	21	Very nice
+10558	9	Favourite
+10558	24	Delicious
+10559	1	Delicious
+10559	12	Very nice
+10559	11	Very nice
+10560	4	Very nice
+10560	18	Tasty
+10560	9	Tasty
+10561	15	Very nice
+10561	28	Very nice
+10561	9	Very nice
+10562	15	Very nice
+10563	9	Fabulous
+10563	27	Delicious
+10564	9	Delicious
+10564	6	Favourite
+10564	27	Very nice
+10565	1	Favourite
+10565	12	Tasty
+10565	11	Delicious
+10566	16	Delicious
+10566	15	Tasty
+10566	5	Tasty
+10567	4	Very nice
+10568	11	Tasty
+10568	20	Delicious
+10569	20	Favourite
+10569	25	Tasty
+10570	27	Tasty
+10570	26	Tasty
+10570	8	Very nice
+10571	15	Tasty
+10571	12	Tasty
+10572	21	Very nice
+10572	20	Very nice
+10572	25	Very nice
+10573	9	Very nice
+10573	18	Very nice
+10574	6	Very nice
+10574	16	Very nice
+10575	4	Tasty
+10575	23	Very nice
+10575	12	Tasty
+10576	13	Tasty
+10576	10	Very nice
+10577	27	Delicious
+10577	17	Very nice
+10577	20	Favourite
+10578	15	Very nice
+10579	2	Very nice
+10580	5	Delicious
+10580	2	Tasty
+10580	7	Tasty
+10581	7	Delicious
+10581	17	Tasty
+10582	1	Tasty
+10582	18	Favourite
+10583	10	Very nice
+10584	10	Tasty
+10584	11	Very nice
+10585	2	Very nice
+10585	6	Delicious
+10586	21	Very nice
+10587	20	Tasty
+10588	27	Fabulous
+10588	23	Tasty
+10589	17	Tasty
+10589	9	Tasty
+10589	2	Delicious
+10590	26	Delicious
+10591	5	Favourite
+10592	12	Tasty
+10593	26	Fabulous
+10593	9	Tasty
+10594	20	Delicious
+10595	4	Very nice
+10595	27	Very nice
+10595	12	Delicious
+10596	1	Delicious
+10596	12	Tasty
+10596	22	Fabulous
+10597	18	Delicious
+10597	24	Delicious
+10598	6	Very nice
+10598	7	Tasty
+10599	24	Tasty
+10599	25	Very nice
+10600	22	Very nice
+10600	18	Favourite
+10600	2	Very nice
+10601	14	Very nice
+10602	10	Tasty
+10602	21	Very nice
+10603	5	Tasty
+10604	9	Tasty
+10604	13	Fabulous
+10604	1	Tasty
+10605	6	Tasty
+10606	4	Very nice
+10607	11	Tasty
+10607	17	Favourite
+10607	10	Delicious
+10608	17	Very nice
+10608	15	Fabulous
+10608	16	Favourite
+10609	25	Tasty
+10610	28	Favourite
+10611	13	Tasty
+10611	7	Fabulous
+10612	20	Very nice
+10612	26	Tasty
+10612	9	Very nice
+10613	3	Delicious
+10613	4	Delicious
+10614	8	Tasty
+10614	2	Tasty
+10615	26	Very nice
+10615	18	Delicious
+10616	16	Favourite
+10616	9	Delicious
+10617	4	Tasty
+10618	2	Fabulous
+10619	10	Favourite
+10620	21	Delicious
+10620	8	Tasty
+10621	24	Very nice
+10622	13	Tasty
+10622	14	Delicious
+10622	7	Delicious
+10623	8	Tasty
+10623	6	Tasty
+10623	5	Very nice
+10624	14	Tasty
+10624	20	Delicious
+10625	27	Tasty
+10625	8	Delicious
+10626	8	Very nice
+10626	3	Favourite
+10626	20	Tasty
+10627	2	Tasty
+10628	26	Very nice
+10629	12	Delicious
+10630	7	Tasty
+10631	5	Fabulous
+10632	8	Very nice
+10632	5	Tasty
+10633	22	Delicious
+10633	16	Delicious
+10634	13	Very nice
+10634	12	Delicious
+10634	21	Delicious
+10635	26	Tasty
+10636	25	Delicious
+10636	18	Tasty
+10637	7	Favourite
+10637	23	Fabulous
+10638	2	Very nice
+10638	13	Very nice
+10639	25	Very nice
+10640	2	Fabulous
+10640	24	Fabulous
+10641	24	Favourite
+10641	10	Very nice
+10642	6	Very nice
+10642	11	Very nice
+10643	18	Fabulous
+10644	3	Favourite
+10645	9	Fabulous
+10645	10	Tasty
+10646	25	Favourite
+10646	28	Very nice
+10647	14	Tasty
+10648	25	Tasty
+10649	10	Fabulous
+10649	13	Very nice
+10650	12	Tasty
+10650	5	Very nice
+10650	7	Tasty
+10651	4	Delicious
+10652	28	Delicious
+10652	7	Tasty
+10652	2	Tasty
+10653	15	Tasty
+10653	21	Favourite
+10653	17	Delicious
+10654	17	Very nice
+10655	27	Favourite
+10655	3	Very nice
+10656	12	Very nice
+10656	18	Very nice
+10657	14	Very nice
+10657	3	Delicious
+10658	5	Very nice
+10658	21	Very nice
+10659	25	Tasty
+10660	8	Very nice
+10661	25	Very nice
+10661	15	Very nice
+10661	4	Tasty
+10662	28	Very nice
+10662	4	Tasty
+10662	20	Tasty
+10663	15	Delicious
+10663	25	Very nice
+10664	26	Very nice
+10665	20	Tasty
+10665	26	Tasty
+10666	14	Delicious
+10666	7	Very nice
+10667	20	Delicious
+10667	28	Tasty
+10668	5	Favourite
+10668	23	Tasty
+10668	6	Delicious
+10669	25	Delicious
+10670	28	Fabulous
+10670	9	Very nice
+10670	12	Very nice
+10671	11	Tasty
+10671	14	Very nice
+10671	8	Delicious
+10672	22	Tasty
+10672	4	Favourite
+10673	15	Very nice
+10673	8	Tasty
+10673	13	Tasty
+10674	15	Tasty
+10674	17	Favourite
+10674	5	Fabulous
+10675	10	Very nice
+10675	6	Very nice
+10676	13	Favourite
+10676	10	Tasty
+10677	12	Very nice
+10677	25	Fabulous
+10678	13	Very nice
+10678	25	Tasty
+10679	14	Delicious
+10680	16	Very nice
+10681	24	Very nice
+10681	8	Favourite
+10681	7	Very nice
+10682	12	Very nice
+10682	21	Very nice
+10682	4	Tasty
+10683	10	Tasty
+10684	17	Delicious
+10684	22	Tasty
+10684	1	Tasty
+10685	2	Tasty
+10686	13	Favourite
+10686	20	Delicious
+10687	16	Fabulous
+10688	10	Tasty
+10689	25	Tasty
+10690	6	Very nice
+10691	27	Very nice
+10691	23	Delicious
+10691	11	Tasty
+10692	23	Delicious
+10692	11	Delicious
+10692	7	Favourite
+10693	15	Very nice
+10694	14	Fabulous
+10694	18	Delicious
+10695	9	Fabulous
+10695	10	Tasty
+10695	15	Delicious
+10696	5	Very nice
+10696	3	Very nice
+10697	26	Fabulous
+10697	20	Very nice
+10698	2	Very nice
+10698	21	Delicious
+10698	4	Tasty
+10699	12	Tasty
+10699	17	Favourite
+10700	10	Tasty
+10700	28	Very nice
+10701	2	Tasty
+10701	16	Delicious
+10701	13	Favourite
+10702	6	Favourite
+10703	9	Tasty
+10704	6	Very nice
+10704	13	Tasty
+10705	4	Tasty
+10706	24	Tasty
+10706	13	Delicious
+10707	16	Fabulous
+10707	6	Fabulous
+10709	27	Tasty
+10709	26	Delicious
+10709	6	Tasty
+10710	21	Delicious
+10711	3	Delicious
+10711	22	Tasty
+10712	8	Tasty
+10712	27	Delicious
+10712	6	Delicious
+10713	21	Delicious
+10713	14	Delicious
+10714	6	Delicious
+10714	26	Favourite
+10715	23	Very nice
+10716	23	Fabulous
+10716	11	Tasty
+10717	5	Favourite
+10717	23	Delicious
+10717	11	Very nice
+10718	24	Very nice
+10719	21	Favourite
+10720	11	Very nice
+10721	18	Delicious
+10722	20	Very nice
+10722	26	Delicious
+10722	11	Delicious
+10723	25	Tasty
+10724	4	Delicious
+10724	18	Tasty
+10724	6	Delicious
+10725	2	Very nice
+10726	20	Very nice
+10727	26	Favourite
+10727	11	Delicious
+10727	28	Tasty
+10728	2	Very nice
+10728	8	Tasty
+10729	4	Delicious
+10730	17	Tasty
+10730	5	Tasty
+10730	11	Fabulous
+10732	8	Very nice
+10732	25	Tasty
+10733	11	Fabulous
+10734	27	Tasty
+10734	10	Very nice
+10735	20	Very nice
+10735	14	Tasty
+10735	18	Tasty
+10736	6	Tasty
+10737	5	Tasty
+10738	4	Favourite
+10739	16	Fabulous
+10740	25	Very nice
+10740	11	Favourite
+10740	6	Very nice
+10741	12	Tasty
+10741	7	Very nice
+10741	15	Very nice
+10742	20	Very nice
+10742	10	Tasty
+10743	26	Very nice
+10743	2	Very nice
+10744	6	Fabulous
+10745	11	Very nice
+10746	1	Tasty
+10746	2	Very nice
+10746	12	Very nice
+10747	15	Fabulous
+10747	16	Very nice
+10747	22	Favourite
+10748	2	Delicious
+10748	17	Tasty
+10749	21	Tasty
+10749	12	Tasty
+10749	25	Tasty
+10750	24	Very nice
+10751	14	Very nice
+10752	26	Favourite
+10752	6	Delicious
+10752	12	Tasty
+10753	6	Fabulous
+10753	13	Favourite
+10754	1	Favourite
+10755	9	Very nice
+10756	6	Favourite
+10756	23	Tasty
+10756	26	Delicious
+10757	16	Very nice
+10757	28	Very nice
+10758	8	Tasty
+10758	16	Tasty
+10759	22	Delicious
+10760	26	Very nice
+10761	15	Very nice
+10761	8	Tasty
+10762	1	Delicious
+10762	18	Very nice
+10763	24	Favourite
+10763	16	Fabulous
+10763	7	Tasty
+10764	8	Tasty
+10764	23	Tasty
+10764	15	Very nice
+10766	27	Tasty
+10766	8	Very nice
+10767	20	Delicious
+10767	9	Tasty
+10768	21	Very nice
+10768	3	Tasty
+10769	3	Very nice
+10770	7	Tasty
+10770	22	Very nice
+10771	27	Very nice
+10771	7	Delicious
+10772	1	Tasty
+10772	3	Very nice
+10773	18	Fabulous
+10774	21	Favourite
+10775	25	Fabulous
+10775	6	Tasty
+10776	14	Tasty
+10776	27	Tasty
+10777	1	Delicious
+10777	14	Very nice
+10777	16	Very nice
+10779	17	Tasty
+10780	6	Favourite
+10781	13	Fabulous
+10782	21	Tasty
+10782	25	Tasty
+10783	1	Very nice
+10783	3	Very nice
+10784	1	Delicious
+10784	17	Very nice
+10785	7	Delicious
+10785	23	Delicious
+10786	8	Delicious
+10787	10	Tasty
+10787	13	Delicious
+10787	20	Very nice
+10788	16	Delicious
+10788	9	Tasty
+10789	15	Very nice
+10789	16	Very nice
+10789	8	Tasty
+10790	16	Fabulous
+10790	11	Very nice
+10791	24	Very nice
+10791	9	Tasty
+10791	5	Tasty
+10792	13	Favourite
+10792	27	Very nice
+10792	10	Delicious
+10793	13	Tasty
+10793	15	Tasty
+10794	9	Tasty
+10794	5	Very nice
+10794	26	Tasty
+10795	11	Very nice
+10796	11	Very nice
+10797	11	Tasty
+10798	20	Very nice
+10798	4	Favourite
+10799	7	Tasty
+10799	26	Delicious
+10799	6	Favourite
+10800	9	Fabulous
+10801	4	Favourite
+10801	26	Very nice
+10801	5	Tasty
+10802	6	Tasty
+10802	28	Very nice
+10803	23	Tasty
+10803	18	Delicious
+10804	20	Tasty
+10804	23	Favourite
+10805	27	Delicious
+10805	12	Fabulous
+10806	20	Favourite
+10807	20	Tasty
+10808	26	Delicious
+10808	6	Delicious
+10809	5	Tasty
+10810	18	Very nice
+10811	4	Very nice
+10811	15	Tasty
+10812	16	Delicious
+10813	23	Delicious
+10814	13	Tasty
+10815	16	Fabulous
+10816	24	Very nice
+10816	10	Favourite
+10817	27	Very nice
+10818	25	Tasty
+10818	17	Tasty
+10818	1	Tasty
+10819	18	Tasty
+10819	27	Tasty
+10820	26	Delicious
+10821	23	Delicious
+10822	25	Tasty
+10822	3	Fabulous
+10822	26	Favourite
+10823	2	Delicious
+10824	26	Tasty
+10825	18	Tasty
+10825	11	Tasty
+10826	13	Delicious
+10826	8	Tasty
+10827	22	Favourite
+10828	15	Fabulous
+10829	6	Very nice
+10830	7	Fabulous
+10830	5	Very nice
+10831	8	Delicious
+10832	18	Delicious
+10833	5	Delicious
+10833	6	Tasty
+10834	16	Tasty
+10835	24	Very nice
+10836	1	Fabulous
+10836	4	Tasty
+10836	3	Fabulous
+10837	8	Fabulous
+10837	3	Tasty
+10837	9	Tasty
+10838	3	Very nice
+10838	21	Delicious
+10839	4	Tasty
+10840	20	Very nice
+10840	26	Delicious
+10841	20	Delicious
+10841	23	Delicious
+10841	26	Tasty
+10842	18	Favourite
+10842	7	Tasty
+10843	24	Very nice
+10843	28	Very nice
+10843	8	Fabulous
+10844	28	Very nice
+10844	15	Very nice
+10844	8	Tasty
+10845	24	Delicious
+10845	2	Very nice
+10845	4	Very nice
+10846	9	Delicious
+10846	7	Tasty
+10846	17	Delicious
+10847	28	Tasty
+10848	11	Tasty
+10849	22	Very nice
+10849	12	Delicious
+10850	11	Favourite
+10851	9	Tasty
+10851	28	Very nice
+10851	22	Delicious
+10852	18	Tasty
+10852	21	Very nice
+10852	11	Tasty
+10853	26	Fabulous
+10853	6	Very nice
+10853	13	Very nice
+10854	21	Very nice
+10854	7	Very nice
+10854	22	Very nice
+10855	6	Favourite
+10856	3	Delicious
+10856	25	Very nice
+10857	16	Tasty
+10857	9	Delicious
+10858	11	Tasty
+10859	7	Very nice
+10859	12	Delicious
+10860	7	Very nice
+10860	22	Tasty
+10860	4	Fabulous
+10861	25	Very nice
+10861	23	Very nice
+10862	8	Fabulous
+10863	11	Delicious
+10864	2	Tasty
+10865	14	Tasty
+10866	20	Delicious
+10866	11	Tasty
+10867	3	Very nice
+10867	27	Tasty
+10868	2	Favourite
+10868	13	Very nice
+10868	7	Very nice
+10869	27	Tasty
+10870	25	Very nice
+10870	16	Tasty
+10870	13	Tasty
+10871	12	Tasty
+10872	6	Very nice
+10873	11	Favourite
+10874	2	Tasty
+10874	21	Tasty
+10874	16	Very nice
+10875	12	Delicious
+10875	11	Very nice
+10875	21	Delicious
+10876	12	Tasty
+10876	1	Delicious
+10876	15	Favourite
+10877	22	Favourite
+10878	7	Tasty
+10878	13	Fabulous
+10880	20	Delicious
+10881	16	Tasty
+10881	20	Tasty
+10882	11	Favourite
+10883	11	Tasty
+10884	3	Very nice
+10884	24	Very nice
+10885	4	Fabulous
+10886	25	Very nice
+10886	15	Favourite
+10886	5	Delicious
+10887	25	Delicious
+10887	16	Very nice
+10887	22	Favourite
+10888	5	Tasty
+10888	28	Tasty
+10889	23	Tasty
+10889	11	Fabulous
+10890	14	Favourite
+10890	18	Tasty
+10891	5	Favourite
+10892	6	Favourite
+10892	12	Very nice
+10892	3	Very nice
+10893	26	Very nice
+10894	27	Tasty
+10894	17	Delicious
+10894	24	Tasty
+10895	22	Very nice
+10895	14	Very nice
+10896	10	Delicious
+10896	24	Very nice
+10897	18	Tasty
+10898	20	Favourite
+10898	5	Very nice
+10899	1	Favourite
+10900	22	Fabulous
+10900	1	Tasty
+10901	17	Tasty
+10901	12	Tasty
+10902	25	Delicious
+10903	7	Tasty
+10904	4	Tasty
+10904	11	Tasty
+10905	26	Very nice
+10906	10	Tasty
+10906	26	Very nice
+10907	6	Tasty
+10907	1	Very nice
+10908	25	Tasty
+10909	3	Very nice
+10910	15	Very nice
+10910	10	Tasty
+10911	16	Fabulous
+10911	1	Fabulous
+10913	28	Tasty
+10913	27	Fabulous
+10913	2	Tasty
+10914	3	Favourite
+10914	17	Very nice
+10915	9	Very nice
+10915	10	Tasty
+10915	16	Tasty
+10916	4	Very nice
+10917	22	Very nice
+10917	10	Delicious
+10918	16	Very nice
+10918	24	Very nice
+10918	11	Very nice
+10919	17	Tasty
+10919	25	Favourite
+10920	20	Very nice
+10921	6	Tasty
+10922	23	Delicious
+10923	20	Tasty
+10923	23	Tasty
+10924	1	Tasty
+10924	26	Tasty
+10925	28	Fabulous
+10926	25	Favourite
+10926	11	Delicious
+10926	10	Tasty
+10927	25	Very nice
+10927	9	Tasty
+10928	27	Very nice
+10928	25	Tasty
+10928	10	Delicious
+10929	13	Delicious
+10930	23	Favourite
+10930	10	Tasty
+10931	9	Fabulous
+10931	27	Tasty
+10932	20	Delicious
+10933	2	Fabulous
+10934	28	Favourite
+10935	16	Tasty
+10935	17	Very nice
+10935	10	Delicious
+10936	18	Fabulous
+10937	10	Tasty
+10938	17	Tasty
+10939	5	Very nice
+10939	11	Tasty
+10940	14	Favourite
+10940	13	Fabulous
+10940	9	Tasty
+10941	27	Tasty
+10942	11	Delicious
+10943	16	Very nice
+10943	4	Delicious
+10943	24	Very nice
+10944	18	Tasty
+10944	12	Tasty
+10945	15	Tasty
+10946	25	Tasty
+10947	3	Tasty
+10948	27	Very nice
+10948	3	Delicious
+10948	8	Very nice
+10949	3	Tasty
+10950	5	Very nice
+10950	27	Tasty
+10951	24	Delicious
+10951	6	Very nice
+10952	9	Very nice
+10952	22	Delicious
+10953	11	Tasty
+10954	17	Delicious
+10954	28	Tasty
+10955	22	Fabulous
+10955	25	Tasty
+10956	13	Very nice
+10957	8	Tasty
+10958	1	Tasty
+10958	18	Fabulous
+10959	20	Tasty
+10959	1	Delicious
+10959	5	Delicious
+10960	18	Delicious
+10960	20	Very nice
+10961	5	Very nice
+10961	8	Very nice
+10961	20	Favourite
+10962	5	Delicious
+10962	22	Fabulous
+10962	1	Very nice
+10963	7	Tasty
+10963	9	Delicious
+10964	28	Very nice
+10965	22	Favourite
+10965	5	Tasty
+10965	11	Delicious
+10966	26	Very nice
+10966	15	Delicious
+10966	13	Very nice
+10967	25	Tasty
+10967	22	Tasty
+10968	7	Favourite
+10969	13	Delicious
+10969	22	Very nice
+10969	25	Tasty
+10970	8	Delicious
+10970	4	Delicious
+10971	20	Delicious
+10972	20	Delicious
+10972	23	Delicious
+10972	24	Tasty
+10973	13	Favourite
+10974	21	Very nice
+10974	26	Very nice
+10975	28	Favourite
+10976	13	Tasty
+10977	26	Delicious
+10978	25	Tasty
+10978	4	Favourite
+10979	26	Very nice
+10979	15	Tasty
+10980	12	Tasty
+10980	20	Tasty
+10981	17	Fabulous
+10982	21	Favourite
+10982	18	Tasty
+10982	3	Very nice
+10983	18	Delicious
+10983	26	Fabulous
+10984	27	Very nice
+10984	3	Delicious
+10984	16	Delicious
+10985	24	Delicious
+10985	15	Favourite
+10986	3	Fabulous
+10986	21	Tasty
+10986	13	Very nice
+10987	2	Delicious
+10988	26	Tasty
+10988	4	Favourite
+10988	24	Very nice
+10989	10	Tasty
+10989	16	Fabulous
+10989	7	Delicious
+10990	27	Delicious
+10990	12	Tasty
+10991	10	Favourite
+10992	1	Fabulous
+10992	22	Favourite
+10993	5	Tasty
+10993	3	Very nice
+10993	22	Favourite
+10994	18	Tasty
+10995	12	Very nice
+10996	21	Very nice
+10997	27	Delicious
+10998	3	Delicious
+10998	15	Very nice
+10999	24	Very nice
+11000	3	Tasty
+11000	27	Very nice
+11001	8	Tasty
+11002	11	Favourite
+11003	18	Very nice
+11003	28	Tasty
+11004	20	Very nice
+11004	27	Very nice
+11005	3	Tasty
+11006	3	Fabulous
+11006	5	Very nice
+11007	8	Favourite
+11007	7	Delicious
+11008	12	Tasty
+11008	5	Tasty
+11008	18	Tasty
+11009	5	Fabulous
+11009	2	Tasty
+11010	16	Tasty
+11010	8	Delicious
+11011	3	Delicious
+11011	21	Very nice
+11011	15	Delicious
+11012	28	Very nice
+11013	4	Fabulous
+11015	23	Favourite
+11016	25	Tasty
+11016	13	Tasty
+11017	2	Tasty
+11018	25	Very nice
+11018	26	Delicious
+11018	3	Tasty
+11019	12	Favourite
+11020	10	Very nice
+11021	6	Very nice
+11021	7	Tasty
+11022	7	Very nice
+11022	11	Delicious
+11023	9	Favourite
+11023	16	Very nice
+11023	10	Very nice
+11024	14	Tasty
+11024	3	Delicious
+11025	4	Very nice
+11026	7	Fabulous
+11026	5	Very nice
+11026	6	Very nice
+11027	1	Delicious
+11027	16	Very nice
+11028	12	Very nice
+11029	18	Very nice
+11029	10	Fabulous
+11030	11	Delicious
+11031	1	Tasty
+11031	25	Very nice
+11032	10	Tasty
+11033	16	Tasty
+11034	15	Very nice
+11034	5	Tasty
+11035	10	Tasty
+11035	6	Tasty
+11035	3	Fabulous
+11036	9	Favourite
+11036	23	Very nice
+11037	6	Tasty
+11037	16	Fabulous
+11038	18	Tasty
+11038	14	Very nice
+11039	14	Very nice
+11039	27	Very nice
+11039	9	Delicious
+11040	10	Very nice
+11040	9	Tasty
+11041	22	Very nice
+11041	20	Very nice
+11042	21	Very nice
+11042	20	Tasty
+11043	21	Very nice
+11043	1	Delicious
+11044	22	Favourite
+11045	10	Very nice
+11046	13	Very nice
+11046	3	Tasty
+11046	26	Fabulous
+11047	13	Very nice
+11048	17	Fabulous
+11049	20	Very nice
+11050	4	Fabulous
+11050	28	Very nice
+11051	2	Very nice
+11052	4	Fabulous
+11052	3	Tasty
+11053	13	Delicious
+11053	10	Very nice
+11053	21	Tasty
+11054	17	Tasty
+11054	11	Delicious
+11054	28	Very nice
+11055	12	Delicious
+11055	2	Delicious
+11056	2	Favourite
+11056	8	Delicious
+11057	21	Delicious
+11058	4	Fabulous
+11059	8	Fabulous
+11059	23	Fabulous
+11060	13	Favourite
+11060	9	Fabulous
+11061	25	Favourite
+11062	24	Tasty
+11062	16	Tasty
+11062	10	Delicious
+11063	25	Fabulous
+11064	3	Tasty
+11064	24	Very nice
+11065	17	Very nice
+11065	24	Tasty
+11065	13	Delicious
+11066	27	Favourite
+11067	15	Tasty
+11068	11	Very nice
+11069	18	Tasty
+11070	23	Tasty
+11070	14	Very nice
+11070	24	Delicious
+11071	28	Delicious
+11071	21	Favourite
+11071	25	Tasty
+11072	18	Tasty
+11072	21	Tasty
+11073	26	Fabulous
+11074	9	Delicious
+11075	25	Very nice
+11076	27	Tasty
+11077	8	Favourite
+11078	18	Very nice
+11079	8	Delicious
+11079	6	Tasty
+11079	18	Very nice
+11080	4	Very nice
+11081	2	Tasty
+11082	10	Tasty
+11082	24	Fabulous
+11082	2	Very nice
+11083	23	Tasty
+11084	1	Very nice
+11084	16	Very nice
+11084	9	Tasty
+11085	18	Very nice
+11085	24	Delicious
+11085	15	Tasty
+11086	28	Tasty
+11086	9	Tasty
+11087	20	Very nice
+11087	25	Very nice
+11088	28	Very nice
+11088	2	Very nice
+11089	9	Very nice
+11089	7	Tasty
+11089	5	Delicious
+11090	21	Fabulous
+11091	27	Delicious
+11091	13	Delicious
+11091	11	Very nice
+11092	20	Tasty
+11093	28	Delicious
+11094	8	Very nice
+11095	6	Tasty
+11095	14	Tasty
+11095	13	Very nice
+11096	9	Tasty
+11098	20	Tasty
+11099	15	Very nice
+11100	11	Delicious
+11100	3	Very nice
+11100	6	Tasty
+11101	9	Favourite
+11101	10	Very nice
+11102	20	Very nice
+11103	28	Tasty
+11104	2	Very nice
+11104	18	Favourite
+11105	8	Very nice
+11106	6	Very nice
+11107	25	Very nice
+11107	11	Tasty
+11107	5	Fabulous
+11108	5	Tasty
+11108	13	Tasty
+11108	25	Very nice
+11109	13	Fabulous
+11109	17	Delicious
+11110	21	Favourite
+11110	11	Fabulous
+11110	13	Tasty
+11111	2	Tasty
+11111	11	Tasty
+11112	10	Delicious
+11112	16	Tasty
+11113	23	Delicious
+11113	16	Very nice
+11113	10	Tasty
+11114	4	Delicious
+11114	21	Very nice
+11114	23	Delicious
+11115	15	Delicious
+11115	25	Delicious
+11115	2	Tasty
+11116	4	Tasty
+11116	28	Fabulous
+11117	28	Very nice
+11117	15	Tasty
+11118	25	Tasty
+11119	21	Tasty
+11120	21	Delicious
+11121	2	Delicious
+11121	22	Delicious
+11122	18	Favourite
+11122	17	Tasty
+11123	12	Favourite
+11123	4	Very nice
+11124	5	Tasty
+11125	17	Very nice
+11125	20	Very nice
+11125	15	Very nice
+11126	8	Fabulous
+11126	26	Favourite
+11127	16	Favourite
+11128	23	Very nice
+11128	1	Tasty
+11128	15	Tasty
+11129	1	Tasty
+11129	3	Delicious
+11130	17	Fabulous
+11131	14	Delicious
+11131	15	Favourite
+11131	27	Tasty
+11132	24	Very nice
+11133	27	Tasty
+11134	20	Very nice
+11134	27	Very nice
+11135	3	Very nice
+11136	11	Very nice
+11137	18	Very nice
+11137	11	Tasty
+11138	26	Tasty
+11138	5	Very nice
+11139	15	Tasty
+11139	22	Fabulous
+11139	23	Tasty
+11140	23	Very nice
+11140	22	Tasty
+11141	17	Very nice
+11141	6	Favourite
+11141	14	Tasty
+11142	12	Tasty
+11143	9	Delicious
+11144	3	Very nice
+11144	16	Favourite
+11145	23	Very nice
+11145	16	Delicious
+11146	13	Tasty
+11147	15	Delicious
+11148	27	Delicious
+11149	15	Very nice
+11149	1	Fabulous
+11149	24	Tasty
+11150	20	Delicious
+11150	2	Very nice
+11151	14	Very nice
+11151	26	Tasty
+11152	10	Tasty
+11152	1	Tasty
+11152	20	Very nice
+11153	9	Delicious
+11154	23	Very nice
+11154	5	Very nice
+11155	6	Very nice
+11155	5	Delicious
+11155	23	Tasty
+11156	18	Fabulous
+11156	16	Delicious
+11157	3	Fabulous
+11158	2	Very nice
+11158	5	Fabulous
+11159	4	Very nice
+11160	8	Favourite
+11161	8	Fabulous
+11161	11	Tasty
+11161	10	Tasty
+11162	8	Very nice
+11163	10	Tasty
+11163	4	Tasty
+11163	7	Very nice
+11164	17	Delicious
+11165	25	Tasty
+11165	10	Tasty
+11166	10	Delicious
+11167	18	Very nice
+11167	6	Tasty
+11167	10	Very nice
+11168	22	Favourite
+11168	7	Tasty
+11168	28	Delicious
+11169	11	Fabulous
+11169	25	Delicious
+11169	1	Fabulous
+11170	7	Very nice
+11171	14	Very nice
+11172	1	Tasty
+11172	18	Fabulous
+11172	6	Fabulous
+11173	20	Tasty
+11173	11	Tasty
+11173	3	Tasty
+11174	8	Tasty
+11175	11	Delicious
+11175	1	Fabulous
+11175	28	Very nice
+11176	26	Very nice
+11176	10	Tasty
+11177	2	Favourite
+11178	17	Delicious
+11179	4	Favourite
+11179	3	Very nice
+11179	23	Very nice
+11180	6	Very nice
+11181	25	Very nice
+11181	5	Favourite
+11181	27	Very nice
+11182	21	Very nice
+11182	14	Very nice
+11183	28	Very nice
+11183	2	Tasty
+11184	18	Fabulous
+11185	17	Delicious
+11185	27	Delicious
+11186	5	Delicious
+11186	18	Delicious
+11186	8	Favourite
+11187	23	Tasty
+11187	26	Fabulous
+11187	4	Delicious
+11188	7	Favourite
+11189	1	Delicious
+11189	22	Favourite
+11190	5	Tasty
+11191	11	Delicious
+11191	15	Favourite
+11191	20	Very nice
+11192	4	Tasty
+11193	25	Very nice
+11194	17	Favourite
+11194	24	Delicious
+11194	25	Tasty
+11195	23	Delicious
+11196	18	Tasty
+11197	22	Delicious
+11197	4	Very nice
+11197	11	Delicious
+11198	5	Tasty
+11198	15	Delicious
+11199	28	Very nice
+11199	18	Favourite
+11200	15	Tasty
+11200	23	Tasty
+11201	4	Tasty
+11201	15	Tasty
+11202	24	Delicious
+11202	27	Favourite
+11202	4	Delicious
+11203	1	Tasty
+11204	11	Very nice
+11204	13	Very nice
+11205	10	Delicious
+11205	25	Fabulous
+11205	1	Very nice
+11206	16	Delicious
+11207	24	Very nice
+11207	9	Tasty
+11207	17	Very nice
+11208	13	Tasty
+11209	9	Very nice
+11209	6	Delicious
+11210	9	Very nice
+11210	7	Very nice
+11211	25	Very nice
+11211	22	Delicious
+11212	12	Favourite
+11212	28	Delicious
+11213	8	Very nice
+11213	20	Delicious
+11214	21	Fabulous
+11215	22	Favourite
+11216	4	Very nice
+11216	14	Tasty
+11216	17	Very nice
+11217	13	Delicious
+11218	28	Favourite
+11219	4	Fabulous
+11219	11	Favourite
+11220	2	Very nice
+11220	23	Delicious
+11220	9	Favourite
+11221	25	Tasty
+11221	12	Fabulous
+11221	13	Fabulous
+11222	20	Tasty
+11222	11	Very nice
+11223	24	Very nice
+11223	16	Tasty
+11224	14	Very nice
+11225	9	Very nice
+11226	17	Tasty
+11226	5	Very nice
+11226	18	Very nice
+11227	7	Fabulous
+11227	14	Tasty
+11228	28	Very nice
+11228	16	Very nice
+11229	1	Favourite
+11229	11	Tasty
+11230	7	Tasty
+11230	9	Fabulous
+11230	16	Tasty
+11231	28	Very nice
+11231	17	Very nice
+11232	10	Delicious
+11232	24	Tasty
+11233	18	Delicious
+11233	25	Delicious
+11234	9	Favourite
+11235	2	Favourite
+11236	2	Very nice
+11236	11	Tasty
+11237	18	Delicious
+11238	13	Favourite
+11238	4	Very nice
+11239	14	Favourite
+11239	23	Very nice
+11240	27	Very nice
+11240	1	Favourite
+11241	13	Very nice
+11241	6	Tasty
+11242	6	Tasty
+11242	10	Delicious
+11242	3	Very nice
+11243	17	Very nice
+11243	11	Very nice
+11244	11	Tasty
+11245	20	Very nice
+11246	25	Tasty
+11246	5	Delicious
+11246	6	Very nice
+11247	26	Tasty
+11247	3	Fabulous
+11247	12	Delicious
+11248	28	Tasty
+11249	21	Delicious
+11250	7	Very nice
+11251	6	Fabulous
+11251	2	Very nice
+11251	18	Very nice
+11252	28	Very nice
+11253	16	Fabulous
+11255	8	Favourite
+11255	3	Tasty
+11255	4	Delicious
+11256	21	Tasty
+11256	3	Very nice
+11257	8	Favourite
+11258	28	Tasty
+11258	12	Tasty
+11259	7	Favourite
+11259	27	Very nice
+11259	24	Tasty
+11260	20	Delicious
+11260	12	Very nice
+11260	27	Very nice
+11261	2	Tasty
+11261	26	Tasty
+11261	24	Very nice
+11262	10	Delicious
+11262	26	Tasty
+11262	23	Fabulous
+11263	7	Fabulous
+11263	20	Tasty
+11263	16	Very nice
+11264	28	Delicious
+11265	10	Delicious
+11265	27	Tasty
+11265	6	Tasty
+11266	25	Favourite
+11266	21	Delicious
+11267	14	Tasty
+11267	24	Tasty
+11267	8	Very nice
+11268	24	Delicious
+11268	5	Tasty
+11269	13	Favourite
+11270	22	Delicious
+11271	6	Tasty
+11271	13	Tasty
+11272	3	Tasty
+11273	10	Favourite
+11273	14	Tasty
+11274	1	Fabulous
+11274	7	Favourite
+11274	9	Fabulous
+11275	13	Delicious
+11275	8	Delicious
+11276	7	Delicious
+11276	3	Very nice
+11276	23	Delicious
+11277	22	Favourite
+11277	4	Delicious
+11277	13	Delicious
+11278	23	Very nice
+11279	9	Favourite
+11280	18	Very nice
+11280	10	Delicious
+11281	20	Delicious
+11281	11	Very nice
+11282	2	Very nice
+11283	26	Fabulous
+11283	15	Delicious
+11284	23	Tasty
+11284	21	Tasty
+11284	22	Favourite
+11285	12	Tasty
+11286	22	Very nice
+11286	16	Tasty
+11286	24	Delicious
+11287	3	Fabulous
+11287	23	Delicious
+11287	16	Very nice
+11288	24	Tasty
+11289	21	Delicious
+11289	16	Tasty
+11290	27	Delicious
+11291	18	Tasty
+11292	21	Very nice
+11293	4	Tasty
+11294	17	Very nice
+11294	2	Tasty
+11295	9	Delicious
+11296	9	Delicious
+11296	12	Favourite
+11297	23	Delicious
+11297	1	Very nice
+11298	7	Very nice
+11298	27	Tasty
+11298	1	Very nice
+11299	2	Delicious
+11299	21	Very nice
+11300	20	Very nice
+11300	8	Tasty
+11301	2	Fabulous
+11302	28	Tasty
+11302	5	Tasty
+11303	15	Very nice
+11303	5	Delicious
+11304	20	Very nice
+11305	11	Very nice
+11305	1	Very nice
+11306	13	Tasty
+11307	25	Delicious
+11308	7	Very nice
+11309	11	Tasty
+11309	3	Favourite
+11310	6	Very nice
+11311	24	Tasty
+11311	18	Tasty
+11312	2	Favourite
+11312	20	Delicious
+11312	18	Delicious
+11313	26	Delicious
+11314	17	Tasty
+11314	20	Delicious
+11314	7	Favourite
+11315	21	Very nice
+11316	4	Very nice
+11316	11	Tasty
+11317	23	Delicious
+11317	14	Favourite
+11318	28	Tasty
+11318	1	Tasty
+11319	3	Tasty
+11320	27	Tasty
+11320	7	Tasty
+11320	18	Delicious
+11321	22	Very nice
+11321	15	Tasty
+11321	13	Tasty
+11322	13	Fabulous
+11323	24	Fabulous
+11323	11	Favourite
+11324	26	Favourite
+11324	20	Tasty
+11325	3	Tasty
+11325	14	Fabulous
+11326	15	Favourite
+11327	22	Tasty
+11327	13	Delicious
+11327	27	Fabulous
+11328	2	Fabulous
+11328	20	Delicious
+11328	1	Delicious
+11329	6	Tasty
+11329	8	Delicious
+11330	27	Fabulous
+11331	11	Tasty
+11331	6	Very nice
+11332	25	Delicious
+11333	5	Tasty
+11333	18	Favourite
+11334	21	Delicious
+11335	26	Fabulous
+11335	18	Delicious
+11336	13	Delicious
+11336	16	Delicious
+11338	12	Very nice
+11338	6	Very nice
+11339	11	Delicious
+11339	2	Favourite
+11340	1	Delicious
+11340	22	Favourite
+11340	2	Tasty
+11341	27	Fabulous
+11341	2	Delicious
+11341	26	Tasty
+11342	13	Delicious
+11342	1	Tasty
+11342	21	Very nice
+11343	11	Fabulous
+11343	17	Tasty
+11344	9	Very nice
+11344	2	Very nice
+11344	27	Tasty
+11345	2	Delicious
+11346	2	Very nice
+11347	18	Delicious
+11347	27	Tasty
+11348	26	Very nice
+11348	24	Tasty
+11348	7	Tasty
+11349	14	Very nice
+11349	1	Tasty
+11350	23	Tasty
+11350	5	Fabulous
+11350	12	Tasty
+11351	16	Fabulous
+11351	22	Fabulous
+11352	14	Very nice
+11352	28	Delicious
+11353	11	Very nice
+11354	9	Delicious
+11354	12	Very nice
+11355	11	Delicious
+11355	5	Favourite
+11356	16	Tasty
+11356	5	Very nice
+11357	26	Tasty
+11358	14	Tasty
+11358	23	Delicious
+11359	5	Tasty
+11360	26	Very nice
+11360	9	Fabulous
+11360	8	Favourite
+11361	18	Very nice
+11362	26	Very nice
+11363	23	Fabulous
+11364	6	Tasty
+11365	22	Tasty
+11365	3	Very nice
+11365	14	Tasty
+11366	20	Delicious
+11367	1	Delicious
+11368	2	Very nice
+11368	16	Favourite
+11368	15	Very nice
+11369	26	Very nice
+11369	11	Delicious
+11370	5	Very nice
+11371	1	Tasty
+11371	21	Tasty
+11372	12	Favourite
+11372	20	Very nice
+11372	14	Tasty
+11373	13	Delicious
+11373	12	Very nice
+11373	5	Delicious
+11374	8	Tasty
+11375	11	Delicious
+11375	21	Tasty
+11376	21	Delicious
+11376	23	Very nice
+11376	2	Tasty
+11377	15	Fabulous
+11378	5	Delicious
+11379	14	Tasty
+11379	20	Tasty
+11379	15	Tasty
+11380	13	Very nice
+11381	25	Delicious
+11382	17	Very nice
+11383	21	Delicious
+11383	18	Very nice
+11384	11	Delicious
+11384	4	Very nice
+11385	12	Very nice
+11386	21	Favourite
+11386	11	Very nice
+11387	20	Tasty
+11387	16	Tasty
+11387	14	Tasty
+11388	21	Delicious
+11388	5	Tasty
+11388	11	Tasty
+11389	18	Favourite
+11389	25	Tasty
+11390	22	Delicious
+11390	9	Fabulous
+11391	16	Delicious
+11392	25	Delicious
+11392	8	Delicious
+11393	1	Fabulous
+11393	15	Very nice
+11393	14	Very nice
+11394	21	Very nice
+11395	26	Delicious
+11395	25	Very nice
+11395	2	Very nice
+11396	21	Delicious
+11397	18	Very nice
+11398	24	Tasty
+11399	8	Very nice
+11399	7	Fabulous
+11400	15	Very nice
+11400	16	Favourite
+11401	7	Fabulous
+11401	4	Tasty
+11402	5	Delicious
+11402	12	Very nice
+11402	18	Very nice
+11403	8	Very nice
+11404	1	Delicious
+11405	18	Tasty
+11406	15	Delicious
+11406	18	Delicious
+11407	24	Favourite
+11408	11	Very nice
+11408	8	Fabulous
+11408	22	Very nice
+11410	22	Favourite
+11410	26	Tasty
+11411	5	Delicious
+11411	10	Delicious
+11411	13	Tasty
+11412	22	Tasty
+11412	1	Tasty
+11413	6	Very nice
+11413	17	Fabulous
+11414	8	Fabulous
+11415	23	Delicious
+11416	14	Delicious
+11417	9	Favourite
+11418	1	Delicious
+11419	4	Very nice
+11419	13	Tasty
+11420	26	Very nice
+11420	5	Delicious
+11421	3	Fabulous
+11421	20	Delicious
+11421	10	Very nice
+11422	7	Favourite
+11423	22	Fabulous
+11423	4	Favourite
+11423	8	Very nice
+11424	14	Favourite
+11424	13	Very nice
+11424	15	Tasty
+11425	17	Tasty
+11426	26	Very nice
+11426	25	Tasty
+11427	10	Tasty
+11427	7	Very nice
+11428	4	Very nice
+11429	12	Tasty
+11429	27	Very nice
+11430	18	Very nice
+11430	16	Very nice
+11431	27	Delicious
+11432	3	Very nice
+11433	22	Delicious
+11433	14	Tasty
+11434	2	Very nice
+11434	12	Tasty
+11435	20	Delicious
+11436	23	Very nice
+11436	27	Fabulous
+11437	25	Fabulous
+11437	5	Tasty
+11437	15	Tasty
+11438	15	Tasty
+11438	3	Very nice
+11439	26	Delicious
+11440	17	Fabulous
+11440	5	Very nice
+11441	24	Tasty
+11441	16	Delicious
+11441	28	Delicious
+11442	23	Tasty
+11442	3	Delicious
+11443	3	Tasty
+11443	8	Tasty
+11444	3	Fabulous
+11444	8	Favourite
+11445	15	Very nice
+11445	7	Very nice
+11446	25	Fabulous
+11447	14	Tasty
+11448	16	Delicious
+11449	24	Tasty
+11449	22	Tasty
+11449	5	Very nice
+11450	24	Fabulous
+11451	20	Very nice
+11452	17	Delicious
+11452	22	Tasty
+11453	24	Favourite
+11454	13	Tasty
+11454	17	Very nice
+11454	9	Tasty
+11455	24	Fabulous
+11456	8	Tasty
+11456	28	Very nice
+11456	17	Very nice
+11457	14	Delicious
+11457	25	Very nice
+11458	10	Favourite
+11459	21	Tasty
+11459	14	Delicious
+11460	21	Fabulous
+11460	17	Tasty
+11461	15	Tasty
+11461	21	Favourite
+11462	18	Very nice
+11462	2	Tasty
+11463	7	Very nice
+11464	28	Delicious
+11464	16	Very nice
+11465	25	Very nice
+11466	18	Very nice
+11466	16	Very nice
+11466	10	Fabulous
+11467	4	Tasty
+11467	6	Very nice
+11468	18	Very nice
+11468	9	Delicious
+11468	4	Fabulous
+11469	2	Tasty
+11470	7	Delicious
+11470	8	Fabulous
+11470	9	Delicious
+11471	1	Very nice
+11471	20	Tasty
+11472	26	Very nice
+11472	3	Tasty
+11473	28	Delicious
+11474	17	Tasty
+11474	24	Favourite
+11475	15	Tasty
+11476	2	Fabulous
+11477	5	Favourite
+11477	4	Tasty
+11478	7	Tasty
+11478	2	Very nice
+11479	12	Very nice
+11479	23	Very nice
+11480	21	Tasty
+11480	1	Tasty
+11480	7	Fabulous
+11481	18	Fabulous
+11482	20	Tasty
+11483	9	Tasty
+11484	2	Tasty
+11484	11	Delicious
+11484	4	Tasty
+11485	3	Favourite
+11486	9	Delicious
+11486	3	Tasty
+11487	26	Favourite
+11487	25	Tasty
+11488	23	Favourite
+11489	10	Very nice
+11490	14	Very nice
+11490	13	Very nice
+11491	16	Very nice
+11491	1	Delicious
+11491	22	Favourite
+11492	3	Delicious
+11492	28	Tasty
+11492	21	Fabulous
+11493	11	Tasty
+11493	6	Delicious
+11493	15	Very nice
+11494	18	Very nice
+11495	13	Very nice
+11495	18	Tasty
+11495	14	Fabulous
+11496	15	Very nice
+11496	5	Tasty
+11496	4	Very nice
+11497	2	Favourite
+11497	12	Very nice
+11497	16	Very nice
+11498	2	Very nice
+11499	9	Very nice
+11499	2	Delicious
+11499	13	Favourite
+\.
+
+
+--
+-- Data for Name: people; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY people (id, name, lives_in) FROM stdin;
+10000	Linda	1687
+10001	Lachlan	1744
+10002	Stephen	1436
+10003	Louisa	1677
+10004	Megan	1366
+10005	Catherine	1802
+10006	Ryan	1176
+10007	Ingrid	1723
+10008	Siew	1854
+10009	Leon	1667
+10010	Nicole	1167
+10011	Damian	1647
+10012	Keith	1125
+10013	Yvonne	1667
+10014	Leonard	1297
+10015	Benjamin	1021
+10016	Christopher	1163
+10017	Hugh	1224
+10018	Peter	1217
+10019	Jason	1281
+10020	Kit	1503
+10021	Luke	1477
+10022	Chi	1515
+10023	Anthony	1044
+10024	Kwok	1293
+10025	Stephanie	1703
+10026	Michelle	1271
+10027	Warren	1031
+10028	Jacqueline	1263
+10029	Ying	1768
+10030	Yan	1588
+10031	Mohammed	1490
+10032	Dennis	1074
+10033	Kerry	1692
+10034	Alan	1561
+10035	Tze	1084
+10036	Kitty	1409
+10037	Li	1228
+10038	Ching	1200
+10039	Mei	1239
+10040	Tracy	1102
+10041	Matthew	1123
+10042	Kristy	1425
+10043	Rachael	1044
+10044	Nicole	1864
+10045	Tania	1734
+10046	Steven	1171
+10047	Edwin	1273
+10048	Wan	1250
+10049	Geoffrey	1363
+10050	Rita	1311
+10051	Jing	1854
+10052	Danielle	1572
+10053	Stuart	1760
+10054	Wen	1616
+10055	Frances	1372
+10056	Antony	1418
+10057	Thanh	1748
+10058	Benjamin	1355
+10059	Stanley	1199
+10060	Vanessa	1021
+10061	Keith	1012
+10062	Jasmine	1084
+10063	Holly	1692
+10064	Rosemary	1693
+10065	Trevor	1592
+10066	Karen	1584
+10067	Yvonne	1619
+10068	Lydia	1507
+10069	Boon	1390
+10070	Nicole	1875
+10071	Wei	1191
+10072	Wing	1549
+10073	Rodney	1518
+10074	Jonathon	1031
+10075	Joseph	1091
+10076	Angus	1014
+10077	Evan	1641
+10078	Margaret	1521
+10079	Rebecca	1745
+10080	Victoria	1418
+10081	Fiona	1769
+10082	Thi	1440
+10083	Allison	1307
+10084	Grant	1865
+10085	Geoffrey	1211
+10086	Shaun	1485
+10087	Heather	1650
+10088	Carol	1052
+10089	Tracey	1854
+10090	George	1653
+10091	Wai	1500
+10092	Sze	1682
+10093	Louis	1853
+10094	Leo	1794
+10095	Rachael	1663
+10096	Craig	1275
+10097	Lynn	1174
+10098	Philippa	1807
+10099	Brett	1678
+10100	Geoffrey	1265
+10101	Justin	1352
+10102	Alexandra	1474
+10103	Lara	1190
+10104	Barbara	1351
+10105	Allan	1535
+10106	Sarah	1813
+10107	Andrew	1597
+10108	James	1272
+10109	Hugh	1600
+10110	Kevin	1016
+10111	Margaret	1135
+10112	Timothy	1446
+10113	Katrina	1097
+10114	Melissa	1758
+10115	Anthony	1442
+10116	Gillian	1762
+10117	Nathan	1850
+10118	Winnie	1761
+10119	Po	1083
+10120	Brendan	1203
+10121	David	1577
+10122	Shaun	1285
+10123	Justin	1672
+10124	Rohan	1610
+10125	Julian	1615
+10126	Ricky	1769
+10127	Wee	1763
+10128	Kok	1735
+10129	Maggie	1251
+10130	Amy	1148
+10131	Thi	1153
+10132	Graeme	1122
+10133	Carmen	1786
+10134	Mitchell	1697
+10135	Michael	1267
+10136	Patricia	1010
+10137	Patricia	1784
+10138	Alex	1001
+10139	Barry	1089
+10140	Penelope	1249
+10141	Jing	1445
+10142	Jack	1037
+10143	Roy	1136
+10144	Mark	1698
+10145	Andy	1014
+10146	Thanh	1097
+10147	Pak	1174
+10148	James	1350
+10149	Young	1660
+10150	Penelope	1039
+10151	Catherine	1706
+10152	Ruth	1339
+10153	Rohan	1856
+10154	Sandy	1825
+10155	Claudia	1480
+10156	Julian	1613
+10157	Melanie	1756
+10158	Chris	1715
+10159	Kate	1469
+10160	Louise	1785
+10161	David	1338
+10162	Dong	1618
+10163	Katie	1286
+10164	Susan	1751
+10165	Antony	1707
+10166	Sandra	1434
+10167	Jonathon	1198
+10168	Jane	1086
+10169	Timothy	1041
+10170	Mia	1422
+10171	Bernadette	1328
+10172	Elena	1002
+10173	Wendy	1536
+10174	Ruth	1168
+10175	Alan	1465
+10176	Marc	1043
+10177	Colin	1145
+10178	Jason	1063
+10179	Daniel	1060
+10180	Stewart	1615
+10181	Vicki	1435
+10182	Alex	1136
+10183	Pak	1497
+10184	Andrew	1798
+10185	Alison	1860
+10186	David	1544
+10187	Jodie	1475
+10188	Paul	1385
+10189	Bradley	1314
+10190	Rebecca	1382
+10191	Denise	1226
+10192	Bernard	1337
+10193	Oliver	1774
+10194	Josephine	1235
+10195	Alice	1557
+10196	Geraldine	1498
+10197	Wai	1550
+10198	Daniel	1511
+10199	Karen	1874
+10200	Joseph	1496
+10201	Claudia	1499
+10202	Judy	1560
+10203	Carol	1604
+10204	Heidi	1473
+10205	Matthew	1099
+10206	Maggie	1794
+10207	Seung	1343
+10208	Emily	1758
+10209	Wendy	1362
+10210	Adrian	1186
+10211	Patrick	1639
+10212	Victoria	1633
+10213	Pauline	1238
+10214	Alex	1427
+10215	Kit	1718
+10216	Catherine	1050
+10217	Shane	1005
+10218	John	1680
+10219	Jennifer	1704
+10220	Arthur	1784
+10221	Cindy	1293
+10222	Leon	1843
+10223	Jacqueline	1528
+10224	Dale	1377
+10225	Mary	1264
+10226	Kenneth	1131
+10227	Justin	1531
+10228	Shelley	1518
+10229	Simone	1383
+10230	Kwok	1531
+10231	Benjamin	1842
+10232	Greg	1127
+10233	Gabriel	1320
+10234	Melanie	1404
+10235	John	1598
+10236	King	1708
+10237	Amy	1274
+10238	Qi	1000
+10239	Nigel	1876
+10240	Siu	1577
+10241	Rebecca	1211
+10242	Virginia	1343
+10243	Natasha	1805
+10244	Darren	1734
+10245	Cynthia	1252
+10246	Lawrence	1078
+10247	Miriam	1158
+10248	Kwok	1005
+10249	Patrick	1588
+10250	Alan	1130
+10251	Kimberley	1586
+10252	Audrey	1537
+10253	Li	1549
+10254	Edwin	1604
+10255	Jane	1242
+10256	Kar	1405
+10257	Douglas	1284
+10258	Robyn	1335
+10259	Cindy	1861
+10260	Lara	1524
+10261	Nga	1070
+10262	Emily	1483
+10263	Yu	1453
+10264	Ross	1545
+10265	Kit	1669
+10266	Louis	1023
+10267	Stella	1781
+10268	Marc	1262
+10269	Michelle	1761
+10270	James	1584
+10271	Richard	1072
+10272	Susanna	1122
+10273	Jack	1038
+10274	Elizabeth	1857
+10275	Antony	1748
+10276	Arthur	1519
+10277	Kirsten	1385
+10278	Soo	1031
+10279	Helen	1865
+10280	Paul	1611
+10281	Bridget	1777
+10282	Josephine	1562
+10283	Audrey	1633
+10284	Nancy	1878
+10285	Richard	1299
+10286	George	1474
+10287	Steven	1727
+10288	Albert	1360
+10289	John	1710
+10290	Kristy	1657
+10291	Joe	1131
+10292	Sasha	1529
+10293	Kylie	1858
+10294	Garth	1114
+10295	Annie	1314
+10296	Melanie	1341
+10297	Megan	1606
+10298	Monica	1690
+10299	Holly	1341
+10300	David	1355
+10301	Roy	1660
+10302	Sarah	1265
+10303	Amy	1811
+10304	Amy	1528
+10305	Tina	1070
+10306	Christine	1265
+10307	Rosemary	1369
+10308	Sharon	1790
+10309	Kate	1355
+10310	Phillip	1491
+10311	Keith	1248
+10312	Allison	1690
+10313	Tamara	1452
+10314	Jacqueline	1126
+10315	Lai	1700
+10316	Sharon	1295
+10317	John	1634
+10318	Wai	1313
+10319	Alvin	1765
+10320	Tommy	1867
+10321	Kwok	1097
+10322	Georgina	1827
+10323	Scott	1250
+10324	Paul	1015
+10325	Tin	1867
+10326	Tracey	1876
+10327	Gloria	1272
+10328	Renee	1505
+10329	Anh	1039
+10330	Qi	1002
+10331	Anna	1043
+10332	Jung	1133
+10333	Patrick	1186
+10334	Henry	1123
+10335	Megan	1874
+10336	Derek	1210
+10337	Graeme	1072
+10338	Pak	1332
+10339	Tin	1107
+10340	Andrew	1850
+10341	Ivan	1581
+10342	Victoria	1687
+10343	Rohan	1496
+10344	Wendy	1697
+10345	Yuen	1119
+10346	Graeme	1564
+10347	Anne	1285
+10348	Timothy	1210
+10349	Melissa	1020
+10350	Olga	1748
+10351	Luke	1200
+10352	Jun	1513
+10353	Damian	1294
+10354	Ken	1546
+10355	Victoria	1413
+10356	Min	1874
+10357	Damian	1600
+10358	Karen	1236
+10359	Andrea	1074
+10360	Jason	1596
+10361	Grace	1252
+10362	Annette	1568
+10363	Lesley	1374
+10364	Karen	1256
+10365	Andrew	1727
+10366	Luke	1833
+10367	Susan	1788
+10368	Leon	1804
+10369	Scott	1872
+10370	Chi	1805
+10371	Thi	1560
+10372	Paul	1461
+10373	Lynn	1772
+10374	Barbara	1308
+10375	Jeffrey	1852
+10376	Kirsty	1374
+10377	Renee	1841
+10378	Leonard	1401
+10379	Stanley	1817
+10380	Scott	1524
+10381	Owen	1612
+10382	Matthew	1207
+10383	Boon	1791
+10384	Peter	1800
+10385	Damian	1852
+10386	Wei	1141
+10387	Stella	1428
+10388	Tsz	1740
+10389	Virginia	1251
+10390	Hyun	1314
+10391	Yuk	1554
+10392	Hong	1040
+10393	Allan	1052
+10394	Clare	1062
+10395	Kate	1735
+10396	Robert	1742
+10397	Cynthia	1679
+10398	Skye	1526
+10399	Anthony	1466
+10400	Jonathan	1544
+10401	Lynn	1542
+10402	Emily	1212
+10403	Emily	1660
+10404	Lauren	1634
+10405	Hong	1088
+10406	Candy	1240
+10407	Donald	1685
+10408	Garth	1229
+10409	Erin	1543
+10410	Denise	1293
+10411	Barry	1816
+10412	Pak	1618
+10413	Ken	1691
+10414	Margaret	1223
+10415	Alvin	1174
+10416	Heather	1630
+10417	Anna	1532
+10418	Candy	1495
+10419	Ellen	1588
+10420	Simon	1319
+10421	Jamie	1475
+10422	Jessica	1858
+10423	William	1033
+10424	Stella	1819
+10425	Danielle	1411
+10426	Alex	1625
+10427	Donald	1875
+10428	Erica	1380
+10429	Daniel	1367
+10430	Wai	1666
+10431	Ali	1437
+10432	Cindy	1487
+10433	Richard	1023
+10434	Peter	1878
+10435	Kenny	1586
+10436	Victoria	1443
+10437	Lisa	1371
+10438	Rachael	1091
+10439	Kelly	1693
+10440	Gareth	1076
+10441	Jasmine	1864
+10442	Jing	1809
+10443	Marisa	1473
+10444	Alex	1091
+10445	Bridget	1472
+10446	Rodney	1554
+10447	Lucy	1054
+10448	Scott	1289
+10449	Dianne	1516
+10450	Simon	1219
+10451	Yvette	1145
+10452	Kin	1059
+10453	Ali	1577
+10454	Ingrid	1473
+10455	Darren	1559
+10456	Natalie	1694
+10457	Maria	1143
+10458	Alice	1453
+10459	Tania	1387
+10460	Scott	1809
+10461	Yin	1657
+10462	Kirsten	1213
+10463	Leigh	1758
+10464	Qi	1139
+10465	Bruce	1749
+10466	Jane	1210
+10467	Mary	1808
+10468	Karen	1863
+10469	Martin	1392
+10470	Judith	1005
+10471	Patrick	1541
+10472	Heidi	1087
+10473	Tristan	1814
+10474	Dean	1010
+10475	Emma	1480
+10476	Rodney	1822
+10477	Daniel	1571
+10478	Erica	1186
+10479	Jian	1108
+10480	Jennifer	1375
+10481	Amelia	1407
+10482	Yin	1722
+10483	Karen	1619
+10484	Melissa	1342
+10485	Eddie	1346
+10486	Jane	1743
+10487	Chris	1311
+10488	Brendan	1355
+10489	Rebecca	1576
+10490	John	1791
+10491	Natalie	1531
+10492	Leo	1834
+10493	Kim	1079
+10494	Timothy	1642
+10495	Geoffrey	1232
+10496	Erin	1463
+10497	Rachel	1696
+10498	Mark	1763
+10499	Damian	1475
+10500	Virginia	1288
+10501	Lesley	1041
+10502	Kevin	1344
+10503	Benjamin	1870
+10504	Olivia	1124
+10505	Andre	1763
+10506	Jun	1033
+10507	Lawrence	1407
+10508	Caroline	1136
+10509	Shirley	1877
+10510	Yuen	1548
+10511	Kristy	1708
+10512	Po	1415
+10513	Evan	1219
+10514	Yong	1522
+10515	Cynthia	1826
+10516	Brett	1456
+10517	Scott	1731
+10518	Tracy	1823
+10519	Ying	1656
+10520	Erica	1526
+10521	Wayne	1802
+10522	Arthur	1540
+10523	Tania	1156
+10524	Penelope	1870
+10525	Alice	1495
+10526	Shaun	1379
+10527	Carla	1108
+10528	Jing	1409
+10529	Judith	1474
+10530	Lisa	1864
+10531	Sonia	1529
+10532	Garth	1226
+10533	Erica	1370
+10534	Joseph	1027
+10535	Victor	1092
+10536	Po	1854
+10537	Peter	1672
+10538	Kimberley	1199
+10539	Oliver	1306
+10540	Tracy	1868
+10541	Ellen	1019
+10542	Benjamin	1215
+10543	Kar	1876
+10544	Albert	1349
+10545	Angela	1525
+10546	Pauline	1444
+10547	Melanie	1393
+10548	William	1236
+10549	Keith	1621
+10550	James	1696
+10551	Bianca	1798
+10552	Geoffrey	1313
+10553	Simon	1741
+10554	Tracey	1204
+10555	Kok	1187
+10556	Shan	1318
+10557	Eugene	1181
+10558	Amy	1086
+10559	Stephanie	1379
+10560	Pei	1167
+10561	Neil	1283
+10562	Bernard	1234
+10563	Russell	1413
+10564	Anita	1515
+10565	Jason	1372
+10566	Patricia	1143
+10567	Diana	1011
+10568	Yun	1847
+10569	Leigh	1491
+10570	Kate	1526
+10571	Anthony	1302
+10572	Suzanne	1529
+10573	Greg	1724
+10574	Paul	1347
+10575	Justine	1573
+10576	Rebecca	1275
+10577	Jade	1135
+10578	Jia	1778
+10579	Stewart	1153
+10580	Mia	1542
+10581	Jun	1494
+10582	Brian	1137
+10583	Yu	1115
+10584	Nicola	1373
+10585	Antony	1395
+10586	Rebecca	1364
+10587	Justine	1781
+10588	Louisa	1529
+10589	Amanda	1188
+10590	Phoebe	1100
+10591	Alice	1291
+10592	Carla	1045
+10593	Mia	1877
+10594	Sarah	1447
+10595	Nicola	1682
+10596	Brooke	1656
+10597	Jason	1642
+10598	Diana	1803
+10599	Diana	1636
+10600	Yuk	1473
+10601	Sylvia	1608
+10602	Lesley	1805
+10603	William	1152
+10604	Lucy	1725
+10605	Rebecca	1549
+10606	Jack	1783
+10607	Christopher	1051
+10608	Alex	1450
+10609	May	1482
+10610	Craig	1069
+10611	Julian	1096
+10612	Sophie	1697
+10613	Glenn	1730
+10614	Ivan	1868
+10615	Naomi	1303
+10616	Monique	1376
+10617	Louise	1695
+10618	Carolyn	1798
+10619	Joanne	1775
+10620	Raymond	1324
+10621	Olivia	1859
+10622	Jack	1716
+10623	Wing	1115
+10624	Benjamin	1460
+10625	Sarah	1640
+10626	Dianne	1614
+10627	Marisa	1832
+10628	Ying	1519
+10629	Angus	1126
+10630	Jessica	1115
+10631	Thi	1859
+10632	Sze	1558
+10633	Chung	1176
+10634	Philip	1168
+10635	Anh	1854
+10636	Patrick	1664
+10637	Gabriel	1677
+10638	Leigh	1314
+10639	Lisa	1748
+10640	Lisa	1739
+10641	Emma	1620
+10642	Patricia	1502
+10643	Katherine	1353
+10644	Chi	1408
+10645	Patrick	1830
+10646	Daniel	1042
+10647	Sally	1474
+10648	Cindy	1033
+10649	Andre	1671
+10650	Nicholas	1358
+10651	Susan	1120
+10652	Chin	1588
+10653	Catherine	1813
+10654	Chung	1354
+10655	Edwin	1745
+10656	Penelope	1670
+10657	Trent	1628
+10658	Vanessa	1053
+10659	Christopher	1278
+10660	Wai	1766
+10661	Yuen	1027
+10662	Vicky	1528
+10663	Janet	1406
+10664	Jonathon	1045
+10665	Lily	1341
+10666	Trevor	1018
+10667	Susanna	1307
+10668	Angela	1435
+10669	Tracey	1857
+10670	Kylie	1686
+10671	Stella	1362
+10672	Soo	1189
+10673	Teresa	1812
+10674	Sarah	1650
+10675	John	1565
+10676	Samuel	1840
+10677	Leon	1196
+10678	Tze	1870
+10679	Ronald	1024
+10680	Sophie	1721
+10681	Suzanne	1441
+10682	Joyce	1573
+10683	Miriam	1870
+10684	Amanda	1750
+10685	Kit	1847
+10686	Johnson	1253
+10687	Thi	1196
+10688	Chee	1509
+10689	Pamela	1011
+10690	Wing	1446
+10691	Amanda	1109
+10692	Jason	1533
+10693	Eileen	1492
+10694	Fiona	1342
+10695	Kwok	1767
+10696	Sze	1568
+10697	Stephen	1262
+10698	Tanya	1854
+10699	Warren	1795
+10700	Anastasia	1799
+10701	Malcolm	1081
+10702	Zhi	1225
+10703	Kathy	1260
+10704	Anthea	1601
+10705	Elizabeth	1673
+10706	Ingrid	1188
+10707	Bradley	1795
+10708	Christopher	1436
+10709	Roger	1776
+10710	Jonathon	1832
+10711	Elaine	1154
+10712	James	1263
+10713	Lina	1604
+10714	Margaret	1591
+10715	Clare	1315
+10716	May	1478
+10717	Stefan	1265
+10718	Lee	1776
+10719	Philippa	1026
+10720	Eugene	1073
+10721	Ken	1801
+10722	Suzanne	1629
+10723	Nadia	1805
+10724	Michelle	1385
+10725	Amy	1489
+10726	Julie	1610
+10727	Garth	1345
+10728	Kian	1773
+10729	Audrey	1790
+10730	Tracey	1595
+10731	Sara	1302
+10732	Jonathan	1022
+10733	Elaine	1815
+10734	Alice	1448
+10735	Joanna	1442
+10736	Emily	1785
+10737	Renee	1076
+10738	Zhi	1068
+10739	Jimmy	1570
+10740	Wai	1158
+10741	Jane	1070
+10742	Colin	1239
+10743	Paul	1615
+10744	Harry	1830
+10745	Belinda	1638
+10746	Yin	1537
+10747	Alison	1720
+10748	Helen	1744
+10749	Justine	1778
+10750	Jacqueline	1008
+10751	Kristy	1058
+10752	Jennifer	1010
+10753	Hui	1874
+10754	Lisa	1758
+10755	Yuen	1023
+10756	Nancy	1315
+10757	Elizabeth	1085
+10758	Kitty	1146
+10759	Sean	1511
+10760	Greg	1062
+10761	Hannah	1107
+10762	Victor	1330
+10763	Trent	1702
+10764	Timothy	1000
+10765	Stuart	1777
+10766	Christine	1117
+10767	Amber	1724
+10768	Jade	1455
+10769	Grant	1788
+10770	Tak	1859
+10771	Tracy	1641
+10772	Carla	1802
+10773	Yvonne	1719
+10774	Glen	1457
+10775	Bruce	1617
+10776	Vivian	1823
+10777	Olga	1582
+10778	Karen	1354
+10779	Cecilia	1545
+10780	Holly	1377
+10781	Kevin	1803
+10782	Nancy	1272
+10783	Amelia	1338
+10784	Cameron	1637
+10785	Christopher	1666
+10786	Heidi	1402
+10787	Neil	1000
+10788	Patrick	1707
+10789	Simon	1301
+10790	Johnny	1302
+10791	Jason	1562
+10792	Leigh	1593
+10793	Stephen	1789
+10794	Shane	1787
+10795	Angela	1213
+10796	Rodney	1109
+10797	Matthew	1279
+10798	Joanne	1234
+10799	Jung	1017
+10800	Eleanor	1377
+10801	Zhi	1364
+10802	Wayne	1364
+10803	Mark	1786
+10804	Chen	1714
+10805	Mark	1495
+10806	Stephen	1479
+10807	Ruth	1796
+10808	Elizabeth	1519
+10809	Nigel	1007
+10810	John	1148
+10811	Patrick	1256
+10812	Tsz	1868
+10813	Amanda	1609
+10814	Bryan	1008
+10815	Chee	1561
+10816	Trevor	1134
+10817	Gabriel	1764
+10818	Wing	1847
+10819	Catherine	1026
+10820	Luke	1427
+10821	Grace	1642
+10822	Elise	1582
+10823	John	1441
+10824	Jenny	1085
+10825	Simon	1134
+10826	Jasmine	1083
+10827	Leo	1126
+10828	Peter	1645
+10829	Michelle	1212
+10830	Benjamin	1302
+10831	Wai	1374
+10832	Heidi	1035
+10833	Scott	1661
+10834	Nathan	1060
+10835	Wan	1845
+10836	Shirley	1570
+10837	Arthur	1117
+10838	Dylan	1416
+10839	Judy	1210
+10840	Tim	1639
+10841	Cameron	1683
+10842	Heidi	1327
+10843	Cassandra	1415
+10844	Steven	1728
+10845	Nicholas	1758
+10846	Andrew	1042
+10847	Wai	1070
+10848	Stella	1604
+10849	Jack	1543
+10850	Amanda	1389
+10851	Peter	1371
+10852	Minh	1731
+10853	Graham	1025
+10854	Ricky	1385
+10855	Andy	1227
+10856	Stefan	1033
+10857	Terence	1329
+10858	Toby	1641
+10859	Oliver	1082
+10860	David	1579
+10861	Andrew	1865
+10862	Jasmine	1101
+10863	Megan	1540
+10864	Robyn	1535
+10865	Martin	1617
+10866	Tiffany	1662
+10867	Kit	1654
+10868	Kirsten	1230
+10869	Suk	1459
+10870	Xiao	1654
+10871	Andrew	1272
+10872	Heather	1047
+10873	Roy	1220
+10874	Katie	1763
+10875	Barry	1396
+10876	Shelley	1125
+10877	Marisa	1704
+10878	Karen	1495
+10879	Robin	1269
+10880	Ellen	1028
+10881	Catherine	1748
+10882	Shirley	1541
+10883	Dan	1611
+10884	Julie	1579
+10885	Robert	1479
+10886	Daniel	1723
+10887	Irene	1695
+10888	Glen	1042
+10889	Renee	1066
+10890	David	1327
+10891	Min	1315
+10892	Bronwyn	1803
+10893	Mary	1521
+10894	Natalie	1602
+10895	Zhi	1281
+10896	Julia	1280
+10897	Lisa	1188
+10898	Li	1270
+10899	Wai	1663
+10900	David	1308
+10901	Emma	1308
+10902	Ian	1539
+10903	Rodney	1150
+10904	Claire	1782
+10905	Karen	1633
+10906	Bernard	1020
+10907	Kelly	1476
+10908	Dean	1230
+10909	David	1265
+10910	Ivan	1657
+10911	Andy	1773
+10912	Sophie	1447
+10913	Neil	1142
+10914	Jennifer	1144
+10915	Alice	1780
+10916	Cindy	1057
+10917	Tuan	1244
+10918	Joshua	1520
+10919	Iain	1714
+10920	Amanda	1369
+10921	Sandra	1727
+10922	Marc	1868
+10923	Yu	1352
+10924	Douglas	1538
+10925	George	1280
+10926	Jade	1712
+10927	Renee	1141
+10928	Henry	1362
+10929	Ian	1548
+10930	Sandy	1081
+10931	Cynthia	1599
+10932	Mei	1241
+10933	Susan	1582
+10934	Katrina	1712
+10935	Andrea	1518
+10936	Margaret	1021
+10937	Mark	1716
+10938	Tommy	1017
+10939	Geoffrey	1356
+10940	Leonard	1843
+10941	Caroline	1295
+10942	Gary	1679
+10943	Amy	1863
+10944	Chen	1645
+10945	Nicole	1634
+10946	Rodney	1433
+10947	Donna	1499
+10948	Suzanne	1055
+10949	Yi	1010
+10950	Grace	1124
+10951	Stewart	1401
+10952	Ping	1230
+10953	Vicki	1046
+10954	Sharon	1251
+10955	Stanley	1116
+10956	Simon	1752
+10957	Luke	1204
+10958	Bruce	1567
+10959	Bianca	1307
+10960	Sandra	1011
+10961	Leon	1141
+10962	John	1026
+10963	Danny	1035
+10964	Jane	1782
+10965	Rita	1715
+10966	Clement	1371
+10967	Joanne	1024
+10968	Yew	1872
+10969	Yun	1016
+10970	Aaron	1739
+10971	Alice	1505
+10972	Karina	1500
+10973	Kirsten	1448
+10974	Shelley	1177
+10975	Lynn	1169
+10976	Dong	1502
+10977	Emma	1009
+10978	Frances	1529
+10979	Amber	1050
+10980	Timothy	1095
+10981	Grant	1747
+10982	Lisa	1326
+10983	Shu	1134
+10984	Ian	1875
+10985	Sam	1122
+10986	Nicholas	1209
+10987	Brian	1716
+10988	Audrey	1263
+10989	Carol	1390
+10990	Anthony	1838
+10991	Angela	1184
+10992	Sarah	1562
+10993	Boon	1377
+10994	Janice	1385
+10995	David	1254
+10996	Darren	1539
+10997	Steven	1586
+10998	Mia	1339
+10999	Julian	1414
+11000	Antony	1024
+11001	Melinda	1484
+11002	Yuk	1581
+11003	Alison	1039
+11004	Irene	1573
+11005	Yan	1437
+11006	Anastasia	1128
+11007	Chi	1063
+11008	Rosemary	1436
+11009	Danny	1140
+11010	John	1027
+11011	Chin	1450
+11012	Hugh	1212
+11013	Sarah	1551
+11014	Amelia	1140
+11015	Shannon	1195
+11016	Louis	1291
+11017	Paul	1791
+11018	Kevin	1595
+11019	Terence	1662
+11020	Tak	1190
+11021	Michelle	1401
+11022	Josephine	1461
+11023	Ian	1076
+11024	Jennifer	1490
+11025	Rita	1173
+11026	Wen	1306
+11027	Jane	1371
+11028	Linda	1775
+11029	Heidi	1756
+11030	Yuk	1389
+11031	Evelyn	1557
+11032	Henry	1248
+11033	Monica	1803
+11034	Carl	1007
+11035	Cecilia	1872
+11036	Marina	1102
+11037	Eleanor	1431
+11038	James	1093
+11039	Joanne	1263
+11040	Jack	1232
+11041	Nicole	1207
+11042	Luke	1662
+11043	Cecilia	1861
+11044	Michael	1285
+11045	Catherine	1081
+11046	Maya	1106
+11047	Dennis	1534
+11048	Judith	1157
+11049	Christopher	1797
+11050	Christopher	1617
+11051	Damien	1103
+11052	Samuel	1212
+11053	Martin	1582
+11054	Trent	1385
+11055	Katherine	1502
+11056	Tin	1472
+11057	Yee	1855
+11058	Ming	1247
+11059	Louise	1450
+11060	Ming	1180
+11061	Tina	1857
+11062	Tim	1302
+11063	Gary	1199
+11064	Jessica	1660
+11065	Wayne	1675
+11066	Anthony	1118
+11067	William	1459
+11068	Ting	1656
+11069	Ryan	1119
+11070	Daniel	1144
+11071	Lara	1532
+11072	Stephen	1350
+11073	Pamela	1218
+11074	Alice	1838
+11075	Matthew	1693
+11076	Jia	1435
+11077	Nadia	1755
+11078	Chin	1666
+11079	Pui	1655
+11080	Bryan	1593
+11081	Tuan	1067
+11082	Joseph	1032
+11083	Min	1485
+11084	Shan	1082
+11085	Lara	1370
+11086	Tania	1328
+11087	Robyn	1667
+11088	Carl	1695
+11089	Sylvia	1794
+11090	Jessica	1740
+11091	Eric	1020
+11092	William	1025
+11093	Ronald	1681
+11094	Mark	1274
+11095	Pui	1009
+11096	Lydia	1340
+11097	Anthea	1565
+11098	Kimberley	1607
+11099	Nicole	1321
+11100	Vincent	1871
+11101	Kimberley	1617
+11102	Owen	1477
+11103	Debra	1814
+11104	Christina	1063
+11105	Johnny	1328
+11106	Kevin	1160
+11107	Maria	1431
+11108	Catherine	1068
+11109	Kit	1437
+11110	Natasha	1678
+11111	Cecilia	1781
+11112	Jennifer	1287
+11113	Danielle	1183
+11114	Karen	1212
+11115	Elaine	1315
+11116	Ngai	1741
+11117	Yong	1331
+11118	Simon	1558
+11119	David	1149
+11120	Marina	1698
+11121	Mark	1766
+11122	Richard	1595
+11123	Tristan	1396
+11124	Nicholas	1269
+11125	Stanley	1376
+11126	Lisa	1192
+11127	Dianne	1440
+11128	Veronica	1846
+11129	Steven	1417
+11130	Grace	1537
+11131	Josephine	1747
+11132	Stewart	1512
+11133	Ben	1744
+11134	Lai	1612
+11135	Ting	1453
+11136	Soo	1517
+11137	John	1420
+11138	Jian	1186
+11139	Ken	1762
+11140	Kristina	1794
+11141	James	1725
+11142	Scott	1847
+11143	Albert	1211
+11144	Kathryn	1056
+11145	David	1318
+11146	Alison	1140
+11147	Tamara	1556
+11148	Cassandra	1562
+11149	Min	1624
+11150	Sandy	1189
+11151	Peter	1196
+11152	Jasmine	1366
+11153	David	1550
+11154	Roy	1143
+11155	Karen	1199
+11156	Qi	1394
+11157	Sarah	1210
+11158	Lisa	1366
+11159	Kian	1295
+11160	Michelle	1264
+11161	Tina	1283
+11162	Susan	1514
+11163	Nathan	1600
+11164	Roger	1298
+11165	John	1751
+11166	Bridget	1644
+11167	Sophie	1806
+11168	Shirley	1410
+11169	Ingrid	1019
+11170	Sharon	1176
+11171	Sarah	1117
+11172	Cindy	1701
+11173	Tommy	1155
+11174	Dan	1085
+11175	Philip	1428
+11176	Robyn	1763
+11177	Claire	1238
+11178	Lee	1400
+11179	Nga	1590
+11180	Natalie	1733
+11181	Owen	1066
+11182	Jonathan	1018
+11183	Alex	1292
+11184	Marina	1467
+11185	Katie	1824
+11186	Elizabeth	1324
+11187	Thanh	1515
+11188	Aaron	1402
+11189	Helen	1027
+11190	Christine	1808
+11191	Nicholas	1694
+11192	Michael	1525
+11193	Pei	1524
+11194	Rosemary	1158
+11195	Daniel	1844
+11196	Janice	1492
+11197	Diane	1547
+11198	Jonathan	1830
+11199	Timothy	1325
+11200	Tin	1400
+11201	Maria	1327
+11202	Cecilia	1001
+11203	Matthew	1447
+11204	Eleanor	1827
+11205	Jing	1583
+11206	Gareth	1019
+11207	Susan	1460
+11208	Robert	1455
+11209	Yuk	1758
+11210	Nathan	1059
+11211	Erica	1697
+11212	Paul	1763
+11213	Aaron	1038
+11214	Jodie	1283
+11215	Yee	1191
+11216	Shan	1650
+11217	Nigel	1876
+11218	Phoebe	1437
+11219	Damian	1693
+11220	Craig	1521
+11221	Kenneth	1688
+11222	Josephine	1159
+11223	Jian	1001
+11224	Han	1454
+11225	Oliver	1673
+11226	Scott	1161
+11227	Olga	1275
+11228	Siu	1284
+11229	Yun	1044
+11230	Karen	1057
+11231	William	1070
+11232	Evelyn	1167
+11233	Antony	1566
+11234	Mark	1588
+11235	Ping	1749
+11236	Tsz	1032
+11237	Louis	1633
+11238	Mohammad	1247
+11239	Tina	1827
+11240	Alvin	1568
+11241	James	1076
+11242	Katrina	1742
+11243	Timothy	1782
+11244	Tiffany	1248
+11245	Amelia	1339
+11246	Kirsten	1113
+11247	Geraldine	1478
+11248	Scott	1702
+11249	Jennifer	1318
+11250	Tak	1373
+11251	Christopher	1078
+11252	Josephine	1489
+11253	Sylvia	1700
+11254	Ping	1177
+11255	Donna	1766
+11256	Elizabeth	1612
+11257	Cheryl	1384
+11258	Stephen	1614
+11259	Dean	1062
+11260	Judith	1859
+11261	Dong	1768
+11262	Catherine	1077
+11263	Jane	1255
+11264	Ryan	1002
+11265	Wai	1792
+11266	Melissa	1037
+11267	Harry	1826
+11268	Katie	1683
+11269	Janice	1840
+11270	Wan	1588
+11271	Andrea	1541
+11272	Jessica	1837
+11273	Judith	1444
+11274	Paul	1427
+11275	Garth	1050
+11276	Han	1647
+11277	Barry	1418
+11278	Brooke	1227
+11279	Daniel	1667
+11280	Brooke	1231
+11281	Brooke	1151
+11282	King	1414
+11283	Richard	1281
+11284	Ho	1140
+11285	Shirley	1096
+11286	Carolyn	1090
+11287	Jamie	1843
+11288	Gloria	1369
+11289	William	1536
+11290	Michael	1861
+11291	Eileen	1417
+11292	Yong	1522
+11293	Alfred	1300
+11294	Alice	1203
+11295	Kim	1549
+11296	Joyce	1198
+11297	Rita	1028
+11298	Stephen	1013
+11299	Robin	1079
+11300	Samuel	1224
+11301	Yin	1045
+11302	Cecilia	1043
+11303	Graham	1100
+11304	Stanley	1174
+11305	Stephen	1308
+11306	Diane	1056
+11307	Carla	1376
+11308	Hai	1862
+11309	Alex	1743
+11310	Frances	1030
+11311	Yu	1555
+11312	Amelia	1653
+11313	Pauline	1732
+11314	Gavin	1251
+11315	Scott	1574
+11316	Ying	1538
+11317	Richard	1066
+11318	Denise	1144
+11319	Guy	1575
+11320	Danny	1518
+11321	Stephen	1664
+11322	Melanie	1770
+11323	Julia	1155
+11324	Michael	1849
+11325	Stacey	1306
+11326	Stephen	1094
+11327	Joshua	1841
+11328	Ross	1842
+11329	Michelle	1691
+11330	Ivan	1386
+11331	Alison	1731
+11332	Timothy	1645
+11333	Karen	1515
+11334	Timothy	1733
+11335	Tsz	1457
+11336	Mark	1388
+11337	Eileen	1243
+11338	Emma	1231
+11339	Arthur	1036
+11340	Jeffrey	1846
+11341	Rebecca	1511
+11342	Suk	1429
+11343	Neil	1414
+11344	Marie	1270
+11345	Dominic	1692
+11346	Deborah	1832
+11347	Donald	1054
+11348	Craig	1262
+11349	Tak	1261
+11350	Brendan	1070
+11351	Marissa	1780
+11352	Jennifer	1623
+11353	Daniel	1241
+11354	Luke	1711
+11355	Thi	1729
+11356	Colin	1814
+11357	Ashley	1735
+11358	Catherine	1257
+11359	Ruth	1181
+11360	Kathy	1478
+11361	Cindy	1743
+11362	Bridget	1416
+11363	Nadia	1113
+11364	Andrew	1001
+11365	Tin	1648
+11366	Paul	1294
+11367	Stephen	1151
+11368	Karina	1185
+11369	Mark	1631
+11370	Carl	1412
+11371	Luke	1436
+11372	Xiao	1657
+11373	Raymond	1874
+11374	Michael	1739
+11375	Robin	1513
+11376	Johnny	1194
+11377	Esther	1386
+11378	Oliver	1799
+11379	Jane	1007
+11380	Janice	1214
+11381	James	1170
+11382	Catherine	1156
+11383	Hugh	1405
+11384	Ashley	1558
+11385	Karen	1183
+11386	Bronwyn	1761
+11387	Michelle	1483
+11388	Louisa	1086
+11389	Dean	1473
+11390	Dan	1323
+11391	David	1491
+11392	Allan	1757
+11393	Young	1301
+11394	Deborah	1558
+11395	Christopher	1420
+11396	Wai	1742
+11397	Ashley	1860
+11398	Chun	1574
+11399	Karl	1273
+11400	Amelia	1636
+11401	Lina	1130
+11402	Brooke	1397
+11403	Prudence	1810
+11404	Stephanie	1097
+11405	Robyn	1462
+11406	Alexandra	1672
+11407	Marc	1068
+11408	Kwok	1337
+11409	David	1693
+11410	Shane	1235
+11411	Janice	1464
+11412	Louis	1796
+11413	William	1677
+11414	Lesley	1082
+11415	Jason	1159
+11416	Jennifer	1826
+11417	Gloria	1580
+11418	Amanda	1301
+11419	Kenneth	1504
+11420	Nancy	1293
+11421	Lachlan	1088
+11422	Sasha	1569
+11423	Elaine	1221
+11424	Jason	1000
+11425	Lok	1404
+11426	Gillian	1830
+11427	Mathew	1283
+11428	Susanna	1445
+11429	Bridget	1545
+11430	Matthew	1354
+11431	Sarah	1418
+11432	Ricky	1250
+11433	Jessica	1505
+11434	Virginia	1089
+11435	Lisa	1053
+11436	Scott	1716
+11437	Jennifer	1220
+11438	Evelyn	1477
+11439	Greg	1125
+11440	Roy	1071
+11441	Guy	1743
+11442	Georgia	1431
+11443	Miriam	1251
+11444	Shirley	1140
+11445	Tristan	1326
+11446	Brooke	1193
+11447	Tak	1852
+11448	Trent	1389
+11449	Clare	1102
+11450	Andrea	1587
+11451	Naomi	1593
+11452	Anastasia	1216
+11453	George	1196
+11454	Jamie	1827
+11455	Andrew	1865
+11456	Simone	1458
+11457	Emma	1338
+11458	Rodney	1418
+11459	Victoria	1817
+11460	Susan	1287
+11461	Elise	1495
+11462	Skye	1213
+11463	Leon	1371
+11464	Shane	1858
+11465	Kathryn	1255
+11466	Benjamin	1381
+11467	Mark	1865
+11468	Jason	1396
+11469	Kimberley	1356
+11470	Cameron	1127
+11471	Maggie	1301
+11472	Andrew	1738
+11473	Robert	1179
+11474	Susan	1041
+11475	Joe	1572
+11476	Trevor	1096
+11477	Xiao	1058
+11478	Anna	1177
+11479	Chi	1818
+11480	Cindy	1539
+11481	Joyce	1274
+11482	Chee	1721
+11483	Katrina	1089
+11484	Jodie	1719
+11485	Barry	1128
+11486	Kirsty	1356
+11487	Anna	1800
+11488	Karen	1129
+11489	Bryan	1756
+11490	Samuel	1403
+11491	Natalie	1759
+11492	Amy	1575
+11493	Steven	1636
+11494	Wai	1109
+11495	Lesley	1474
+11496	Barry	1273
+11497	Garth	1700
+11498	Erica	1481
+11499	Ricky	1847
+\.
+
+
+--
+-- Data for Name: pizzas; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY pizzas (id, name, part_of, kilojoules) FROM stdin;
+1	Tandoori Chicken	1	6617
+2	Surf and Turf	1	6594
+3	Steakhouse	1	6901
+4	Four Cheese	1	7708
+5	BBQ Chicken	1	6385
+6	The Works	1	7276
+7	BBQ Feast	1	7567
+8	Italian Chicken	1	6507
+9	Garlic Prawn	1	5997
+10	Super Supreme	2	6654
+11	BBQ Meatlovers	2	6772
+12	Hawaiian	2	5865
+13	Hot'n'Spicy Beef	2	5412
+14	Hot'n'Spicy Pepperoni	2	5858
+15	Capricciosa	2	6000
+16	Bacon Cheese Burger	2	6496
+17	Chicken Deluxe	2	5916
+18	Veggie	2	6170
+19	Spinach and Fetta	2	6218
+20	Pepperoni	3	6208
+21	Italiano	3	5899
+22	BBQ Beef	3	6588
+23	Ham & Cheese	3	5542
+24	Cheese	3	6538
+25	Margherita	3	5707
+26	Chicken Mia	4	4300
+27	Pepperoni Mia	4	4533
+28	Beef Mia	4	4373
+\.
+
+
+--
+-- Data for Name: ranges; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY ranges (id, name, description, base_price) FROM stdin;
+1	Signature	11-inch base, topped with premium ingredients	1495
+2	Legends	11-inch base, with your all-time favourite combinations	1195
+3	Classics	11-inch base, with classic toppings, and great value	995
+4	Mia	9-inch base, with cheddar/mozzarella and tasty toppings	800
+\.
+
+
+--
+-- Data for Name: soldin; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY soldin (pizza, store, price) FROM stdin;
+1	100	1515
+2	100	1515
+3	100	1515
+4	100	1515
+5	100	1515
+6	100	1515
+7	100	1515
+9	100	1515
+10	100	1215
+12	100	1215
+13	100	1215
+14	100	1215
+15	100	1215
+16	100	1215
+17	100	1215
+18	100	1215
+19	100	1215
+20	100	1015
+22	100	1015
+24	100	1015
+25	100	1015
+1	101	1515
+2	101	1515
+3	101	1515
+4	101	1515
+5	101	1515
+6	101	1515
+7	101	1515
+8	101	1515
+9	101	1515
+10	101	1215
+11	101	1215
+12	101	1215
+14	101	1215
+15	101	1215
+16	101	1215
+17	101	1215
+18	101	1215
+19	101	1215
+20	101	1015
+22	101	1015
+23	101	1015
+24	101	1015
+25	101	1015
+1	102	1515
+2	102	1515
+3	102	1515
+4	102	1515
+5	102	1515
+6	102	1515
+7	102	1515
+8	102	1515
+9	102	1515
+10	102	1215
+12	102	1215
+13	102	1215
+14	102	1215
+15	102	1215
+16	102	1215
+17	102	1215
+18	102	1215
+19	102	1215
+20	102	1015
+21	102	1015
+22	102	1015
+23	102	1015
+24	102	1015
+25	102	1015
+1	103	1515
+2	103	1515
+3	103	1515
+4	103	1515
+5	103	1515
+6	103	1515
+7	103	1515
+8	103	1515
+9	103	1515
+10	103	1215
+11	103	1215
+12	103	1215
+13	103	1215
+14	103	1215
+15	103	1215
+16	103	1215
+17	103	1215
+19	103	1215
+20	103	1015
+22	103	1015
+23	103	1015
+24	103	1015
+25	103	1015
+1	104	1495
+2	104	1495
+3	104	1495
+4	104	1495
+5	104	1495
+6	104	1495
+7	104	1495
+8	104	1495
+9	104	1495
+10	104	1195
+12	104	1195
+13	104	1195
+14	104	1195
+15	104	1195
+16	104	1195
+17	104	1195
+18	104	1195
+19	104	1195
+20	104	995
+21	104	995
+22	104	995
+23	104	995
+25	104	995
+1	105	1515
+3	105	1515
+4	105	1515
+5	105	1515
+6	105	1515
+7	105	1515
+8	105	1515
+9	105	1515
+10	105	1215
+11	105	1215
+12	105	1215
+13	105	1215
+14	105	1215
+15	105	1215
+16	105	1215
+17	105	1215
+18	105	1215
+20	105	1015
+21	105	1015
+22	105	1015
+23	105	1015
+24	105	1015
+25	105	1015
+1	106	1515
+2	106	1515
+3	106	1515
+4	106	1515
+5	106	1515
+6	106	1515
+7	106	1515
+8	106	1515
+9	106	1515
+10	106	1215
+11	106	1215
+12	106	1215
+13	106	1215
+14	106	1215
+15	106	1215
+16	106	1215
+17	106	1215
+18	106	1215
+19	106	1215
+20	106	1015
+21	106	1015
+22	106	1015
+23	106	1015
+24	106	1015
+25	106	1015
+1	107	1495
+2	107	1495
+4	107	1495
+5	107	1495
+6	107	1495
+7	107	1495
+8	107	1495
+9	107	1495
+10	107	1195
+11	107	1195
+12	107	1195
+13	107	1195
+14	107	1195
+15	107	1195
+16	107	1195
+17	107	1195
+18	107	1195
+19	107	1195
+20	107	995
+21	107	995
+22	107	995
+23	107	995
+24	107	995
+25	107	995
+1	108	1515
+2	108	1515
+3	108	1515
+4	108	1515
+5	108	1515
+6	108	1515
+7	108	1515
+8	108	1515
+9	108	1515
+10	108	1215
+12	108	1215
+13	108	1215
+15	108	1215
+17	108	1215
+18	108	1215
+19	108	1215
+20	108	1015
+21	108	1015
+22	108	1015
+23	108	1015
+24	108	1015
+25	108	1015
+2	109	1515
+3	109	1515
+4	109	1515
+5	109	1515
+6	109	1515
+8	109	1515
+9	109	1515
+10	109	1215
+11	109	1215
+12	109	1215
+13	109	1215
+14	109	1215
+15	109	1215
+16	109	1215
+17	109	1215
+18	109	1215
+19	109	1215
+20	109	1015
+21	109	1015
+22	109	1015
+24	109	1015
+25	109	1015
+1	110	1515
+2	110	1515
+3	110	1515
+4	110	1515
+5	110	1515
+6	110	1515
+7	110	1515
+8	110	1515
+9	110	1515
+10	110	1215
+11	110	1215
+12	110	1215
+13	110	1215
+14	110	1215
+15	110	1215
+17	110	1215
+18	110	1215
+19	110	1215
+20	110	1015
+21	110	1015
+22	110	1015
+23	110	1015
+24	110	1015
+25	110	1015
+1	111	1515
+2	111	1515
+3	111	1515
+4	111	1515
+5	111	1515
+6	111	1515
+7	111	1515
+8	111	1515
+9	111	1515
+10	111	1215
+11	111	1215
+12	111	1215
+13	111	1215
+14	111	1215
+15	111	1215
+16	111	1215
+18	111	1215
+19	111	1215
+20	111	1015
+21	111	1015
+22	111	1015
+25	111	1015
+1	112	1515
+2	112	1515
+3	112	1515
+4	112	1515
+5	112	1515
+6	112	1515
+7	112	1515
+8	112	1515
+9	112	1515
+10	112	1215
+11	112	1215
+12	112	1215
+13	112	1215
+14	112	1215
+15	112	1215
+16	112	1215
+17	112	1215
+18	112	1215
+19	112	1215
+20	112	1015
+21	112	1015
+22	112	1015
+23	112	1015
+25	112	1015
+1	113	1515
+2	113	1515
+3	113	1515
+4	113	1515
+5	113	1515
+6	113	1515
+7	113	1515
+8	113	1515
+9	113	1515
+10	113	1215
+11	113	1215
+12	113	1215
+13	113	1215
+14	113	1215
+15	113	1215
+17	113	1215
+18	113	1215
+19	113	1215
+20	113	1015
+21	113	1015
+23	113	1015
+24	113	1015
+25	113	1015
+1	114	1515
+2	114	1515
+3	114	1515
+4	114	1515
+5	114	1515
+6	114	1515
+8	114	1515
+9	114	1515
+10	114	1215
+11	114	1215
+12	114	1215
+13	114	1215
+14	114	1215
+15	114	1215
+16	114	1215
+17	114	1215
+18	114	1215
+19	114	1215
+20	114	1015
+21	114	1015
+22	114	1015
+23	114	1015
+24	114	1015
+25	114	1015
+2	115	1515
+3	115	1515
+4	115	1515
+5	115	1515
+6	115	1515
+7	115	1515
+8	115	1515
+9	115	1515
+10	115	1215
+11	115	1215
+12	115	1215
+13	115	1215
+14	115	1215
+15	115	1215
+16	115	1215
+17	115	1215
+19	115	1215
+20	115	1015
+21	115	1015
+22	115	1015
+23	115	1015
+24	115	1015
+25	115	1015
+1	116	1515
+3	116	1515
+4	116	1515
+5	116	1515
+6	116	1515
+7	116	1515
+8	116	1515
+9	116	1515
+10	116	1215
+11	116	1215
+12	116	1215
+13	116	1215
+14	116	1215
+15	116	1215
+16	116	1215
+17	116	1215
+18	116	1215
+19	116	1215
+20	116	1015
+21	116	1015
+23	116	1015
+24	116	1015
+25	116	1015
+1	117	1515
+2	117	1515
+3	117	1515
+4	117	1515
+5	117	1515
+6	117	1515
+7	117	1515
+8	117	1515
+9	117	1515
+10	117	1215
+11	117	1215
+12	117	1215
+13	117	1215
+14	117	1215
+15	117	1215
+16	117	1215
+17	117	1215
+18	117	1215
+19	117	1215
+20	117	1015
+21	117	1015
+22	117	1015
+23	117	1015
+24	117	1015
+25	117	1015
+1	118	1515
+2	118	1515
+3	118	1515
+4	118	1515
+5	118	1515
+7	118	1515
+8	118	1515
+9	118	1515
+10	118	1215
+11	118	1215
+12	118	1215
+15	118	1215
+16	118	1215
+17	118	1215
+18	118	1215
+19	118	1215
+20	118	1015
+22	118	1015
+23	118	1015
+24	118	1015
+25	118	1015
+2	119	1515
+3	119	1515
+4	119	1515
+5	119	1515
+6	119	1515
+7	119	1515
+8	119	1515
+9	119	1515
+10	119	1215
+12	119	1215
+13	119	1215
+14	119	1215
+15	119	1215
+16	119	1215
+17	119	1215
+18	119	1215
+19	119	1215
+20	119	1015
+21	119	1015
+22	119	1015
+23	119	1015
+25	119	1015
+1	120	1515
+3	120	1515
+4	120	1515
+5	120	1515
+6	120	1515
+7	120	1515
+8	120	1515
+9	120	1515
+10	120	1215
+11	120	1215
+12	120	1215
+13	120	1215
+14	120	1215
+15	120	1215
+16	120	1215
+17	120	1215
+18	120	1215
+19	120	1215
+20	120	1015
+21	120	1015
+22	120	1015
+23	120	1015
+25	120	1015
+1	121	1545
+2	121	1545
+5	121	1545
+7	121	1545
+8	121	1545
+9	121	1545
+10	121	1245
+11	121	1245
+13	121	1245
+14	121	1245
+16	121	1245
+17	121	1245
+18	121	1245
+19	121	1245
+25	121	1045
+1	122	1495
+2	122	1495
+3	122	1495
+4	122	1495
+5	122	1495
+6	122	1495
+7	122	1495
+8	122	1495
+9	122	1495
+10	122	1195
+11	122	1195
+12	122	1195
+13	122	1195
+14	122	1195
+15	122	1195
+16	122	1195
+17	122	1195
+18	122	1195
+19	122	1195
+20	122	995
+21	122	995
+22	122	995
+23	122	995
+24	122	995
+25	122	995
+10	123	1215
+11	123	1215
+12	123	1215
+13	123	1215
+14	123	1215
+16	123	1215
+17	123	1215
+18	123	1215
+19	123	1215
+21	123	1015
+22	123	1015
+23	123	1015
+24	123	1015
+25	123	1015
+1	124	1515
+2	124	1515
+3	124	1515
+4	124	1515
+5	124	1515
+6	124	1515
+7	124	1515
+8	124	1515
+9	124	1515
+10	124	1215
+11	124	1215
+12	124	1215
+13	124	1215
+14	124	1215
+15	124	1215
+16	124	1215
+17	124	1215
+18	124	1215
+19	124	1215
+20	124	1015
+21	124	1015
+22	124	1015
+24	124	1015
+25	124	1015
+2	125	1515
+3	125	1515
+4	125	1515
+6	125	1515
+7	125	1515
+8	125	1515
+9	125	1515
+11	125	1215
+12	125	1215
+13	125	1215
+14	125	1215
+15	125	1215
+16	125	1215
+18	125	1215
+20	125	1015
+21	125	1015
+22	125	1015
+23	125	1015
+25	125	1015
+11	126	1215
+12	126	1215
+14	126	1215
+15	126	1215
+16	126	1215
+17	126	1215
+18	126	1215
+19	126	1215
+20	126	1015
+21	126	1015
+22	126	1015
+23	126	1015
+24	126	1015
+25	126	1015
+10	127	1215
+11	127	1215
+12	127	1215
+13	127	1215
+14	127	1215
+15	127	1215
+16	127	1215
+17	127	1215
+18	127	1215
+19	127	1215
+20	127	1015
+21	127	1015
+22	127	1015
+24	127	1015
+25	127	1015
+1	128	1515
+2	128	1515
+3	128	1515
+4	128	1515
+5	128	1515
+6	128	1515
+7	128	1515
+8	128	1515
+9	128	1515
+10	128	1215
+11	128	1215
+13	128	1215
+14	128	1215
+15	128	1215
+16	128	1215
+17	128	1215
+18	128	1215
+19	128	1215
+20	128	1015
+21	128	1015
+22	128	1015
+23	128	1015
+24	128	1015
+25	128	1015
+1	129	1495
+2	129	1495
+3	129	1495
+4	129	1495
+6	129	1495
+7	129	1495
+8	129	1495
+9	129	1495
+10	129	1195
+11	129	1195
+12	129	1195
+13	129	1195
+15	129	1195
+16	129	1195
+17	129	1195
+18	129	1195
+19	129	1195
+20	129	995
+21	129	995
+22	129	995
+23	129	995
+24	129	995
+25	129	995
+1	130	1515
+2	130	1515
+3	130	1515
+4	130	1515
+5	130	1515
+6	130	1515
+8	130	1515
+10	130	1215
+11	130	1215
+12	130	1215
+13	130	1215
+14	130	1215
+15	130	1215
+16	130	1215
+17	130	1215
+18	130	1215
+19	130	1215
+20	130	1015
+21	130	1015
+22	130	1015
+23	130	1015
+24	130	1015
+25	130	1015
+1	131	1515
+2	131	1515
+3	131	1515
+4	131	1515
+5	131	1515
+6	131	1515
+7	131	1515
+8	131	1515
+9	131	1515
+10	131	1215
+11	131	1215
+12	131	1215
+13	131	1215
+14	131	1215
+15	131	1215
+16	131	1215
+17	131	1215
+18	131	1215
+20	131	1015
+21	131	1015
+22	131	1015
+23	131	1015
+24	131	1015
+25	131	1015
+1	132	1515
+2	132	1515
+3	132	1515
+4	132	1515
+5	132	1515
+6	132	1515
+7	132	1515
+8	132	1515
+9	132	1515
+10	132	1215
+11	132	1215
+12	132	1215
+13	132	1215
+14	132	1215
+16	132	1215
+17	132	1215
+18	132	1215
+19	132	1215
+20	132	1015
+21	132	1015
+22	132	1015
+23	132	1015
+24	132	1015
+25	132	1015
+10	133	1215
+11	133	1215
+12	133	1215
+13	133	1215
+14	133	1215
+15	133	1215
+16	133	1215
+17	133	1215
+18	133	1215
+19	133	1215
+20	133	1015
+21	133	1015
+22	133	1015
+23	133	1015
+25	133	1015
+1	134	1545
+2	134	1545
+3	134	1545
+4	134	1545
+5	134	1545
+6	134	1545
+7	134	1545
+8	134	1545
+9	134	1545
+10	134	1245
+11	134	1245
+12	134	1245
+13	134	1245
+14	134	1245
+15	134	1245
+16	134	1245
+17	134	1245
+18	134	1245
+19	134	1245
+25	134	1045
+1	135	1515
+2	135	1515
+4	135	1515
+5	135	1515
+6	135	1515
+7	135	1515
+8	135	1515
+9	135	1515
+10	135	1215
+11	135	1215
+12	135	1215
+13	135	1215
+14	135	1215
+15	135	1215
+16	135	1215
+17	135	1215
+18	135	1215
+19	135	1215
+20	135	1015
+21	135	1015
+22	135	1015
+23	135	1015
+24	135	1015
+25	135	1015
+1	136	1515
+2	136	1515
+3	136	1515
+4	136	1515
+5	136	1515
+6	136	1515
+7	136	1515
+8	136	1515
+9	136	1515
+10	136	1215
+11	136	1215
+12	136	1215
+13	136	1215
+14	136	1215
+15	136	1215
+16	136	1215
+17	136	1215
+18	136	1215
+19	136	1215
+20	136	1015
+21	136	1015
+22	136	1015
+23	136	1015
+24	136	1015
+25	136	1015
+1	137	1495
+2	137	1495
+3	137	1495
+4	137	1495
+5	137	1495
+6	137	1495
+9	137	1495
+10	137	1195
+11	137	1195
+12	137	1195
+13	137	1195
+14	137	1195
+15	137	1195
+16	137	1195
+17	137	1195
+18	137	1195
+19	137	1195
+20	137	995
+21	137	995
+22	137	995
+23	137	995
+24	137	995
+25	137	995
+1	138	1515
+3	138	1515
+4	138	1515
+5	138	1515
+6	138	1515
+7	138	1515
+8	138	1515
+9	138	1515
+10	138	1215
+11	138	1215
+12	138	1215
+13	138	1215
+14	138	1215
+15	138	1215
+17	138	1215
+18	138	1215
+19	138	1215
+20	138	1015
+21	138	1015
+22	138	1015
+23	138	1015
+24	138	1015
+25	138	1015
+1	139	1515
+2	139	1515
+3	139	1515
+4	139	1515
+5	139	1515
+6	139	1515
+7	139	1515
+8	139	1515
+11	139	1215
+12	139	1215
+13	139	1215
+14	139	1215
+15	139	1215
+16	139	1215
+17	139	1215
+18	139	1215
+19	139	1215
+20	139	1015
+21	139	1015
+22	139	1015
+23	139	1015
+24	139	1015
+25	139	1015
+1	140	1515
+2	140	1515
+3	140	1515
+4	140	1515
+5	140	1515
+7	140	1515
+8	140	1515
+9	140	1515
+10	140	1215
+11	140	1215
+12	140	1215
+13	140	1215
+14	140	1215
+15	140	1215
+16	140	1215
+17	140	1215
+18	140	1215
+19	140	1215
+20	140	1015
+21	140	1015
+22	140	1015
+24	140	1015
+25	140	1015
+1	141	1515
+2	141	1515
+3	141	1515
+4	141	1515
+5	141	1515
+6	141	1515
+7	141	1515
+8	141	1515
+9	141	1515
+11	141	1215
+12	141	1215
+13	141	1215
+14	141	1215
+15	141	1215
+16	141	1215
+17	141	1215
+18	141	1215
+19	141	1215
+20	141	1015
+21	141	1015
+22	141	1015
+23	141	1015
+24	141	1015
+25	141	1015
+1	142	1515
+2	142	1515
+3	142	1515
+4	142	1515
+5	142	1515
+7	142	1515
+8	142	1515
+9	142	1515
+10	142	1215
+11	142	1215
+12	142	1215
+13	142	1215
+14	142	1215
+15	142	1215
+16	142	1215
+17	142	1215
+18	142	1215
+19	142	1215
+20	142	1015
+22	142	1015
+23	142	1015
+24	142	1015
+25	142	1015
+1	143	1515
+2	143	1515
+3	143	1515
+4	143	1515
+5	143	1515
+6	143	1515
+7	143	1515
+8	143	1515
+9	143	1515
+11	143	1215
+12	143	1215
+13	143	1215
+14	143	1215
+15	143	1215
+16	143	1215
+17	143	1215
+18	143	1215
+19	143	1215
+20	143	1015
+22	143	1015
+23	143	1015
+24	143	1015
+25	143	1015
+1	144	1515
+2	144	1515
+4	144	1515
+5	144	1515
+7	144	1515
+8	144	1515
+9	144	1515
+10	144	1215
+11	144	1215
+12	144	1215
+13	144	1215
+14	144	1215
+15	144	1215
+16	144	1215
+17	144	1215
+18	144	1215
+19	144	1215
+21	144	1015
+22	144	1015
+23	144	1015
+24	144	1015
+25	144	1015
+1	145	1515
+2	145	1515
+3	145	1515
+4	145	1515
+6	145	1515
+7	145	1515
+8	145	1515
+9	145	1515
+10	145	1215
+11	145	1215
+12	145	1215
+13	145	1215
+14	145	1215
+15	145	1215
+16	145	1215
+17	145	1215
+18	145	1215
+19	145	1215
+20	145	1015
+21	145	1015
+22	145	1015
+23	145	1015
+24	145	1015
+25	145	1015
+1	146	1515
+2	146	1515
+3	146	1515
+4	146	1515
+5	146	1515
+6	146	1515
+7	146	1515
+8	146	1515
+9	146	1515
+10	146	1215
+11	146	1215
+13	146	1215
+14	146	1215
+15	146	1215
+16	146	1215
+17	146	1215
+18	146	1215
+19	146	1215
+20	146	1015
+21	146	1015
+22	146	1015
+23	146	1015
+24	146	1015
+25	146	1015
+1	147	1515
+2	147	1515
+3	147	1515
+4	147	1515
+5	147	1515
+6	147	1515
+7	147	1515
+8	147	1515
+9	147	1515
+10	147	1215
+11	147	1215
+12	147	1215
+13	147	1215
+14	147	1215
+16	147	1215
+17	147	1215
+18	147	1215
+19	147	1215
+20	147	1015
+21	147	1015
+22	147	1015
+23	147	1015
+24	147	1015
+25	147	1015
+1	148	1515
+2	148	1515
+3	148	1515
+4	148	1515
+5	148	1515
+6	148	1515
+7	148	1515
+8	148	1515
+9	148	1515
+10	148	1215
+11	148	1215
+12	148	1215
+13	148	1215
+14	148	1215
+15	148	1215
+16	148	1215
+17	148	1215
+19	148	1215
+20	148	1015
+21	148	1015
+22	148	1015
+23	148	1015
+24	148	1015
+25	148	1015
+1	149	1515
+2	149	1515
+3	149	1515
+4	149	1515
+5	149	1515
+6	149	1515
+7	149	1515
+8	149	1515
+9	149	1515
+10	149	1215
+11	149	1215
+12	149	1215
+13	149	1215
+14	149	1215
+15	149	1215
+16	149	1215
+17	149	1215
+18	149	1215
+19	149	1215
+20	149	1015
+21	149	1015
+22	149	1015
+23	149	1015
+24	149	1015
+25	149	1015
+1	150	1515
+2	150	1515
+3	150	1515
+4	150	1515
+5	150	1515
+7	150	1515
+9	150	1515
+10	150	1215
+11	150	1215
+13	150	1215
+14	150	1215
+15	150	1215
+16	150	1215
+17	150	1215
+18	150	1215
+19	150	1215
+20	150	1015
+21	150	1015
+22	150	1015
+23	150	1015
+25	150	1015
+1	151	1515
+2	151	1515
+3	151	1515
+4	151	1515
+5	151	1515
+6	151	1515
+7	151	1515
+8	151	1515
+9	151	1515
+10	151	1215
+11	151	1215
+12	151	1215
+13	151	1215
+14	151	1215
+15	151	1215
+16	151	1215
+17	151	1215
+18	151	1215
+19	151	1215
+20	151	1015
+21	151	1015
+22	151	1015
+23	151	1015
+24	151	1015
+25	151	1015
+1	152	1515
+2	152	1515
+3	152	1515
+4	152	1515
+5	152	1515
+6	152	1515
+7	152	1515
+8	152	1515
+9	152	1515
+10	152	1215
+11	152	1215
+12	152	1215
+13	152	1215
+14	152	1215
+15	152	1215
+16	152	1215
+17	152	1215
+19	152	1215
+20	152	1015
+21	152	1015
+22	152	1015
+23	152	1015
+24	152	1015
+25	152	1015
+1	153	1545
+3	153	1545
+5	153	1545
+6	153	1545
+8	153	1545
+9	153	1545
+10	153	1245
+11	153	1245
+12	153	1245
+13	153	1245
+14	153	1245
+15	153	1245
+16	153	1245
+17	153	1245
+18	153	1245
+19	153	1245
+25	153	1045
+10	154	1215
+12	154	1215
+13	154	1215
+14	154	1215
+16	154	1215
+17	154	1215
+18	154	1215
+19	154	1215
+20	154	1015
+21	154	1015
+22	154	1015
+23	154	1015
+25	154	1015
+1	155	1515
+2	155	1515
+5	155	1515
+6	155	1515
+7	155	1515
+8	155	1515
+9	155	1515
+10	155	1215
+11	155	1215
+13	155	1215
+14	155	1215
+15	155	1215
+16	155	1215
+17	155	1215
+18	155	1215
+19	155	1215
+20	155	1015
+21	155	1015
+22	155	1015
+23	155	1015
+24	155	1015
+25	155	1015
+1	156	1495
+2	156	1495
+3	156	1495
+4	156	1495
+5	156	1495
+6	156	1495
+7	156	1495
+8	156	1495
+9	156	1495
+10	156	1195
+11	156	1195
+12	156	1195
+13	156	1195
+14	156	1195
+15	156	1195
+16	156	1195
+17	156	1195
+19	156	1195
+20	156	995
+21	156	995
+22	156	995
+23	156	995
+25	156	995
+1	157	1515
+2	157	1515
+3	157	1515
+4	157	1515
+5	157	1515
+6	157	1515
+7	157	1515
+8	157	1515
+9	157	1515
+10	157	1215
+11	157	1215
+12	157	1215
+13	157	1215
+14	157	1215
+15	157	1215
+16	157	1215
+17	157	1215
+18	157	1215
+19	157	1215
+20	157	1015
+21	157	1015
+23	157	1015
+24	157	1015
+25	157	1015
+1	158	1515
+2	158	1515
+3	158	1515
+4	158	1515
+5	158	1515
+6	158	1515
+7	158	1515
+8	158	1515
+9	158	1515
+10	158	1215
+11	158	1215
+12	158	1215
+13	158	1215
+14	158	1215
+15	158	1215
+16	158	1215
+17	158	1215
+18	158	1215
+19	158	1215
+20	158	1015
+22	158	1015
+23	158	1015
+24	158	1015
+25	158	1015
+1	159	1515
+2	159	1515
+3	159	1515
+5	159	1515
+6	159	1515
+7	159	1515
+8	159	1515
+9	159	1515
+10	159	1215
+11	159	1215
+12	159	1215
+14	159	1215
+15	159	1215
+16	159	1215
+17	159	1215
+18	159	1215
+19	159	1215
+20	159	1015
+21	159	1015
+22	159	1015
+23	159	1015
+25	159	1015
+11	160	1215
+12	160	1215
+13	160	1215
+14	160	1215
+15	160	1215
+16	160	1215
+17	160	1215
+19	160	1215
+21	160	1015
+23	160	1015
+24	160	1015
+25	160	1015
+1	161	1515
+2	161	1515
+3	161	1515
+4	161	1515
+5	161	1515
+6	161	1515
+7	161	1515
+8	161	1515
+9	161	1515
+10	161	1215
+11	161	1215
+12	161	1215
+13	161	1215
+14	161	1215
+15	161	1215
+16	161	1215
+17	161	1215
+18	161	1215
+19	161	1215
+20	161	1015
+21	161	1015
+22	161	1015
+23	161	1015
+24	161	1015
+25	161	1015
+1	162	1515
+3	162	1515
+5	162	1515
+6	162	1515
+7	162	1515
+8	162	1515
+9	162	1515
+10	162	1215
+11	162	1215
+12	162	1215
+13	162	1215
+14	162	1215
+15	162	1215
+16	162	1215
+17	162	1215
+18	162	1215
+19	162	1215
+20	162	1015
+22	162	1015
+23	162	1015
+24	162	1015
+25	162	1015
+1	163	1515
+3	163	1515
+4	163	1515
+5	163	1515
+6	163	1515
+7	163	1515
+8	163	1515
+9	163	1515
+10	163	1215
+11	163	1215
+12	163	1215
+13	163	1215
+14	163	1215
+15	163	1215
+16	163	1215
+17	163	1215
+18	163	1215
+19	163	1215
+20	163	1015
+21	163	1015
+22	163	1015
+23	163	1015
+25	163	1015
+1	164	1515
+3	164	1515
+4	164	1515
+5	164	1515
+6	164	1515
+7	164	1515
+9	164	1515
+10	164	1215
+11	164	1215
+12	164	1215
+13	164	1215
+14	164	1215
+15	164	1215
+16	164	1215
+17	164	1215
+18	164	1215
+19	164	1215
+21	164	1015
+22	164	1015
+23	164	1015
+25	164	1015
+1	165	1515
+2	165	1515
+3	165	1515
+4	165	1515
+5	165	1515
+6	165	1515
+7	165	1515
+8	165	1515
+9	165	1515
+10	165	1215
+11	165	1215
+12	165	1215
+13	165	1215
+14	165	1215
+15	165	1215
+16	165	1215
+17	165	1215
+18	165	1215
+19	165	1215
+20	165	1015
+21	165	1015
+22	165	1015
+23	165	1015
+24	165	1015
+25	165	1015
+1	166	1515
+2	166	1515
+3	166	1515
+4	166	1515
+5	166	1515
+6	166	1515
+7	166	1515
+8	166	1515
+9	166	1515
+10	166	1215
+11	166	1215
+12	166	1215
+13	166	1215
+16	166	1215
+17	166	1215
+18	166	1215
+20	166	1015
+21	166	1015
+22	166	1015
+23	166	1015
+24	166	1015
+25	166	1015
+1	167	1515
+2	167	1515
+3	167	1515
+4	167	1515
+5	167	1515
+6	167	1515
+7	167	1515
+8	167	1515
+9	167	1515
+10	167	1215
+11	167	1215
+12	167	1215
+13	167	1215
+14	167	1215
+15	167	1215
+16	167	1215
+17	167	1215
+19	167	1215
+20	167	1015
+21	167	1015
+22	167	1015
+23	167	1015
+24	167	1015
+25	167	1015
+1	168	1515
+3	168	1515
+4	168	1515
+5	168	1515
+6	168	1515
+7	168	1515
+9	168	1515
+10	168	1215
+11	168	1215
+12	168	1215
+13	168	1215
+16	168	1215
+17	168	1215
+18	168	1215
+19	168	1215
+20	168	1015
+21	168	1015
+22	168	1015
+23	168	1015
+24	168	1015
+25	168	1015
+1	169	1515
+2	169	1515
+3	169	1515
+4	169	1515
+5	169	1515
+6	169	1515
+7	169	1515
+8	169	1515
+9	169	1515
+10	169	1215
+11	169	1215
+12	169	1215
+13	169	1215
+14	169	1215
+15	169	1215
+16	169	1215
+17	169	1215
+18	169	1215
+19	169	1215
+20	169	1015
+21	169	1015
+22	169	1015
+23	169	1015
+24	169	1015
+25	169	1015
+1	170	1515
+2	170	1515
+3	170	1515
+4	170	1515
+5	170	1515
+6	170	1515
+7	170	1515
+8	170	1515
+9	170	1515
+10	170	1215
+11	170	1215
+12	170	1215
+13	170	1215
+14	170	1215
+15	170	1215
+16	170	1215
+17	170	1215
+18	170	1215
+19	170	1215
+20	170	1015
+22	170	1015
+23	170	1015
+24	170	1015
+25	170	1015
+1	171	1515
+2	171	1515
+4	171	1515
+5	171	1515
+6	171	1515
+7	171	1515
+8	171	1515
+9	171	1515
+10	171	1215
+11	171	1215
+12	171	1215
+14	171	1215
+15	171	1215
+16	171	1215
+17	171	1215
+18	171	1215
+19	171	1215
+20	171	1015
+21	171	1015
+22	171	1015
+23	171	1015
+24	171	1015
+25	171	1015
+1	172	1515
+2	172	1515
+3	172	1515
+4	172	1515
+5	172	1515
+6	172	1515
+7	172	1515
+8	172	1515
+9	172	1515
+11	172	1215
+12	172	1215
+13	172	1215
+14	172	1215
+15	172	1215
+16	172	1215
+17	172	1215
+18	172	1215
+19	172	1215
+20	172	1015
+21	172	1015
+22	172	1015
+23	172	1015
+25	172	1015
+1	173	1515
+2	173	1515
+3	173	1515
+4	173	1515
+5	173	1515
+6	173	1515
+7	173	1515
+8	173	1515
+9	173	1515
+10	173	1215
+11	173	1215
+12	173	1215
+13	173	1215
+14	173	1215
+15	173	1215
+16	173	1215
+17	173	1215
+18	173	1215
+20	173	1015
+21	173	1015
+22	173	1015
+23	173	1015
+24	173	1015
+25	173	1015
+2	174	1515
+3	174	1515
+4	174	1515
+5	174	1515
+6	174	1515
+7	174	1515
+8	174	1515
+9	174	1515
+10	174	1215
+11	174	1215
+12	174	1215
+13	174	1215
+14	174	1215
+15	174	1215
+16	174	1215
+17	174	1215
+18	174	1215
+20	174	1015
+21	174	1015
+22	174	1015
+23	174	1015
+24	174	1015
+25	174	1015
+1	175	1545
+3	175	1545
+4	175	1545
+5	175	1545
+6	175	1545
+7	175	1545
+8	175	1545
+9	175	1545
+10	175	1245
+11	175	1245
+12	175	1245
+13	175	1245
+14	175	1245
+15	175	1245
+16	175	1245
+17	175	1245
+18	175	1245
+19	175	1245
+25	175	1045
+1	176	1515
+2	176	1515
+3	176	1515
+4	176	1515
+5	176	1515
+6	176	1515
+7	176	1515
+8	176	1515
+9	176	1515
+12	176	1215
+13	176	1215
+14	176	1215
+15	176	1215
+17	176	1215
+18	176	1215
+19	176	1215
+20	176	1015
+21	176	1015
+22	176	1015
+23	176	1015
+24	176	1015
+25	176	1015
+1	177	1495
+2	177	1495
+3	177	1495
+4	177	1495
+5	177	1495
+6	177	1495
+8	177	1495
+9	177	1495
+10	177	1195
+11	177	1195
+12	177	1195
+13	177	1195
+14	177	1195
+15	177	1195
+16	177	1195
+17	177	1195
+18	177	1195
+19	177	1195
+20	177	995
+21	177	995
+22	177	995
+23	177	995
+24	177	995
+25	177	995
+1	178	1515
+2	178	1515
+3	178	1515
+4	178	1515
+5	178	1515
+6	178	1515
+7	178	1515
+8	178	1515
+9	178	1515
+10	178	1215
+11	178	1215
+12	178	1215
+13	178	1215
+14	178	1215
+15	178	1215
+16	178	1215
+17	178	1215
+18	178	1215
+19	178	1215
+20	178	1015
+21	178	1015
+22	178	1015
+23	178	1015
+24	178	1015
+25	178	1015
+1	179	1515
+2	179	1515
+3	179	1515
+5	179	1515
+6	179	1515
+7	179	1515
+8	179	1515
+9	179	1515
+10	179	1215
+11	179	1215
+13	179	1215
+14	179	1215
+15	179	1215
+16	179	1215
+17	179	1215
+19	179	1215
+20	179	1015
+21	179	1015
+22	179	1015
+23	179	1015
+24	179	1015
+25	179	1015
+1	180	1515
+2	180	1515
+3	180	1515
+4	180	1515
+5	180	1515
+6	180	1515
+7	180	1515
+8	180	1515
+9	180	1515
+11	180	1215
+12	180	1215
+13	180	1215
+14	180	1215
+16	180	1215
+17	180	1215
+19	180	1215
+20	180	1015
+21	180	1015
+22	180	1015
+23	180	1015
+24	180	1015
+25	180	1015
+1	181	1515
+2	181	1515
+3	181	1515
+4	181	1515
+5	181	1515
+6	181	1515
+7	181	1515
+8	181	1515
+9	181	1515
+10	181	1215
+11	181	1215
+12	181	1215
+13	181	1215
+14	181	1215
+15	181	1215
+16	181	1215
+17	181	1215
+18	181	1215
+19	181	1215
+20	181	1015
+21	181	1015
+22	181	1015
+23	181	1015
+24	181	1015
+25	181	1015
+2	182	1515
+3	182	1515
+4	182	1515
+5	182	1515
+6	182	1515
+7	182	1515
+8	182	1515
+9	182	1515
+10	182	1215
+11	182	1215
+12	182	1215
+13	182	1215
+14	182	1215
+15	182	1215
+16	182	1215
+17	182	1215
+18	182	1215
+19	182	1215
+20	182	1015
+21	182	1015
+22	182	1015
+23	182	1015
+24	182	1015
+25	182	1015
+1	183	1515
+2	183	1515
+3	183	1515
+4	183	1515
+5	183	1515
+6	183	1515
+7	183	1515
+8	183	1515
+10	183	1215
+11	183	1215
+12	183	1215
+13	183	1215
+14	183	1215
+15	183	1215
+16	183	1215
+17	183	1215
+19	183	1215
+21	183	1015
+22	183	1015
+23	183	1015
+24	183	1015
+25	183	1015
+1	184	1515
+2	184	1515
+3	184	1515
+4	184	1515
+5	184	1515
+6	184	1515
+7	184	1515
+8	184	1515
+9	184	1515
+10	184	1215
+11	184	1215
+12	184	1215
+13	184	1215
+14	184	1215
+15	184	1215
+16	184	1215
+17	184	1215
+18	184	1215
+19	184	1215
+20	184	1015
+21	184	1015
+22	184	1015
+23	184	1015
+24	184	1015
+25	184	1015
+1	185	1495
+2	185	1495
+3	185	1495
+4	185	1495
+5	185	1495
+6	185	1495
+7	185	1495
+8	185	1495
+9	185	1495
+10	185	1195
+11	185	1195
+12	185	1195
+14	185	1195
+15	185	1195
+16	185	1195
+17	185	1195
+18	185	1195
+19	185	1195
+20	185	995
+21	185	995
+22	185	995
+23	185	995
+24	185	995
+25	185	995
+1	186	1515
+2	186	1515
+3	186	1515
+4	186	1515
+5	186	1515
+6	186	1515
+7	186	1515
+8	186	1515
+9	186	1515
+10	186	1215
+11	186	1215
+12	186	1215
+13	186	1215
+14	186	1215
+16	186	1215
+17	186	1215
+18	186	1215
+19	186	1215
+20	186	1015
+22	186	1015
+23	186	1015
+24	186	1015
+25	186	1015
+1	187	1495
+2	187	1495
+3	187	1495
+4	187	1495
+5	187	1495
+6	187	1495
+7	187	1495
+8	187	1495
+10	187	1195
+11	187	1195
+12	187	1195
+13	187	1195
+14	187	1195
+15	187	1195
+16	187	1195
+18	187	1195
+19	187	1195
+20	187	995
+21	187	995
+22	187	995
+23	187	995
+24	187	995
+25	187	995
+1	188	1495
+2	188	1495
+3	188	1495
+4	188	1495
+5	188	1495
+7	188	1495
+8	188	1495
+9	188	1495
+10	188	1195
+11	188	1195
+12	188	1195
+13	188	1195
+15	188	1195
+16	188	1195
+18	188	1195
+19	188	1195
+20	188	995
+21	188	995
+22	188	995
+23	188	995
+24	188	995
+25	188	995
+16	108	1215
+16	110	1215
+16	113	1215
+16	138	1215
+16	176	1215
+26	175	850
+27	175	850
+28	175	850
+26	173	820
+27	173	820
+28	173	820
+26	110	820
+27	110	820
+28	110	820
+26	162	820
+27	162	820
+28	162	820
+26	144	820
+28	144	820
+26	141	820
+27	141	820
+28	141	820
+26	168	820
+27	168	820
+28	168	820
+26	172	820
+27	172	820
+28	172	820
+26	158	820
+27	158	820
+28	158	820
+26	140	820
+27	140	820
+28	140	820
+26	134	850
+28	134	850
+26	137	800
+27	137	800
+28	137	800
+27	132	820
+28	132	820
+26	153	850
+27	153	850
+28	153	850
+26	121	850
+28	121	850
+26	102	820
+27	102	820
+28	102	820
+26	122	800
+27	122	800
+28	122	800
+26	156	800
+27	156	800
+26	161	820
+28	161	820
+26	183	820
+27	183	820
+28	183	820
+26	117	820
+28	117	820
+27	176	820
+28	176	820
+26	125	820
+27	125	820
+28	125	820
+26	182	820
+28	182	820
+26	100	820
+27	100	820
+28	100	820
+27	157	820
+28	157	820
+26	101	820
+27	101	820
+28	101	820
+26	180	820
+28	180	820
+27	170	820
+28	170	820
+26	159	820
+27	159	820
+26	105	820
+27	105	820
+28	105	820
+26	118	820
+27	118	820
+28	118	820
+26	148	820
+27	148	820
+28	148	820
+26	136	820
+27	136	820
+28	136	820
+26	119	820
+27	119	820
+28	119	820
+26	130	820
+27	130	820
+28	130	820
+26	115	820
+27	115	820
+28	115	820
+26	142	820
+27	142	820
+28	142	820
+26	143	820
+27	143	820
+28	143	820
+26	151	820
+27	151	820
+26	135	820
+27	135	820
+28	135	820
+27	120	820
+28	120	820
+26	106	820
+28	106	820
+26	145	820
+27	145	820
+28	145	820
+26	124	820
+27	124	820
+28	124	820
+26	108	820
+27	108	820
+28	108	820
+26	163	820
+27	163	820
+26	139	820
+27	139	820
+28	139	820
+26	169	820
+27	169	820
+28	169	820
+26	152	820
+27	152	820
+28	152	820
+26	150	820
+27	150	820
+28	150	820
+26	116	820
+27	116	820
+28	116	820
+26	174	820
+28	174	820
+26	128	820
+27	128	820
+28	128	820
+26	147	820
+27	147	820
+28	147	820
+26	129	800
+27	129	800
+28	129	800
+26	187	800
+27	187	800
+28	187	800
+26	107	800
+27	107	800
+28	107	800
+26	177	800
+27	177	800
+28	177	800
+26	179	820
+27	179	820
+28	179	820
+26	131	820
+27	131	820
+28	131	820
+26	114	820
+27	114	820
+28	114	820
+26	138	820
+27	138	820
+28	138	820
+26	149	820
+28	149	820
+26	155	820
+27	155	820
+28	155	820
+26	113	820
+27	113	820
+28	113	820
+27	112	820
+28	112	820
+26	127	820
+27	127	820
+28	127	820
+26	160	820
+27	160	820
+28	160	820
+26	164	820
+27	164	820
+28	164	820
+26	185	800
+27	185	800
+28	185	800
+26	123	820
+27	123	820
+28	123	820
+27	133	820
+28	133	820
+26	126	820
+27	126	820
+28	126	820
+26	154	820
+27	154	820
+28	154	820
+\.
+
+
+--
+-- Data for Name: stores; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY stores (id, located_in) FROM stdin;
+100	1256
+101	1286
+102	1171
+103	1414
+104	1585
+105	1313
+106	1401
+107	1625
+108	1428
+109	1303
+110	1040
+111	1391
+112	1767
+113	1739
+114	1710
+115	1351
+116	1478
+117	1237
+118	1315
+119	1337
+120	1398
+121	1168
+122	1183
+123	1835
+124	1422
+125	1246
+126	1843
+127	1777
+128	1496
+129	1512
+130	1346
+131	1692
+132	1163
+133	1837
+134	1133
+135	1387
+136	1332
+137	1147
+138	1726
+139	1447
+140	1112
+141	1072
+142	1365
+143	1367
+144	1056
+145	1417
+146	1030
+147	1506
+148	1330
+149	1728
+150	1476
+151	1368
+152	1465
+153	1166
+154	1847
+155	1735
+156	1202
+157	1268
+158	1101
+159	1308
+160	1780
+161	1219
+162	1050
+163	1436
+164	1788
+165	1432
+166	1716
+167	1319
+168	1088
+169	1456
+170	1298
+171	1816
+172	1091
+173	1013
+174	1494
+175	1005
+176	1241
+177	1653
+178	1136
+179	1667
+180	1293
+181	1376
+182	1249
+183	1230
+184	1123
+185	1807
+186	1685
+187	1528
+188	1577
+\.
+
+
+--
+-- Data for Name: suburbs; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY suburbs (id, name, postcode, surcharge) FROM stdin;
+1000	Dawes Point	2000	50
+1001	Haymarket	2000	50
+1002	Millers Point	2000	50
+1003	Sydney	2000	50
+1004	The Rocks	2000	50
+1005	Sydney City	2001	50
+1006	World Square	2002	20
+1007	Eastern Suburbs	2004	20
+1008	University Of Sydney	2006	20
+1009	Ultimo	2007	20
+1010	Chippendale	2008	20
+1011	Darlington	2008	20
+1012	Pyrmont	2009	20
+1013	Surry Hills	2010	20
+1014	Darlinghurst	2010	20
+1015	Woolloomooloo	2011	20
+1016	Elizabeth Bay	2011	20
+1017	Potts Point	2011	20
+1018	Rushcutters Bay	2011	20
+1019	Strawberry Hills	2012	20
+1020	Alexandria	2015	20
+1021	Beaconsfield	2015	20
+1022	Eveleigh	2015	20
+1023	Redfern	2016	20
+1024	Waterloo	2017	20
+1025	Zetland	2017	20
+1026	Eastlakes	2018	20
+1027	Rosebery	2018	20
+1028	Banksmeadow	2019	20
+1029	Botany	2019	20
+1030	Mascot	2020	20
+1031	Moore Park	2021	20
+1032	Paddington	2021	20
+1033	Centennial Park	2021	20
+1034	Queens Park	2022	20
+1035	Bondi Junction	2022	20
+1036	Bellevue Hill	2023	50
+1037	Bronte	2024	20
+1038	Waverley	2024	20
+1039	Woollahra	2025	50
+1040	Bondi	2026	20
+1041	Darling Point	2027	50
+1042	Edgecliff	2027	50
+1043	Point Piper	2027	50
+1044	Double Bay	2028	50
+1045	Rose Bay	2029	50
+1046	Vaucluse	2030	50
+1047	Watsons Bay	2030	50
+1048	Dover Heights	2030	50
+1049	Clovelly	2031	20
+1050	Randwick	2031	20
+1051	Daceyville	2032	20
+1052	Kingsford	2032	20
+1053	Kensington	2033	20
+1054	Coogee	2034	20
+1055	South Coogee	2034	20
+1056	Maroubra	2035	20
+1057	Pagewood	2035	20
+1058	Chifley	2036	20
+1059	Eastgardens	2036	20
+1060	Hillsdale	2036	20
+1061	La Perouse	2036	20
+1062	Little Bay	2036	20
+1063	Malabar	2036	20
+1064	Matraville	2036	20
+1065	Phillip Bay	2036	20
+1066	Port Botany	2036	20
+1067	Forest Lodge	2037	20
+1068	Glebe	2037	20
+1069	Annandale	2038	20
+1070	Rozelle	2039	20
+1071	Leichhardt	2040	20
+1072	Lilyfield	2040	20
+1073	Birchgrove	2040	20
+1074	Balmain	2041	20
+1075	Balmain East	2041	20
+1076	Enmore	2042	20
+1077	Newtown	2042	20
+1078	Erskineville	2043	20
+1079	St Peters	2044	20
+1080	Sydenham	2044	20
+1081	Tempe	2044	20
+1082	Haberfield	2045	20
+1083	Abbotsford	2046	20
+1084	Canada Bay	2046	20
+1085	Chiswick	2046	20
+1086	Five Dock	2046	20
+1087	Rodd Point	2046	20
+1088	Russell Lea	2046	20
+1089	Wareemba	2046	20
+1090	Drummoyne	2047	20
+1091	Stanmore	2048	20
+1092	Lewisham	2049	20
+1093	Petersham	2049	20
+1094	Camperdown	2050	20
+1095	University Of New South Wales	2052	20
+1096	Chatswood	2057	20
+1097	North Sydney	2059	20
+1098	Waverton	2060	20
+1099	Lavender Bay	2060	20
+1100	Mcmahons Point	2060	20
+1101	North Sydney	2060	20
+1102	Kirribilli	2061	20
+1103	Milsons Point	2061	20
+1104	Cammeray	2062	20
+1105	Northbridge	2063	20
+1106	Artarmon	2064	20
+1107	Crows Nest	2065	20
+1108	Greenwich	2065	20
+1109	Naremburn	2065	20
+1110	St Leonards	2065	20
+1111	Wollstonecraft	2065	20
+1112	Lane Cove	2066	20
+1113	Lane Cove North	2066	20
+1114	Lane Cove West	2066	20
+1115	Linley Point	2066	20
+1116	Longueville	2066	20
+1117	Northwood	2066	20
+1118	Riverview	2066	20
+1119	Chatswood	2067	20
+1120	Chatswood West	2067	20
+1121	Middle Cove	2068	20
+1122	North Willoughby	2068	20
+1123	Willoughby	2068	20
+1124	Willoughby East	2068	20
+1125	Castlecrag	2068	20
+1126	Roseville	2069	20
+1127	Roseville Chase	2069	20
+1128	Castle Cove	2069	20
+1129	East Lindfield	2070	50
+1130	Lindfield	2070	50
+1131	Killara	2071	50
+1132	East Killara	2071	50
+1133	Gordon	2072	50
+1134	Pymble	2073	50
+1135	West Pymble	2073	50
+1136	Turramurra	2074	20
+1137	South Turramurra	2074	20
+1138	North Turramurra	2074	20
+1139	Warrawee	2074	20
+1140	St Ives	2075	50
+1141	St Ives Chase	2075	50
+1142	Normanhurst	2076	20
+1143	Wahroonga	2076	20
+1144	North Wahroonga	2076	20
+1145	Waitara	2077	0
+1146	Asquith	2077	0
+1147	Hornsby	2077	0
+1148	Hornsby Heights	2077	0
+1149	Mount Colah	2079	0
+1150	Mount Kuring-gai	2080	0
+1151	Berowra	2081	0
+1152	Cowan	2081	0
+1153	Berowra Heights	2082	0
+1154	Berowra Waters	2082	0
+1155	Brooklyn	2083	0
+1156	Dangar Island	2083	0
+1157	Milsons Passage	2083	0
+1158	Mooney Mooney	2083	0
+1159	Duffys Forest	2084	0
+1160	Terrey Hills	2084	0
+1161	Belrose	2085	0
+1162	Davidson	2085	0
+1163	Frenchs Forest	2086	20
+1164	Forestville	2087	20
+1165	Killarney Heights	2087	20
+1166	Mosman	2088	50
+1167	Neutral Bay	2089	50
+1168	Cremorne	2090	50
+1169	Cremorne Point	2090	50
+1170	Seaforth	2092	20
+1171	Balgowlah	2093	20
+1172	North Balgowlah	2093	20
+1173	Balgowlah Heights	2093	20
+1174	Clontarf	2093	20
+1175	Manly Vale	2093	20
+1176	Fairlight	2094	20
+1177	Manly	2095	20
+1178	Queenscliff	2096	20
+1179	Curl Curl	2096	20
+1180	Harbord	2096	20
+1181	Collaroy	2097	0
+1182	Cromer	2099	0
+1183	Dee Why	2099	0
+1184	Narraweena	2099	0
+1185	North Curl Curl	2099	0
+1186	Beacon Hill	2100	20
+1187	Brookvale	2100	20
+1188	North Manly	2100	20
+1189	Oxford Falls	2100	20
+1190	Allambie Heights	2100	20
+1191	Narrabeen	2101	0
+1192	North Narrabeen	2101	0
+1193	Elanora Heights	2101	0
+1194	Ingleside	2101	0
+1195	Warriewood	2102	0
+1196	Mona Vale	2103	0
+1197	Bayview	2104	0
+1198	Church Point	2105	0
+1199	Elvina Bay	2105	0
+1200	Lovett Bay	2105	0
+1201	Scotland Island	2105	0
+1202	Newport	2106	0
+1203	Newport Beach	2106	0
+1204	Whale Beach	2107	0
+1205	Avalon	2107	0
+1206	Avalon Beach	2107	0
+1207	Bilgola	2107	0
+1208	Careel Bay	2107	0
+1209	Palm Beach	2108	0
+1210	The Basin	2108	0
+1211	Macquarie University	2109	20
+1212	Woolwich	2110	20
+1213	Hunters Hill	2110	20
+1214	Gladesville	2111	20
+1215	Henley	2111	20
+1216	Huntleys Cove	2111	20
+1217	Huntleys Point	2111	20
+1218	Tennyson Point	2111	20
+1219	Putney	2112	20
+1220	Ryde	2112	20
+1221	Denistone East	2112	20
+1222	Denistone East	2113	20
+1223	East Ryde	2113	20
+1224	Macquarie Park	2113	20
+1225	North Ryde	2113	20
+1226	Denistone	2114	20
+1227	Denistone West	2114	20
+1228	Meadowbank	2114	20
+1229	Melrose Park	2114	20
+1230	West Ryde	2114	20
+1231	Ermington	2115	20
+1232	Rydalmere	2116	20
+1233	Telopea	2117	20
+1234	Dundas	2117	20
+1235	Dundas Valley	2117	20
+1236	Oatlands	2117	20
+1237	Carlingford	2118	20
+1238	Cheltenham	2119	20
+1239	Beecroft	2119	20
+1240	Pennant Hills	2120	20
+1241	Thornleigh	2120	20
+1242	Westleigh	2120	20
+1243	Epping	2121	20
+1244	North Epping	2121	20
+1245	Marsfield	2122	20
+1246	Eastwood	2122	20
+1247	Parramatta	2123	20
+1248	Parramatta	2124	20
+1249	West Pennant Hills	2125	20
+1250	Cherrybrook	2126	20
+1251	Homebush Bay	2127	20
+1252	Newington	2127	20
+1253	Silverwater	2128	20
+1254	Sydney Markets	2129	20
+1255	Summer Hill	2130	20
+1256	Ashfield	2131	20
+1257	Croydon	2132	20
+1258	Croydon Park	2133	20
+1259	Burwood	2134	20
+1260	Strathfield	2135	20
+1261	Strathfield South	2136	20
+1262	Burwood Heights	2136	20
+1263	Enfield	2136	20
+1264	Breakfast Point	2137	20
+1265	Cabarita	2137	20
+1266	Concord	2137	20
+1267	Mortlake	2137	20
+1268	North Strathfield	2137	20
+1269	Concord West	2138	20
+1270	Liberty Grove	2138	20
+1271	Rhodes	2138	20
+1272	Concord Repatriation Hospital	2139	20
+1273	Homebush	2140	20
+1274	Homebush West	2140	20
+1275	Lidcombe	2141	20
+1276	Berala	2141	20
+1277	Rosehill	2142	20
+1278	Granville	2142	20
+1279	South Granville	2142	20
+1280	Camellia	2142	20
+1281	Clyde	2142	20
+1282	Holroyd	2142	20
+1283	Birrong	2143	20
+1284	Potts Hill	2143	20
+1285	Regents Park	2143	20
+1286	Auburn	2144	20
+1287	Constitution Hill	2145	20
+1288	Girraween	2145	20
+1289	Greystanes	2145	20
+1290	Mays Hill	2145	20
+1291	Pemulwuy	2145	20
+1292	Pendle Hill	2145	20
+1293	Wentworthville	2145	20
+1294	South Wentworthville	2145	20
+1295	Westmead	2145	20
+1296	Toongabbie	2146	20
+1297	Old Toongabbie	2146	20
+1298	Seven Hills	2147	20
+1299	Seven Hills West	2147	20
+1300	Kings Langley	2147	20
+1301	Lalor Park	2147	20
+1302	Arndell Park	2148	20
+1303	Blacktown	2148	20
+1304	Kings Park	2148	20
+1305	Marayong	2148	20
+1306	Prospect	2148	20
+1307	Harris Park	2150	20
+1308	Parramatta	2150	20
+1309	North Parramatta	2151	20
+1310	North Rocks	2151	20
+1311	Northmead	2152	20
+1312	Winston Hills	2153	20
+1313	Baulkham Hills	2153	20
+1314	Bella Vista	2153	20
+1315	Castle Hill	2154	20
+1316	Beaumont Hills	2155	20
+1317	Kellyville	2155	20
+1318	Kellyville Ridge	2155	20
+1319	Rouse Hill	2155	20
+1320	Kenthurst	2156	20
+1321	Annangrove	2156	20
+1322	Glenhaven	2156	20
+1323	Glenorie	2157	0
+1324	Dural	2158	20
+1325	Middle Dural	2158	20
+1326	Arcadia	2159	0
+1327	Berrilee	2159	0
+1328	Fiddletown	2159	0
+1329	Galston	2159	0
+1330	Merrylands	2160	20
+1331	Merrylands West	2160	20
+1332	Guildford	2161	20
+1333	Guildford West	2161	20
+1334	Old Guildford	2161	20
+1335	Yennora	2161	20
+1336	Sefton	2162	20
+1337	Chester Hill	2162	20
+1338	Carramar	2163	20
+1339	Lansdowne	2163	20
+1340	Villawood	2163	20
+1341	Smithfield	2164	20
+1342	Wetherill Park	2164	20
+1343	Woodpark	2164	20
+1344	Fairfield	2165	20
+1345	Fairfield East	2165	20
+1346	Fairfield Heights	2165	20
+1347	Fairfield West	2165	20
+1348	Cabramatta	2166	20
+1349	Cabramatta West	2166	20
+1350	Canley Heights	2166	20
+1351	Canley Vale	2166	20
+1352	Lansvale	2166	20
+1353	Glenfield	2167	20
+1354	Ashcroft	2168	20
+1355	Busby	2168	20
+1356	Cartwright	2168	20
+1357	Green Valley	2168	20
+1358	Heckenberg	2168	20
+1359	Hinchinbrook	2168	20
+1360	Miller	2168	20
+1361	Sadleir	2168	20
+1362	Casula	2170	20
+1363	Chipping Norton	2170	20
+1364	Hammondville	2170	20
+1365	Liverpool	2170	20
+1366	Liverpool South	2170	20
+1367	Lurnea	2170	20
+1368	Moorebank	2170	20
+1369	Mount Pritchard	2170	20
+1370	Prestons	2170	20
+1371	Warwick Farm	2170	20
+1372	Cecil Hills	2171	20
+1373	Horningsea Park	2171	20
+1374	Hoxton Park	2171	20
+1375	Middleton Grange	2171	20
+1376	West Hoxton	2171	20
+1377	Pleasure Point	2172	20
+1378	Sandy Point	2172	20
+1379	Voyager	2172	20
+1380	Holsworthy	2173	20
+1381	Wattle Grove	2173	20
+1382	Edmondson Park	2174	20
+1383	Horsley Park	2175	20
+1384	Abbotsbury	2176	20
+1385	Bossley Park	2176	20
+1386	Edensor Park	2176	20
+1387	Greenfield Park	2176	20
+1388	Prairiewood	2176	20
+1389	St Johns Park	2176	20
+1390	Wakeley	2176	20
+1391	Bonnyrigg	2177	20
+1392	Bonnyrigg Heights	2177	20
+1393	Cecil Park	2178	20
+1394	Kemps Creek	2178	20
+1395	Mount Vernon	2178	20
+1396	Austral	2179	20
+1397	Leppington	2179	20
+1398	Chullora	2190	20
+1399	Greenacre	2190	20
+1400	Mount Lewis	2190	20
+1401	Belfield	2191	20
+1402	Belmore	2192	20
+1403	Ashbury	2193	20
+1404	Canterbury	2193	20
+1405	Hurlstone Park	2193	20
+1406	Campsie	2194	20
+1407	Lakemba	2195	20
+1408	Wiley Park	2195	20
+1409	Punchbowl	2196	20
+1410	Roselands	2196	20
+1411	Bass Hill	2197	20
+1412	Georges Hall	2198	20
+1413	Yagoona	2199	20
+1414	Bankstown	2200	20
+1415	Condell Park	2200	20
+1416	Dulwich Hill	2203	20
+1417	Marrickville	2204	20
+1418	Arncliffe	2205	20
+1419	Turrella	2205	20
+1420	Wolli Creek	2205	20
+1421	Clemton Park	2206	20
+1422	Earlwood	2206	20
+1423	Bardwell Park	2207	20
+1424	Bardwell Valley	2207	20
+1425	Bexley	2207	20
+1426	Bexley North	2207	20
+1427	Kingsgrove	2208	20
+1428	Beverly Hills	2209	20
+1429	Narwee	2209	20
+1430	Peakhurst	2210	20
+1431	Peakhurst Heights	2210	20
+1432	Riverwood	2210	20
+1433	Lugarno	2210	20
+1434	Padstow	2211	20
+1435	Padstow Heights	2211	20
+1436	Revesby	2212	20
+1437	Revesby Heights	2212	20
+1438	East Hills	2213	20
+1439	Panania	2213	20
+1440	Picnic Point	2213	20
+1441	Milperra	2214	20
+1442	Banksia	2216	20
+1443	Brighton-le-sands	2216	20
+1444	Kyeemagh	2216	20
+1445	Rockdale	2216	20
+1446	Beverley Park	2217	20
+1447	Kogarah	2217	20
+1448	Kogarah Bay	2217	20
+1449	Monterey	2217	20
+1450	Ramsgate	2217	20
+1451	Ramsgate Beach	2217	20
+1452	Allawah	2218	20
+1453	Carlton	2218	20
+1454	Dolls Point	2219	20
+1455	Sandringham	2219	20
+1456	Sans Souci	2219	20
+1457	Hurstville	2220	20
+1458	Hurstville Grove	2220	20
+1459	Kyle Bay	2221	20
+1460	South Hurstville	2221	20
+1461	Blakehurst	2221	20
+1462	Carss Park	2221	20
+1463	Connells Point	2221	20
+1464	Penshurst	2222	20
+1465	Mortdale	2223	20
+1466	Oatley	2223	20
+1467	Kangaroo Point	2224	20
+1468	Sylvania	2224	20
+1469	Sylvania Waters	2224	20
+1470	Oyster Bay	2225	20
+1471	Bonnet Bay	2226	20
+1472	Como	2226	20
+1473	Jannali	2226	20
+1474	Gymea	2227	20
+1475	Gymea Bay	2227	20
+1476	Miranda	2228	20
+1477	Yowie Bay	2228	20
+1478	Caringbah	2229	20
+1479	Dolans Bay	2229	20
+1480	Lilli Pilli	2229	20
+1481	Port Hacking	2229	20
+1482	Taren Point	2229	20
+1483	Bundeena	2230	20
+1484	Burraneer	2230	20
+1485	Cronulla	2230	20
+1486	Maianbar	2230	20
+1487	Woolooware	2230	20
+1488	Kurnell	2231	20
+1489	Audley	2232	20
+1490	Grays Point	2232	20
+1491	Kareela	2232	20
+1492	Kirrawee	2232	20
+1493	Loftus	2232	20
+1494	Sutherland	2232	20
+1495	Woronora	2232	20
+1496	Engadine	2233	20
+1497	Heathcote	2233	20
+1498	Waterfall	2233	20
+1499	Woronora Heights	2233	20
+1500	Yarrawarrah	2233	20
+1501	Alfords Point	2234	20
+1502	Bangor	2234	20
+1503	Barden Ridge	2234	20
+1504	Illawong	2234	20
+1505	Lucas Heights	2234	20
+1506	Menai	2234	20
+1507	Calga	2250	0
+1508	Gosford	2250	0
+1509	East Gosford	2250	0
+1510	North Gosford	2250	0
+1511	West Gosford	2250	0
+1512	Erina	2250	0
+1513	Kariong	2250	0
+1514	Kulnura	2250	0
+1515	Lisarow	2250	0
+1516	Lower Mangrove	2250	0
+1517	Mangrove Mountain	2250	0
+1518	Matcham	2250	0
+1519	Mount White	2250	0
+1520	Narara	2250	0
+1521	Niagara Park	2250	0
+1522	Peats Ridge	2250	0
+1523	Point Clare	2250	0
+1524	Somersby	2250	0
+1525	Springfield	2250	0
+1526	Tascott	2250	0
+1527	Wendoree Park	2250	0
+1528	Wyoming	2250	0
+1529	Avoca Beach	2251	0
+1530	Bensville	2251	0
+1531	Copacabana	2251	0
+1532	Davistown	2251	0
+1533	Green Point	2251	0
+1534	Kincumber	2251	0
+1535	Macmasters Beach	2251	0
+1536	Saratoga	2251	0
+1537	Yattalunga	2251	0
+1538	Blackwall	2256	0
+1539	Koolewong	2256	0
+1540	Patonga	2256	0
+1541	Pearl Beach	2256	0
+1542	Phegans Bay	2256	0
+1543	Woy Woy	2256	0
+1544	Booker Bay	2257	0
+1545	Daleys Point	2257	0
+1546	Empire Bay	2257	0
+1547	Ettalong Beach	2257	0
+1548	Hardys Bay	2257	0
+1549	Killcare	2257	0
+1550	Pretty Beach	2257	0
+1551	St Huberts Island	2257	0
+1552	Umina Beach	2257	0
+1553	Kangy Angy	2258	0
+1554	Ourimbah	2258	0
+1555	Chain Valley Bay	2259	0
+1556	Dooralong	2259	0
+1557	Durren Durren	2259	0
+1558	Gwandalan	2259	0
+1559	Halloran	2259	0
+1560	Hamlyn Terrace	2259	0
+1561	Jilliby	2259	0
+1562	Kanwal	2259	0
+1563	Lake Munmorah	2259	0
+1564	Lemon Tree	2259	0
+1565	Mannering Park	2259	0
+1566	Mardi	2259	0
+1567	Ravensdale	2259	0
+1568	Summerland Point	2259	0
+1569	Tacoma	2259	0
+1570	Tuggerah	2259	0
+1571	Tuggerawong	2259	0
+1572	Wallarah	2259	0
+1573	Warnervale	2259	0
+1574	Watanobbi	2259	0
+1575	Woongarrah	2259	0
+1576	Wyee	2259	0
+1577	Wyong	2259	0
+1578	Wyongah	2259	0
+1579	Yarramalong	2259	0
+1580	Erina Heights	2260	0
+1581	Forresters Beach	2260	0
+1582	North Avoca	2260	0
+1583	Terrigal	2260	0
+1584	Wamberal	2260	0
+1585	Bateau Bay	2261	0
+1586	Berkeley Vale	2261	0
+1587	Blue Bay	2261	0
+1588	Chittaway Bay	2261	0
+1589	Chittaway Point	2261	0
+1590	Glenning Valley	2261	0
+1591	Killarney Vale	2261	0
+1592	Long Jetty	2261	0
+1593	Magenta	2261	0
+1594	Shelly Beach	2261	0
+1595	The Entrance	2261	0
+1596	The Entrance North	2261	0
+1597	Toowoon Bay	2261	0
+1598	Tumbi Umbi	2261	0
+1599	Blue Haven	2262	0
+1600	Budgewoi	2262	0
+1601	Buff Point	2262	0
+1602	Doyalson	2262	0
+1603	Halekulani	2262	0
+1604	San Remo	2262	0
+1605	Canton Beach	2263	0
+1606	Charmhaven	2263	0
+1607	Gorokan	2263	0
+1608	Lake Haven	2263	0
+1609	Norah Head	2263	0
+1610	Noraville	2263	0
+1611	Toukley	2263	0
+1612	Bonnells Bay	2264	0
+1613	Brightwaters	2264	0
+1614	Dora Creek	2264	0
+1615	Eraring	2264	0
+1616	Mandalong	2264	0
+1617	Mirrabooka	2264	0
+1618	Morisset	2264	0
+1619	Silverwater	2264	0
+1620	Sunshine	2264	0
+1621	Yarrawonga Park	2264	0
+1622	Cooranbong	2265	0
+1623	Martinsville	2265	0
+1624	Wangi Wangi	2267	0
+1625	Belmont	2280	0
+1626	Belmont North	2280	0
+1627	Belmont South	2280	0
+1628	Croudace Bay	2280	0
+1629	Floraville	2280	0
+1630	Jewells	2280	0
+1631	Marks Point	2280	0
+1632	Valentine	2280	0
+1633	Blacksmiths	2281	0
+1634	Cams Wharf	2281	0
+1635	Catherine Hill Bay	2281	0
+1636	Caves Beach	2281	0
+1637	Middle Camp	2281	0
+1638	Nords Wharf	2281	0
+1639	Swansea	2281	0
+1640	Arcadia Vale	2283	0
+1641	Awaba	2283	0
+1642	Balmoral	2283	0
+1643	Blackalls Park	2283	0
+1644	Bolton Point	2283	0
+1645	Buttaba	2283	0
+1646	Carey Bay	2283	0
+1647	Coal Point	2283	0
+1648	Fassifern	2283	0
+1649	Fennell Bay	2283	0
+1650	Fishing Point	2283	0
+1651	Kilaben Bay	2283	0
+1652	Rathmines	2283	0
+1653	Toronto	2283	0
+1654	Coniston	2500	20
+1655	Gwynneville	2500	20
+1656	Mangerton	2500	20
+1657	Keiraville	2500	20
+1658	Mount Keira	2500	20
+1659	Mount Saint Thomas	2500	20
+1660	North Wollongong	2500	20
+1661	Spring Hill	2500	20
+1662	West Wollongong	2500	20
+1663	Wollongong	2500	20
+1664	Cringila	2502	20
+1665	Lake Heights	2502	20
+1666	Primbee	2502	20
+1667	Warrawong	2502	20
+1668	Kemblawarra	2505	20
+1669	Port Kembla	2505	20
+1670	Berkeley	2506	20
+1671	Coalcliff	2508	20
+1672	Darkes Forest	2508	20
+1673	Helensburgh	2508	20
+1674	Otford	2508	20
+1675	Stanwell Park	2508	20
+1676	Stanwell Tops	2508	20
+1677	Austinmer	2515	20
+1678	Clifton	2515	20
+1679	Coledale	2515	20
+1680	Scarborough	2515	20
+1681	Thirroul	2515	20
+1682	Wombarra	2515	20
+1683	Bulli	2516	20
+1684	Russell Vale	2517	20
+1685	Woonona	2517	20
+1686	Bellambi	2518	20
+1687	Corrimal	2518	20
+1688	East Corrimal	2518	20
+1689	Tarrawanna	2518	20
+1690	Towradgi	2518	20
+1691	Balgownie	2519	20
+1692	Fairy Meadow	2519	20
+1693	Mount Ousley	2519	20
+1694	Mount Pleasant	2519	20
+1695	Badgerys Creek	2555	20
+1696	Bringelly	2556	20
+1697	Catherine Field	2557	20
+1698	Rossmore	2557	20
+1699	Eagle Vale	2558	20
+1700	Eschol Park	2558	20
+1701	Kearns	2558	20
+1702	Blairmount	2559	20
+1703	Claymore	2559	20
+1704	Airds	2560	20
+1705	Ambarvale	2560	20
+1706	Appin	2560	20
+1707	Bradbury	2560	20
+1708	Blair Athol	2560	20
+1709	Bradbury	2560	20
+1710	Campbelltown	2560	20
+1711	Englorie Park	2560	20
+1712	Gilead	2560	20
+1713	Glen Alpine	2560	20
+1714	Kentlyn	2560	20
+1715	Leumeah	2560	20
+1716	Rosemeadow	2560	20
+1717	Ruse	2560	20
+1718	St Helens Park	2560	20
+1719	Wedderburn	2560	20
+1720	Woodbine	2560	20
+1721	Menangle Park	2563	20
+1722	Long Point	2564	20
+1723	Macquarie Fields	2564	20
+1724	Macquarie Links	2565	20
+1725	Denham Court	2565	20
+1726	Ingleburn	2565	20
+1727	Bow Bowing	2566	20
+1728	Minto	2566	20
+1729	Raby	2566	20
+1730	St Andrews	2566	20
+1731	Varroville	2566	20
+1732	Currans Hill	2567	20
+1733	Harrington Park	2567	20
+1734	Mount Annan	2567	20
+1735	Narellan	2567	20
+1736	Narellan Vale	2567	20
+1737	Menangle	2568	20
+1738	Douglas Park	2569	20
+1739	Camden	2570	20
+1740	Camden Park	2570	20
+1741	Cawdor	2570	20
+1742	Cobbitty	2570	20
+1743	Elderslie	2570	20
+1744	Ellis Lane	2570	20
+1745	Grasmere	2570	20
+1746	Mount Hunter	2570	20
+1747	Nattai	2570	20
+1748	Oakdale	2570	20
+1749	Orangeville	2570	20
+1750	The Oaks	2570	20
+1751	Werombi	2570	20
+1752	Balmoral Village	2571	20
+1753	Buxton	2571	20
+1754	Couridjah	2571	20
+1755	Picton	2571	20
+1756	Razorback	2571	20
+1757	Wilton	2571	20
+1758	Lakesland	2572	20
+1759	Thirlmere	2572	20
+1760	Tahmoor	2573	20
+1761	Glenmore Park	2745	20
+1762	Greendale	2745	20
+1763	Luddenham	2745	20
+1764	Mulgoa	2745	20
+1765	Regentville	2745	20
+1766	Wallacia	2745	20
+1767	Cambridge Park	2747	20
+1768	Kingswood	2747	20
+1769	Llandilo	2747	20
+1770	Shanes Park	2747	20
+1771	Werrington	2747	20
+1772	Werrington County	2747	20
+1773	Werrington Downs	2747	20
+1774	Orchard Hills	2748	20
+1775	Castlereagh	2749	20
+1776	Cranebrook	2749	20
+1777	Emu Plains	2750	20
+1778	Leonay	2750	20
+1779	Penrith	2750	20
+1780	Penrith	2751	20
+1781	Silverdale	2752	20
+1782	Warragamba	2752	20
+1783	Bowen Mountain	2753	20
+1784	Grose Vale	2753	20
+1785	Grose Wold	2753	20
+1786	Hobartville	2753	20
+1787	Londonderry	2753	20
+1788	Richmond	2753	20
+1789	Yarramundi	2753	20
+1790	North Richmond	2754	20
+1791	Tennyson	2754	20
+1792	Bligh Park	2756	0
+1793	Cattai	2756	0
+1794	Clarendon	2756	0
+1795	Colo	2756	0
+1796	Cornwallis	2756	0
+1797	Ebenezer	2756	0
+1798	Freemans Reach	2756	0
+1799	Glossodia	2756	0
+1800	Lower Portland	2756	0
+1801	Maroota	2756	0
+1802	Mcgraths Hill	2756	0
+1803	Mulgrave	2756	0
+1804	Pitt Town	2756	0
+1805	Scheyville	2756	0
+1806	Wilberforce	2756	0
+1807	Windsor	2756	0
+1808	Kurmond	2757	20
+1809	Bilpin	2758	20
+1810	Blaxlands Ridge	2758	20
+1811	Kurrajong	2758	20
+1812	St Clair	2759	20
+1813	Erskine Park	2759	20
+1814	Colyton	2760	20
+1815	Oxley Park	2760	20
+1816	St Marys	2760	20
+1817	Dean Park	2761	20
+1818	Glendenning	2761	20
+1819	Hassall Grove	2761	20
+1820	Oakhurst	2761	20
+1821	Plumpton	2761	20
+1822	Schofields	2762	20
+1823	Acacia Gardens	2763	20
+1824	Quakers Hill	2763	20
+1825	Berkshire Park	2765	20
+1826	Box Hill	2765	20
+1827	Maraylya	2765	20
+1828	Marsden Park	2765	20
+1829	Nelson	2765	20
+1830	Oakville	2765	20
+1831	Riverstone	2765	20
+1832	Vineyard	2765	20
+1833	Eastern Creek	2766	20
+1834	Rooty Hill	2766	20
+1835	Doonside	2767	20
+1836	Woodcroft	2767	20
+1837	Glenwood	2768	20
+1838	Parklea	2768	20
+1839	Stanhope Gardens	2768	20
+1840	Bidwill	2770	20
+1841	Blackett	2770	20
+1842	Dharruk	2770	20
+1843	Emerton	2770	20
+1844	Hebersham	2770	20
+1845	Lethbridge Park	2770	20
+1846	Minchinbury	2770	20
+1847	Mount Druitt	2770	20
+1848	Shalvey	2770	20
+1849	Tregear	2770	20
+1850	Whalan	2770	20
+1851	Willmot	2770	20
+1852	Glenbrook	2773	20
+1853	Lapstone	2773	20
+1854	Mount Riverview	2774	20
+1855	Warrimoo	2774	20
+1856	Blaxland	2774	20
+1857	Central Macdonald	2775	0
+1858	Laughtondale	2775	0
+1859	Spencer	2775	0
+1860	St Albans	2775	0
+1861	Wisemans Ferry	2775	0
+1862	Faulconbridge	2776	20
+1863	Hawkesbury Heights	2777	20
+1864	Springwood	2777	20
+1865	Valley Heights	2777	20
+1866	Winmalee	2777	20
+1867	Yellow Rock	2777	20
+1868	Linden	2778	20
+1869	Woodford	2778	20
+1870	Hazelbrook	2779	20
+1871	Katoomba	2780	0
+1872	Leura	2780	0
+1873	Medlow Bath	2780	0
+1874	Wentworth Falls	2782	20
+1875	Lawson	2783	20
+1876	Bullaburra	2784	20
+1877	Blackheath	2785	20
+1878	Megalong	2785	20
+\.
+
+
+--
+-- Data for Name: toppings; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY toppings (id, name, type) FROM stdin;
+1	BBQ sauce	
+2	authentic tomato sauce	
+3	baby spinach	
+4	bacon	
+5	balsamic glaze	
+6	beef	
+7	capsicum	
+8	cheddar	
+9	crumbled feta	
+10	diced tomato	
+11	garlic	
+12	garlic oil	
+13	ham	
+14	hollandaise	
+15	italian sausage	
+16	jalapenos	
+17	kalamata style olives	
+18	mango chutney	
+19	mint yoghurt	
+20	mozzarella	
+21	mushrooms	
+22	onions	
+23	oregano	
+24	parmesan	
+25	parsley	
+26	pepperoni	
+27	pineapple	
+28	prawns	
+29	red capsicum	
+30	red onion	
+31	roasted chicken	
+32	roasted red capsicum	
+33	semi-dried tomatoes	
+34	spanish onions	
+35	steak strips	
+36	tandoori chicken	
+37	tomato	
+\.
+
+
+--
+-- Name: has_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY has
+    ADD CONSTRAINT has_pkey PRIMARY KEY (pizza, topping);
+
+
+--
+-- Name: likes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY likes
+    ADD CONSTRAINT likes_pkey PRIMARY KEY (person, pizza);
+
+
+--
+-- Name: people_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY people
+    ADD CONSTRAINT people_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: pizzas_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY pizzas
+    ADD CONSTRAINT pizzas_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ranges_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY ranges
+    ADD CONSTRAINT ranges_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: soldin_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY soldin
+    ADD CONSTRAINT soldin_pkey PRIMARY KEY (pizza, store);
+
+
+--
+-- Name: stores_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY stores
+    ADD CONSTRAINT stores_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: suburbs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY suburbs
+    ADD CONSTRAINT suburbs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: toppings_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY toppings
+    ADD CONSTRAINT toppings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: has_pizza_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY has
+    ADD CONSTRAINT has_pizza_fkey FOREIGN KEY (pizza) REFERENCES pizzas(id);
+
+
+--
+-- Name: has_topping_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY has
+    ADD CONSTRAINT has_topping_fkey FOREIGN KEY (topping) REFERENCES toppings(id);
+
+
+--
+-- Name: likes_person_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY likes
+    ADD CONSTRAINT likes_person_fkey FOREIGN KEY (person) REFERENCES people(id);
+
+
+--
+-- Name: likes_pizza_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY likes
+    ADD CONSTRAINT likes_pizza_fkey FOREIGN KEY (pizza) REFERENCES pizzas(id);
+
+
+--
+-- Name: people_lives_in_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY people
+    ADD CONSTRAINT people_lives_in_fkey FOREIGN KEY (lives_in) REFERENCES suburbs(id);
+
+
+--
+-- Name: pizzas_part_of_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY pizzas
+    ADD CONSTRAINT pizzas_part_of_fkey FOREIGN KEY (part_of) REFERENCES ranges(id);
+
+
+--
+-- Name: soldin_pizza_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY soldin
+    ADD CONSTRAINT soldin_pizza_fkey FOREIGN KEY (pizza) REFERENCES pizzas(id);
+
+
+--
+-- Name: soldin_store_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY soldin
+    ADD CONSTRAINT soldin_store_fkey FOREIGN KEY (store) REFERENCES stores(id);
+
+
+--
+-- Name: stores_located_in_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY stores
+    ADD CONSTRAINT stores_located_in_fkey FOREIGN KEY (located_in) REFERENCES suburbs(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

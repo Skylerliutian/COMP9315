@@ -1,0 +1,27 @@
+How big is a FieldDesc?
+
+8KB pages
+
+FieldDesc values could be 64 bits = 8 bytes
+
+Offsets
+=======
+
+max offset = 8KB-1
+
+number of bits to represent all offsets = 13  (2^13=8K)
+
+
+Lengths
+=======
+
+number of bits for length = 11  (max length 2^11=2K)
+
+for large variable length attrs = store rid = 32 bits
+
+
+Types
+=====
+
+store oid of pg_type tuple
+

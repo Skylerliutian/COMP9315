@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Sample Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Sample Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Sample Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <b>[Q5]</b> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 5 <span class='tiny'>(9 marks)</span></h3>
+<p>
+Consider the following database schema:
+</p>
+<pre>
+create table R (
+	id     integer primary key,
+	rval   text unique,
+	tid    integer  -- references T(id)
+);
+create table S (
+	id     integer primary key,
+	sval   text,
+	rid    integer references R(id)
+);
+create table T (
+	id     integer primary key,
+	tval   text,
+	sid    integer references S(id)
+);
+alter table R add foreign key (tid) references T(id);
+</pre>
+<p>
+and the following join query on this schema
+</p>
+<pre>
+select * from R, S, T
+where  R.id = S.rid and S.id = T.sid and T.id = R.tid
+       and R.rval = 'abc' and S.sval < 'xyz';
+</pre>
+<p>
+The query optimiser would represent the query as a tree of join operations,
+and try variations on the order of applying the joins. You may assume that
+the query optimiser will push the selections below the appropriate join.
+You should also assume that the left relation in each join is always treated
+as the "outer relation" when evaluating the join, so that <tt>(R join S)</tt>
+has a different execution behaviour from <tt>(S join R)</tt> even though they
+produce the same result.
+</p>
+<ol type='a'>
+<li><p>
+Show at least three different ways of accomplishing the above joins.
+Write your answer in the form <tt>X join (Y join Z)</tt> where the
+join condition is implied and the parentheses force the order in
+which the joins are carried out.
+There is no need to show selection operations; assume that they are
+carried out before any join operations.
+</p></li>
+<li><p>
+Based on the answer given in (a), along with any other assumptions that
+you think are necessary, which join order is likely to lead to the most efficient
+query evaluation? Explain your answer. You should include the costs and benefits
+of the selection operations in your discussion. You can assume that the selection
+condition on <tt>S</tt> returns only half of the tuples in the realtion.
+</p></li>
+<li><p>
+For the join tree you selected in part (b),
+write a series of relational assignment statements.
+Each assignment statement should have the name of a temporary
+relation on the left-hand side, and a <em>single</em> relational
+algebra operation on the right-hand side.
+</p></li>
+</ol>
+<p>
+Show all working.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q5.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 sample_q5 q5.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Sample Exam &gt; Submit Q<nobr>5</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

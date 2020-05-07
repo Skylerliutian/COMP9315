@@ -1,0 +1,100 @@
+for each page in Customer {
+   for each page in Employee {
+      for each tuple c in Customer page {
+         for each tuple e in Employee page
+            { process one (c,e) pair }
+      }
+   }
+}
+
+Customer: 10 pages,   Employee: 4 pages
+
+Pages requested
+C0 then E0 E1 E2 E3
+C1 then E0 E1 E2 E3
+C2 then E0 E1 E2 E3
+C3 then E0 E1 E2 E3
+C4 then E0 E1 E2 E3
+...
+C9 then E0 E1 E2 E3
+
+
+==========
+
+With 2 buffers (no buffer pool)
+
+read each page from Customer into one buffer
+while Customer page held, read each Employee page
+
+#reads = 10 (outer) + 10*4 (inner) = 50 reads
+
+Can we do better than this?
+
+If we don't care about order of results ...
+
+E.g. at end of 1st pass C0 E3
+     at end of 2nd pass C1 E0
+I.e. change request order to
+C0 E0 E1 E2 E3
+C1 E3 E2 E1 E0
+C2 E0 E1 E2 E3
+...
+
+==========
+
+With 20 buffers
+
+read each Customer page once
+read each Employee page once
+
+# reads = 10 + 4 = 14 reads
+
+
+E.g. after 3 passes over Employees
+
+C0 E0 E1 E2 E3 C1 C2 ....
+==========
+
+With n = 3 buffers and MRU strategy
+
+Assume "most recent" = "most recently released"
+
+Operation      Buffer Pool      Notes
+               [0] [1] [2]
+
+initially      _   _   _
+request C0     C0  _   _
+request E0     C0  E0  _
+process C0+E0
+release E0                      MRU: E0
+request E1     C0  E0  E1
+process C0+E1
+release E1                      MRU: E1 -> E0
+request E2     C0  E0  E2
+process C0+E2
+release E2                      MRU: E2 -> E0
+request E3     C0  E0  E3
+process C0+E3
+release E3     
+release C0                      C0 is MRU
+request C1     C1  E0  E3
+request E0                      no read!
+process C1+E0
+release E0                      E0 is MRU
+request E1     C1  E1  E3
+process C1+E1
+release E1                      E1 is MRU
+request E2     C1  E2  E3
+process C1+E2
+release E2                      E2 is MRU
+request E3                      no read!
+process C1+E3
+release E3                      E3 is MRU
+release C1                      MRU: C1 -> E3 -> E0
+request C2     C2  E2  E3       MRU: E3 -> E0
+request E0     C2  E2  E0
+process C2+E0
+release E0                      MRU: E0 -> E3
+etc. etc. etc.
+
+#reads = ???  more than 14, less than 50

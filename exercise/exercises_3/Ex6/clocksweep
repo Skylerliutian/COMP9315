@@ -1,0 +1,65 @@
+PostgreSQL Buffer Pool ClockSweep Replacement Strategy
+
+BufferDesc = (tag, usage_count, refcount, freeNext)
+
+
+           BufferDescriptors                     free   next
+           [1]         [2]         [3]
+
+Init       (??,0,0,2)  (??,0,0,3)  (??,0,0,X)    1      1
+
+Req R0     (R0,1,1,X)  (??,0,0,3)  (??,0,0,X)    2      1
+
+Req S0     (R0,1,1,X)  (S0,1,1,X)  (??,0,0,X)    3      1
+
+Req S0     (R0,1,1,X)  (S0,1,0,X)  (??,0,0,X)    3      1
+
+Req S1     (R0,1,1,X)  (S0,1,0,X)  (S1,1,1,X)    X      1
+
+Rel S1     (R0,1,1,X)  (S0,1,0,X)  (S1,1,0,X)    X      1
+
+Req S2     (R0,1,1,X)  (S2,1,1,X)  (S1,1,0,X)    X      2
+           [1] not considered because it's in use
+
+Rel S2     (R0,1,1,X)  (S2,1,0,X)  (S1,1,0,X)    X      2
+
+Rel R0     (R0,1,0,X)  (S2,1,0,X)  (S1,1,0,X)    X      2
+
+Req R1     (R0,1,0,X)  (R1,1,1,X)  (S1,1,0,X)    X      2 
+           next doesn't move, [2] was available
+
+Req S0     (R0,1,0,X)  (R1,1,1,X)  (S0,1,1,X)    X      3
+
+Rel S0     (R0,1,0,X)  (R1,1,1,X)  (S0,1,0,X)    X      3
+
+Req S1     (R0,1,0,X)  (R1,1,1,X)  (S1,1,1,X)    X      3
+           next doesn't move, [3] was available
+
+Rel S1     (R0,1,0,X)  (R1,1,1,X)  (S1,1,0,X)    X      3 
+
+Req S2     (R0,1,0,X)  (R1,1,1,X)  (S2,1,1,X)    X      3
+           next doesn't move, [3] was available
+
+Rel S2     (R0,1,0,X)  (R1,1,1,X)  (S2,1,0,X)    X      3
+
+Rel R1     (R0,1,0,X)  (R1,1,0,X)  (S2,1,0,X)    X      3
+
+Req R2     (R0,1,0,X)  (R1,1,0,X)  (R2,1,1,X)    X      3
+           next doesn't move, [3] was available
+
+Req S0     (S0,1,1,X)  (R1,1,0,X)  (R2,1,1,X)    X      1
+           [3] not considered because it's in use
+
+Rel S0     (S0,1,0,X)  (R1,1,0,X)  (R2,1,1,X)    X      1
+
+Req S1     (S1,1,1,X)  (R1,1,0,X)  (R2,1,1,X)    X      1    
+           next doesn't move, [1] was available
+
+Rel S1     (S1,1,0,X)  (R1,1,0,X)  (R2,1,1,X)    X      1
+
+Req S2     (S2,1,1,X)  (R1,1,0,X)  (R2,1,1,X)    X      1    
+           next doesn't move, [1] was available
+
+Rel S2     (S2,1,0,X)  (R1,1,0,X)  (R2,1,1,X)    X      1 
+
+Rel R2     (S2,1,0,X)  (R1,1,0,X)  (R2,1,0,X)    X      1

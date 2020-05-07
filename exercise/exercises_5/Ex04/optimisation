@@ -1,0 +1,15 @@
+Optimising binary search in sorted file
+
+Approach #1
+
+- store min,max values for each *bucket* in primary data page
+- avoids need to traverse overflow list if key not in bucket
+- disadvantage: may need to write data + overflow if insert
+  new tuple into overflow page
+
+Approach #2
+
+- store list of (pid,min,max) values in header page
+- would allow us to find relevant bucket with 1 page read
+- only then would we need to read data+overflow pages
+- may need > 1 header page for large files (many buckets)

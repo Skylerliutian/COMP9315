@@ -1,0 +1,12 @@
+Running: ./bnl 20 10 10
+
+Frames:     [00] [01] [02] [03] [04] [05] [06] [07] [08] [09]
+Contents:    S09  S07  S05  S01  S06  S02  S08  S03  R19  S04
+PinCount:      0    0    0    0    0    0    0    0    0    0
+Popularity:    2    2    1    0    1    0    2    0    1    0
+Clock: 1
+
+#requests: 220
+#releases: 220
+#hits    : 0
+#reads   : 220

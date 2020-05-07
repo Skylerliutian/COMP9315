@@ -1,0 +1,28 @@
+C = average number of records per page
+
+Map of page structure
+
+0       32           32+C       X                1023
+|       |            |          |                   |
+Header  Directory    FreeSpace  Records .............
+
+
+Assume that all records are average size ...
+
+(a:int,b:varchar(20),c:char(10),d:int)
+
+a = 4 bytes,  b = 16 bytes (avg),
+c = 10 bytes + 2 bytes padding,  d = 4 bytes
+
+R = average record size = Offsets + Data
+R = 4 + (4+16+(10+2)+4) = 40 bytes
+
+B = 1024, but we lose 32 bytes from header
+
+Freespace = 1024 - 32 = 992
+
+When we have N records in page
+* lose N bytes of Freespace to directory
+* records themselves occupy 40*N bytes
+
+So ... 40*N + N <= 992  =>  N = floor(992/41) = 24

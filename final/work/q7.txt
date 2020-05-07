@@ -1,0 +1,53 @@
+# COMP9315 20T1 Final Exam Q7
+  
+Type your answer(s) to replace the xxx's
+Submit this file as your answer for Q7
+
+T1: R(X) W(X)           R(Y)                W(Y)
+T2:           R(Y)           R(X) W(Y)           W(X)
+T3:                R(X)                R(Y)           W(X) W(Y)
+
+
+a. Conflict serializability
+
+The precedence graph has an edge, from T1 to T2, because of the conflict between T1:R(X) and T2:W(X). 
+It also has an edge, from T1 to T3, because of the conflict between T1:R(X) and T3:W(X). 
+It also has an edge, from T2 to T1, because of the conflict between T2:R(Y) and T1:W(Y).
+It also has an edge, from T2 to T3, because of the conflict between T2:R(Y) and T3:W(Y).
+It also has an edge, from T3 to T1, because of the conflict between T3:R(Y) and T1:W(Y). 
+It also has an edge, from T3 to T2, because of the conflict between T3:R(X) and T2:W(X).
+These edges between T1,T2 and T3 form many cycles(eg. T1->T3, T3->T1), so the schedule is not conflict-serializable.
+
+b.  View serializability
+
+For X, first reader is T1, last writer is T3. 
+       T3 reads the value of X written by T1.
+       T2 reads the value of X written by T1.
+
+For Y, first reader is T2, last writer is T3.
+       T1 reads the initial value of Y.
+       T3 reads the value of Y written by T2.
+
+There are six possible serial schedules
+
+T1T2T3, T1T3T2, T2T1T3, T2T3T1, T3T1T2, T3T2T1
+
+The only schedules that have the properties
+   T3 reads the value of X written by T1.
+   T2 reads the value of X written by T1.
+   T3 reads the value of Y written by T2.
+are those where T1 comes before T3 and T2, T2 comes before T3.
+i.e. T1T2T3
+
+T1T2T3 is not view equivalent because
+   T2 reads the version of Y produced by T1
+whereas in original schedule S
+   T2 reads the initial value of Y
+
+Thus, there is no serial schedule that has all of
+the same read/write properties for shared variables
+as S
+ does
+=> S is not view-equivalent to any serial schedule
+=> S is not view serializable.
+So this schedule is not view serializable.

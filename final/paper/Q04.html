@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Final Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Final Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Final Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <b>[Q4]</b> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 4 <span class='tiny'>(6 marks)</span></h3>
+<p>
+Consider a table <tt>R(a,b,c,d)</tt> indexed by
+ tuple-based superimposed codeword signatures.
+The data and signature files have the following properties:
+</p>
+<center>
+<table cellpadding="8">
+<tr>
+<td>Page Size</td><td>4096 bytes</td>
+</tr>
+<tr>
+<td>Number of records (<i>r<sub>R</sub></i>)</td><td>10000</td>
+</tr>
+<tr>
+<td>Record size (<i>R<sub>R</sub></i>)</td><td>32 bytes</td>
+</tr>
+<tr>
+<td>Signature size (<i>m</i>)</td><td>58 bits</td>
+</tr>
+<tr>
+<td>Bits/attribute (<i>k</i>)</td><td>10 bits</td>
+</tr>
+<tr>
+<td>False match probability (<i>p<sub>F</sub></i>)</td><td>1 in 1000</td>
+</tr>
+</table>
+</center>
+<p>
+You can make the following (slightly unrealistic) assumptions:
+</p>
+<ul>
+<li> there are no headers on either data pages or signature pages <br>
+	each page (except the last) is packed with as many tuples as will fit </li>
+<li> the table has no primary key attribute </li>
+<li> a query like <tt>R(?,b,c,d)</tt> has exactly 4 genuine matches </li>
+<li> this query also has exactly 10 false matches (consistent with <i>p<sub>F</sub></i>) </li>
+<li> each matching tuple is on a different page </li>
+<li> each false match is on a different page </li>
+<li> no false match occurs on the same page as a genuine match </li>
+</ul>
+<p>
+Based on the above, answer the following:
+</p>
+<ol type="a">
+<li><p>
+How many pages are there in the data file?
+<li><p>
+How many pages are there in the signature file?
+</p></li>
+<li><p>
+How many pages are read in answering the query <tt>R(?,b,c,d)</tt>?
+	<br>(include both signature pages and data pages, as needed)
+</p></li>
+<li><p>
+How many pages are read in answering the query <rr>R(?,?,?,?)</tt>?
+	<br>(include both signature pages and data pages, as needed)
+</p></li>
+<li><p>
+What feature of the query signature would allow you to optimise
+	the page reads for <tt>R(?,?,?,?)</tt>?
+<li><p>
+What would be the values of <i>m</i> and <i>k</i> if we decided
+to use page-level signatures, rather than tuple-level signatures?
+</p></li>
+</ol>
+<p>
+Show all working.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q4.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 exam_q4 q4.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Final Exam &gt; Submit Q<nobr>4</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

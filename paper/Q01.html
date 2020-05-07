@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Sample Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Sample Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Sample Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<b>[Q1]</b> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 1 <span class='tiny'>(21 marks)</span></h3>
+<p>
+For this question, you will write code to implement a core
+component of a partial-match retrieval (PMR) multi-attribute
+hashing (MAH) query evaluator: generating a list of buckets
+to examine, based on a query hash.
+</p>
+<p> Reminder:</p>
+<ul>
+<li><p>
+a PMR query is a conjunction of equality tests on a single table;
+values are supplied for some attributes, while other attributes
+are not specified (unknown)
+</p>
+<li><p>
+MAH uses bits from hash values for several attributes to determine
+an overall hash for a tuple or query; which bits of which
+attributes are used in the overall hash is determined by a
+choice vector
+</p>
+</ul>
+<p>
+<b>MAH Example:</b> Consider a table <tt>R(a,b,c)</tt> with choice vector
+<(0,0),(1,0),(2,0),(0,1),(1,1),..>. This tells us that bit 0
+(least significant) of the overall hash comes from bit 0 of
+the first attribute (i.e. attribute "a"); bit 1 of the overall
+hash comes from bit 0 of the second attribute ("b"), and so on.
+If we insert a tuple like <tt>(5,3,6)</tt> into the table,
+and if <tt>hash(5)=00101</tt>, <tt>hash(3)=00011</tt> and
+<tt>hash(6)=00110</tt>, then the overall hash (assuming 5-bit
+hash values) will be <tt>10011</tt>, and so the tuple would be
+inserted into bucket 19.
+</p>
+<p>
+<b>PMR Query Examples:</b> If we asked a query like <tt>5,3,?</tt>,
+then we would obtain a query hash <tt>10*11</tt>, where the <tt>*</tt>
+represents bits from the unknown attributes.
+To answer this query, we need to generate all possible values for
+the <tt>*</tt>'s, which would give <tt>10011</tt> and <tt>10111</tt>,
+and this gives us a list of buckets to check for matching tuples
+(in this case, buckets 19 and 23).
+If we asked a query like <tt>5,?,6</tt>, then we would obtain
+a query hash <tt>*00*1</tt> and would need
+to examine buckets <tt>00001</tt>, <tt>00011</tt>, <tt>10001</tt>
+and <tt>10011</tt> (i.e. buckets 1, 3, 17, 19).
+</p>
+<p>
+You are to complete the implementation of a program called
+<tt>buckets</tt>, which takes as input (on the command line)
+a PMR query hash value, and writes one per line on the standard
+output, a list of buckets to examine.
+The <tt>main()</tt> function for <tt>buckets</tt> takes a query
+hash like <tt>01*1*101*0</tt> as its command-line argument, checks
+it, and converts it into two bit strings
+The first bit string looks contains the known bits of the
+MAH value, and looks like the query has with all <tt>*</tt>'s
+replace by 0. The second bit string contains 1 bits for all
+the <tt>*</tt>'s in the query hash, and 0 for all other bits
+(in other words, it tells you the positions of the <tt>*</tt>'s).
+As supplied, the <tt>buckets</tt> program simply prints these
+two bit strings and halts.
+Once you have completed it, the <tt>buckets</tt> program should
+also print a list of bucket numbers (in decimal) on its output.
+</p>
+<p>
+There are examples of inputs to and expected outputs from <tt>buckets</tt>
+in the directory <tt>q1/tests</tt>, in the files with names like
+<tt>t3</tt> (query hash) and <tt>t3.expected</tt> (output).
+</p>
+<p>
+<b>Note:</b> we are not considering linear-hashing here. Assume
+that all files will be of size <em>2<sup>d</sup></em>, where
+<em>d</em> is the number of bits used in the hash values.
+The value of <em>d</em> is simply the length of the command-line
+argument to the <tt>buckets</tt> program.
+</p>
+<p>
+The following files are available for the implementation and can be found
+in the <tt>q1</tt> directory in your exam environment:
+</p>
+<ul>
+<li> <tt>Makefile</tt> ... to control the compilation of the scanner
+<li> <tt>bits.h</tt> ... interface to bit-string (Bits) operations
+<li> <tt>bits.c</tt> ... implementation of bit-string (Bits) operations
+<li> <tt>buckets.c</tt> ... main program (you modify this)
+</ul>
+<p>
+All of these files are complete and fully-functional except for
+<tt>buckets.c</tt>, which you are required to complete.
+You should not modify any of the other files in developing your solution.
+</p>
+<p>
+If you run the <tt>make</tt> command, it will produce an executable file
+called <tt>buckets</tt>, which you could test using commands like
+tuples from the test files using e.g.
+</p>
+<pre>
+$ <b>./buckets 00**</b>
+Known:   0000
+Unknown: 0011
+0
+1
+2
+3
+$ <b>./buckets 1010*</b>
+Known:   10100
+Unknown: 00001
+20
+21
+</pre>
+<p>
+At this stage, the only output you'll get is a display of the two
+bit-strings that <tt>buckets</tt> sets up before generating the
+bucket numbers.
+</p>
+<p>
+Note that the data files are contained in a sub-directory called
+<tt>tests</tt>, along with the expected output for when a correct
+<tt>buckets</tt> program is run on them.
+Some hopefully useful notes about the data files:
+</p>
+<ul>
+<li> <tt>t0</tt> is a completely empty data file (0 bytes)
+<li> <tt>t1</tt> contains a single page, but the page contains zero tuples
+<li> <tt>t2</tt> contains a single page, with 15 tuples
+<li> other data files contain a mixture of empty and non-empty pages
+<li> offsets are relative to the start of the tuples, <em>not</em> the start of the Page
+<li> each page is zero-filled when it is initially created (before tuples are added)
+</ul>
+<p>
+To help you check whether your program is working correctly,
+there is a script called <tt>run_tests.sh</tt> which will run your
+program against all of the tests and report the results, and
+add some output files to the <tt>tests</tt> directory which
+might help you to debug your code.
+Since <tt>run_tests.sh</tt> produces a lot of output (until your
+program is working), it might be useful to run it like:
+</p>
+<pre>
+$ <b>sh run_tests.sh | less</b>
+</pre>
+<p>
+Your task is to complete the <tt>buckets.c</tt> program.
+It requires around 20-30 lines of code to solve this problem;
+partial marks are available if you complete some of the code.
+</p>
+<p>
+Some hints on how to approach this problem:
+</p>
+<ul>
+<li> take a quick look at the <tt>bits.h</tt> and <tt>bits.c</tt> file to see what it does
+<li> then look at <tt>buckets.c</tt> to see what the current code does
+<li> then plan how to generate the bucket numbers based on the known/unknown bits
+<li> use <tt>gdb</tt>, if you know how; otherwise add plenty of <tt>printf</tt>'s for debugging
+</ul>
+<p>
+The directory <tt>tests</tt> contains data files (called <tt>t<i>i</i></tt>)
+and an expected output file (called <tt>t<i>i</i>.expected</tt>) from running
+<tt>./buckets</tt> on each data file.
+You should look at the expected output files to see what a correct program
+should produce.
+</p>
+<p>
+Once your program can run under  the <tt>run_tests.sh</tt> script with no errors,
+you can submit it.
+Note that we run your submission on additional tests for marking; table look-up answers are worth zero marks.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>buckets.c</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 sample_q1 buckets.c</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Sample Exam &gt; Submit Q<nobr>1</nobr> &gt; Make Submission
+</ul>
+<p>
+<b>Hint:</b> you may want to leave this question until you have completed
+all of the other questions.
+</p>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

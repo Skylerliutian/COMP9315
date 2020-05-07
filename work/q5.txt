@@ -1,0 +1,18 @@
+# COMP9315 20T1 Sample Exam Q5
+
+Type your answer(s) to replace the xxx's
+
+
+(a) At least three different join orders ...
+
+xxx
+
+
+(b) Which join order is most efficient ...
+
+xxx
+
+
+(c) Relational algebra statements for join plan ...
+
+xxx

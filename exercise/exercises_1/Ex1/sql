@@ -1,0 +1,11 @@
+-- Schema:
+-- Students(sid, name, degree, ...)
+-- Courses(cid, code, term, title, ...)
+-- Enrolments(sid, cid, mark, grade)
+-- sample data is avaiable in ../databases/uni.sql
+
+-- all students who passed COMP9315 in 18s2 (sid,name,mark)
+
+select s.sid, s.name, e.mark
+from   Students s join Enrolments e join Courses c
+where  c.code = 'COMP9315' and c.term = '18s2' and mark >= 50

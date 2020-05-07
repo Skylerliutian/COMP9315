@@ -1,0 +1,17 @@
+# Create a Bits struct
+N A 10
+# Set the 5th least sig bit to 1
+s A 5
+# Print the Bits struct
+O A
+# Free the Bits struct
+F A
+
+# create a Bits struct
+N B 100
+# Set all bits to 1
+S B
+# Print the Bits struct
+O B
+# Free the Bits struct
+F B

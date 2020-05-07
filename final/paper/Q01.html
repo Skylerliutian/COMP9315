@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Final Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Final Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Final Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<b>[Q1]</b> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 1 <span class='tiny'>(16 marks)</span></h3>
+<p>
+In this question, you need to complete a program that generates
+a multi-attribute hash (MAH) value, given a choice vector and a tuple.
+</p>
+<p>
+The code for this question is in the <tt>q1</tt> directory, which
+contains:
+<ul>
+<li><tt>mah.c</tt> ... main program for making the hash value</li>
+<li><tt>bits.c</tt> ... implementation of a bit-string ADT</li>
+<li><tt>bits.h</tt> ... interface definitions for a bit-string ADT</li>
+<li><tt>hash.c</tt> ... implementation of a hash function</li>
+<li><tt>hash.h</tt> ... interface definitions for hash function</li>
+<li><tt>chvec.c</tt> ... implementation of a choice vector ADT</li>
+<li><tt>chvec.h</tt> ... interface definitions for choice vector ADT</li>
+<li><tt>tuple.c</tt> ... implementation of a simple tuple ADT</li>
+<li><tt>tuple.h</tt> ... interface definitions for simple tuple ADT</li>
+<li><tt>Makefile</tt> ...for building the program</li>
+<li><tt>tests/</tt> ... directory containing test cases</li>
+</ul>
+<p>
+As you should remember from Assignment 2,
+MAH uses bits from the hash values for several attributes to determine
+an overall hash for a tuple; which bits of which
+attributes are used in the overall hash is determined by a
+choice vector
+</p>
+</ul>
+<p>
+Choice Vector Example: Consider a table <tt>R(a,b,c)</tt> with choice vector
+<(0,0),(1,0),(2,0),(0,1),(1,1),..>. This tells us that bit 0
+(least significant) of the overall hash comes from bit 0 of
+the first attribute (i.e. attribute "a"); bit 1 of the overall
+hash comes from bit 0 of the second attribute ("b"), and so on.
+If we insert a tuple like <tt>(5,3,6)</tt> into the table,
+and if <tt>hash(5)=00101</tt>, <tt>hash(3)=00011</tt> and
+<tt>hash(6)=00110</tt>, then the overall hash (assuming 5-bit
+hash values) will be <tt>10011</tt>, and so the tuple would be
+inserted into bucket 19. The following diagram shows this example:
+</p>
+<center>
+<img src="Pics/mah-example.png">
+</center>
+<p>
+All of the code files are complete and fully-functional except for
+<tt>tuple.c</tt>, which you are required to complete.
+You should not modify any of the other files in developing your solution,
+unless you want to add debugging code.
+Note that you only submit <tt>tuple.c</tt>, so any changes to other files
+will not be available in the testing environment and will not be marked.
+</p>
+<p>
+The <tt>mah</tt> command takes two command-line parameters:
+</p>
+<ul>
+<li> <tt>ChoiceVector</tt> ...  a choice vector in the same format as Assignment 2 </li>
+<li> <tt>Tuple</tt> ... a tuple as a sequence of comma-separated strings </li>
+</ul>
+<p>
+You can build the <tt>mah</tt> executable by running the <tt>make</tt> command.
+</p>
+<p>
+Some examples of use:
+</p>
+<pre>
+$ <b>./mah</b>
+Usage: ./mah ChoiceVector Tuple
+<span class="comment">           choice vector                 tuple</span>
+$ <b>./mah  "0,0:1,0:2,0:0,1:1,1:2,1"  "a,b,c"</b>
+hash(a,b,c) = 01011011 10111100 01111100 10110101
+$ <b>./mah  "0,0:0,1:0,2:1,0:1,1:1,2"  "one,two"</b>
+hash(one,two) = 01001110 10011000 01000001 11100001
+</pre>
+<p>
+The hash value is based on the hash values of the individual attributes
+and the choice vector:
+</p>
+<pre>
+<span class="comment"># Hash values</span>
+hash(a) = 00101111 11100001 00011010 01110001
+hash(b) = 11101011 01100101 01010001 10111010
+hash(c) = 01101100 01000111 11011011 00100111
+<span class="comment"># Choice vector</span>
+0,0:1,0:2,0:0,1:1,1:2,1:0,31:1,31:2,31:0,30:1,30:2,30:
+0,29:1,29:2,29:0,28:1,28:2,28:0,27:1,27:2,27:0,26:1,26:
+2,26:0,25:1,25:2,25:0,24:1,24:2,24:0,23:1,23
+</pre>
+<p>
+Note that entire 32-bit choice vector is formed by taking what is
+specified on the command-line and then filling in the remaining
+bits automatically by interleaving the higher-order bits from the
+attributes.
+<p>
+If you compile and test the code without changes, the hash value
+will always be all zero.
+</p>
+<p><b>Your Task</b>: complete the <tt>tupleHash()</tt> function in <tt>tuple.c</tt></p>
+<p>
+The multi-attribute hash value is computed via the <tt>tupleHash()</tt>
+function.
+The function is contained in the <tt>tuple.c</tt> file and is currently
+a stub that always returns 0.
+You need to add code in place of the <tt>TODO</tt> comment to
+compute the multi-attribute hash using the hashes for the
+individual attributes and the choice vector.
+Compute the hash for each attribute using the <tt>hash_any()</tt>
+function.
+</p>
+<p>
+For debugging, consider displaying the hash value for each individual
+attribute, displaying the choice vector, and checking that the
+individual bits have correctly been transferred into the MAH hash value.
+<p>
+The <tt>tests</tt> directory contains a number of test cases for the
+<tt>mah</tt> program.
+You can execute an individual test case by running a command like
+</p>
+<pre>
+$ <b>sh tests/01.sh</b>
+</pre>
+<p>
+which runs the example above.
+</p>
+<p>
+You should also be able to devise your own test cases easily
+enough.
+</p>
+<p>
+To help you check whether your program is working correctly,
+there is a script called <tt>run_tests.sh</tt> which will run
+the program against all of the tests and report the results.
+It will also add the output from your program into the 
+<tt>tests</tt> directory; comparing your output against the
+expected output might help you to debug your code.
+You can run the testing script as:
+</p>
+<pre>
+$ <b>sh run_tests.sh</b>
+</pre>
+<p>
+Once your function is working (passes all tests), follow
+the submission instructions below.
+Even if it fails some (or even all) tests, you should submit because
+you can get <i>some</i> marks.
+If your program does not compile, or if you simply submit
+the supplied code, then your "answer" is worth zero marks.
+</p>
+<p><b>Submission Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>tuple.c</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 exam_q1 tuple.c</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Final Exam &gt; Submit Q<nobr>1</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

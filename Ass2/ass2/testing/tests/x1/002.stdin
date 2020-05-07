@@ -1,0 +1,13 @@
+# Create a Bits Struct
+N A 70
+# Print the Bits struct
+O A
+# Free the Bits struct
+F A
+
+# Create a second Bits struct
+N A 10
+# Print the second Bits struct
+O A
+# Free the second Bits struct
+F A

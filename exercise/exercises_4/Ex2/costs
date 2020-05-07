@@ -1,0 +1,80 @@
+================
+insert into Heap
+================
+
+already have header page
+read page NextID
+if room in page for this page
+   insert into page
+   write page back out
+if tuple doesn't fit
+   make new empty Page
+   insert tuple
+   write Page out
+write updated Header page
+
+1 read + 2 writes
+
+
+================
+delete from Heap
+================
+
+if 1 match
+
+scan until find tuple
+update Page and write out
+update Header page and write out
+
+Best 1 read + 2 writes
+Worst b reads + 2 writes
+
+
+if multiple matches
+
+Best: b reads + 2 writes
+Worst: b reads + b writes + 1 write (header page)
+
+b_q = number of pages containing matches
+
+b reads + b_q writes + 1 write (header page)
+
+
+==================
+insert into Sorted
+==================
+
+use binary search to find relevant page
+
+if room in page
+   insert new tuple
+   write page
+if not room in page
+   make empty page
+   insert new tuple
+   write ovflow page
+   attach ovflow page to relevant page
+   write data page
+write header page
+
+log_2(b) reads + 1 page write + 1 header page write
+
+or, if need to add an overflow page ...
+
+log_2(b) reads + 2 page writes + 1 header page write
+
+or, if need to rearrange all following tuples to make room
+
+log_2(b) reads + N x read+write a data page + 1 header page write
+
+worst case N = b (new tuple in first page)
+best  case N = 1 (new tuple in last page)
+avg   case N = b/2 (new tuple in middle of file)
+
+
+delete from Sorted
+
+insert into Hashed
+
+delete from Hashed
+

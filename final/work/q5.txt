@@ -1,0 +1,28 @@
+# COMP9315 20T1 Final Exam Q5
+  
+Type your answer(s) to replace the xxx's
+Submit this file as your answer for Q5
+
+a.
+For block nested loop join, B = 20,  R as outer
+
+cost = bR + bS * ceil(bR / (B - 2))  = 100 + 20 * 6 = 220
+
+b.
+Step 1: sort each relation
+
+Cost = 2 * bR * (1+ceil(log(B-1)(bR / B))) + 2 * bS * (1+ceil(log(B-1)(bS / B)))
+     = 2 * 100 * (1 + 1) + 2 * 20 * (1 + 0) = 440
+
+Step 2: merge sorted relations
+
+Cost = bR + bS = 100 + 20 = 120
+
+So, total cost = 440 + 120 = 560
+
+
+c.
+According to the question, all partitions of R will fit in the in-memroy hash table.
+
+So cost = 3 * (bR + bS) = 3 * (100 + 20) = 360 
+

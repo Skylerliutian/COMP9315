@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Sample Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Sample Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Sample Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <b>[Q3]</b> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 3 <span class='tiny'>(12 marks)</span></h3>
+<p>
+Consider the following query on the table from Question 2:
+</p>
+<pre>
+select distinct name from People;
+</pre>
+<p>
+Assume that the <tt>People</tt> table has the following characteristics:
+</p>
+<center><table cellpadding="6">
+<tr>
+ <td><i>P</i></td>
+ <td>4096</td>
+ <td>size of pages/buffers in bytes</td>
+</tr>
+<tr>
+ <td><i>r</i></td>
+ <td>1,234,567</td>
+ <td>total number of tuples</td>
+</tr>
+<tr>
+ <td><i>R</i></td>
+ <td>32</td>
+ <td>size of each tuple in bytes (fixed-sized records)</td>
+</tr>
+<tr>
+<tr>
+ <td><i>B</i></td>
+ <td>101</td>
+ <td>number of available memory buffers</td>
+</tr>
+</table></center>
+<p>
+Each page contains a page directory as well as the tuples.
+The page directory consist of 1 presence <b>bit</b> for each tuple,
+and the bits are packed as tightly as possible into a sequence of
+bytes at the start of the page. The remaining space is used for tuples.
+All pages, even those in intermediate files, have the same page
+structure.
+The following diagram shows what such a page might look like after
+some tuples have been inserted and others removed:
+</p>
+<center><img src="Pics/fixed-width-page.png"></center>
+<p>
+For this problem, you can assume that tuples are added consectively
+starting from slot one, so the first <em>k</em> presence bits will
+be one if there are <em>k</em> tuples in the page, and the remaining
+presence bits will be zero.
+</p>
+<p>
+For the above scenario, you should:
+</p>
+<ol type='a'>
+<li><p>
+Calculate the number of tuples per page
+</p></li>
+<li><p>
+Calculate the total number of pages for the <tt>People</tt> table
+</p></li>
+<li><p>
+Calculate the cost of duplicate removal using sorting
+</p></li>
+<li><p>
+Calculate the cost of duplicate removal using hashing
+</p></li>
+<li><p>
+What would be the effect on the hashing approach if only 91 buffers were available? <br>
+<small>(you do not need to do a complete detailed cost calculation for this part;
+just describe the effect in words)</small>
+</p></li>
+</ol>
+<p>
+The costs should give the total number of page reads/writes and
+include all page reads and page writes <em>except</em> the page writes for
+the final output stage.
+Note the because we are not considering the size of the final output,
+the costs do not rely on the percentage of duplicates.
+</p>
+<p>
+You can ignore any effects from buffer management and assume that
+all buffers will be used in the most effective manner possible.
+For the hashing case, assume that the hash functions partition the
+tuples uniformly.
+Your cost calculations must show clearly the number of pages
+in all intermediate files.
+</p>
+<p>
+Show all working.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q3.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 sample_q3 q3.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Sample Exam &gt; Submit Q<nobr>3</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

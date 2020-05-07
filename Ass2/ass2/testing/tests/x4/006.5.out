@@ -1,0 +1,126 @@
+Global Info:
+Dynamic:
+  #items:  tuples: 1000  tsigs: 1000  psigs: 19  bsigs: 13928
+  #pages:  tuples: 19  tsigs: 9  psigs: 10  bsigs: 11
+Static:
+  tups   #attrs: 9  size: 77 bytes  max/page: 53
+  sigs   bits/attr: 20
+  tsigs  size: 264 bits (33 bytes)  max/page: 124
+  psigs  size: 13928 bits (1741 bytes)  max/page: 2
+  bsigs  size: 24 bits (3 bytes)  max/page: 1364
+1234731,aVRQAmdPNICOZXMHuvbv,a3-164,a4-164,a5-164,a6-164,a7-164,a8-164,a9-164
+1235478,WBLzUOhVNDZzNWtPYwDL,a3-164,a4-247,a5-081,a6-413,a7-330,a8-247,a9-164
+Query Stats:
+# sig pages read:    8
+# signatures read:   20
+# data pages read:   2
+# tuples examined:   106
+# false match pages: 0
+1234570,BEVxpLOscIiINAyNQmhw,a3-003,a4-003,a5-003,a6-003,a7-003,a8-003,a9-003
+1234819,VbKjgihGyiDCsVUIWEKk,a3-003,a4-252,a5-252,a6-252,a7-252,a8-252,a9-252
+1235068,QYGrRpBfXlFVnXlTEoWX,a3-003,a4-169,a5-086,a6-003,a7-501,a8-501,a9-501
+1235317,JBzYaNkLfQygSPeyiJQo,a3-003,a4-086,a5-335,a6-252,a7-169,a8-086,a9-003
+1235566,XmlNEhixnYCualhoRUZK,a3-003,a4-003,a5-169,a6-003,a7-418,a8-335,a9-252
+Query Stats:
+# sig pages read:    7
+# signatures read:   20
+# data pages read:   5
+# tuples examined:   258
+# false match pages: 0
+1234567,cVrUSPZEONIZktXvSONK,a3-000,a4-000,a5-000,a6-000,a7-000,a8-000,a9-000
+1235563,nIzgEBIwKblbFiwaZmnj,a3-000,a4-000,a5-166,a6-000,a7-415,a8-332,a9-249
+Query Stats:
+# sig pages read:    10
+# signatures read:   40
+# data pages read:   2
+# tuples examined:   99
+# false match pages: 0
+1234819,VbKjgihGyiDCsVUIWEKk,a3-003,a4-252,a5-252,a6-252,a7-252,a8-252,a9-252
+1235566,XmlNEhixnYCualhoRUZK,a3-003,a4-003,a5-169,a6-003,a7-418,a8-335,a9-252
+Query Stats:
+# sig pages read:    10
+# signatures read:   20
+# data pages read:   2
+# tuples examined:   99
+# false match pages: 0
+1235510,zCJFoxeMesfeeeXtSPDZ,a3-196,a4-279,a5-113,a6-445,a7-362,a8-279,a9-196
+Query Stats:
+# sig pages read:    9
+# signatures read:   20
+# data pages read:   1
+# tuples examined:   53
+# false match pages: 0
+1235501,DLPUZinGdzacfCZzyjMz,a3-187,a4-270,a5-104,a6-436,a7-353,a8-270,a9-187
+Query Stats:
+# sig pages read:    10
+# signatures read:   40
+# data pages read:   1
+# tuples examined:   53
+# false match pages: 0
+1235015,bEFcsmtdbcxLmesAFOpp,a3-199,a4-116,a5-033,a6-448,a7-448,a8-448,a9-448
+1235513,gRTQFoPRpchIWFIVbcol,a3-199,a4-282,a5-116,a6-448,a7-365,a8-282,a9-199
+Query Stats:
+# sig pages read:    8
+# signatures read:   20
+# data pages read:   2
+# tuples examined:   106
+# false match pages: 0
+1234900,zTIGCChxhUkTPdhRzHyS,a3-084,a4-001,a5-333,a6-333,a7-333,a8-333,a9-333
+1235398,fzIabCOISyiGYpkmHjgF,a3-084,a4-167,a5-001,a6-333,a7-250,a8-167,a9-084
+Query Stats:
+# sig pages read:    9
+# signatures read:   20
+# data pages read:   2
+# tuples examined:   106
+# false match pages: 0
+1234932,EJtqUxgVRjwUZvUPNTsl,a3-116,a4-033,a5-365,a6-365,a7-365,a8-365,a9-365
+1235347,qswUWRpWqqTfoWvohWaX,a3-033,a4-116,a5-365,a6-282,a7-199,a8-116,a9-033
+Query Stats:
+# sig pages read:    9
+# signatures read:   20
+# data pages read:   2
+# tuples examined:   106
+# false match pages: 0
+1234576,YFOnjSFZHeXHihiIACmJ,a3-009,a4-009,a5-009,a6-009,a7-009,a8-009,a9-009
+Query Stats:
+# sig pages read:    10
+# signatures read:   40
+# data pages read:   1
+# tuples examined:   53
+# false match pages: 0
+1234654,jfeTfvbDjPjhtlgVHogc,a3-087,a4-087,a5-087,a6-087,a7-087,a8-087,a9-087
+Query Stats:
+# sig pages read:    11
+# signatures read:   40
+# data pages read:   1
+# tuples examined:   53
+# false match pages: 0
+1234693,QCvbXZRzgnFAecCCmLKQ,a3-126,a4-126,a5-126,a6-126,a7-126,a8-126,a9-126
+1235274,rabxeGVYHaubekjZaqza,a3-209,a4-043,a5-292,a6-209,a7-126,a8-043,a9-707
+Query Stats:
+# sig pages read:    9
+# signatures read:   20
+# data pages read:   2
+# tuples examined:   106
+# false match pages: 0
+1234730,bPTwHxhubsTGeflKznAz,a3-163,a4-163,a5-163,a6-163,a7-163,a8-163,a9-163
+Query Stats:
+# sig pages read:    11
+# signatures read:   179
+# data pages read:   1
+# tuples examined:   53
+# false match pages: 0
+1234731,aVRQAmdPNICOZXMHuvbv,a3-164,a4-164,a5-164,a6-164,a7-164,a8-164,a9-164
+Query Stats:
+# sig pages read:    11
+# signatures read:   179
+# data pages read:   1
+# tuples examined:   53
+# false match pages: 0
+1235517,INqPZYRIjbMjbYrlGorb,a3-203,a4-286,a5-120,a6-452,a7-369,a8-286,a9-203
+Query Stats:
+# sig pages read:    11
+# signatures read:   40
+# data pages read:   1
+# tuples examined:   53
+# false match pages: 0

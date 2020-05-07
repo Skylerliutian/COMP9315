@@ -1,0 +1,31 @@
+-- Schema:
+-- Students(sid, name, degree, ...)
+-- Courses(cid, code, term, title, ...)
+-- Enrolments(sid, cid, mark, grade)
+
+One possibility:
+
+Tmp1 = sel[code='COMP9315' and term='18s2']Courses
+Tmp2 = join[cid](Tmp1,Enrolments)
+Tmp3 = sel[mark >= 50]Tmp2
+Tmp4 = join[sid](Tmp2,Students)
+Res  = proj[sid,name,mark]Tmp4
+
+Tmp1 = sel[code='COMP9315' and term='18s2']Courses
+Val1 = proj[cid]Tmp1
+Tmp2 = sel[cid=Val1](Tmp1,Enrolments)
+Tmp3 = sel[mark >= 50]Tmp2
+Tmp4 = join[sid](Tmp2,Students)
+Res  = proj[sid,name,mark]Tmp4
+
+
+Another possibility:
+
+Tmp1 = join[sid](Students,Enrolments)
+Tmp2 = join[cid](Tmp1,Courses)
+Tmp3 = sel[code=9315 and term=18s2 and mark >=50]Tmp2
+Res  = proj[sid,name,mark]Tmp3
+
+
+The second version has less operations but is likely to
+be way more costly

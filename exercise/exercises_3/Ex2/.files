@@ -1,0 +1,52 @@
+examine the content of the $PGDATA directory
+
+total 140
+drwx------ 19 jas jas  4096 Jun 12 01:16 .
+drwxr-xr-x  7 jas jas  4096 Jun  6 12:33 ..
+srwxrwxrwx  1 jas jas     0 Jun 12 17:05 .s.PGSQL.5432
+-rw-------  1 jas jas    64 Jun 12 17:05 .s.PGSQL.5432.lock
+-rw-------  1 jas jas     3 Jun  6 12:33 PG_VERSION
+drwx------  8 jas jas  4096 Jun 11 14:52 base
+drwx------  2 jas jas  4096 Jun 11 14:52 global
+-rw-------  1 jas jas  5349 Jun 12 10:43 log
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_commit_ts
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_dynshmem
+-rw-------  1 jas jas  4513 Jun  6 12:33 pg_hba.conf
+-rw-------  1 jas jas  1636 Jun  6 12:33 pg_ident.conf
+drwx------  4 jas jas  4096 Jun 12 16:17 pg_logical
+drwx------  4 jas jas  4096 Jun  6 12:33 pg_multixact
+drwx------  2 jas jas  4096 Jun  6 14:52 pg_notify
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_replslot
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_serial
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_snapshots
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_stat
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_stat_tmp
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_subtrans
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_tblspc
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_twophase
+drwx------  3 jas jas  4096 Jun  6 12:33 pg_wal
+drwx------  2 jas jas  4096 Jun  6 12:33 pg_xact
+-rw-------  1 jas jas    88 Jun  6 12:33 postgresql.auto.conf
+-rw-------  1 jas jas 23897 Jun  6 12:36 postgresql.conf
+-rw-------  1 jas jas    39 Jun  6 14:52 postmaster.opts
+-rw-------  1 jas jas    94 Jun  6 14:52 postmaster.pid
+
+find the directory containing the pizza database
+
+16473
+
+find the file in this directory for the People table
+
+16480
+
+examine the contents of the People file
+
+strings $PGDATA/base/16473/16480
+
+what are the other files in the directory?
+
+other tables (incl pg_xxx tables), free space maps, visibility
+
+are there forks in any of your databases?
+
+not mine

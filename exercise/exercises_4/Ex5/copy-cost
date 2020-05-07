@@ -1,0 +1,22 @@
+heap -> heap
+- scan input page-by-page, write to output
+- maybe some reduction in size if input had gaps
+
+b_in + b_out, where b_out <= b_in
+
+
+sorted -> heap
+- same as above
+
+b_in + b_out, where b_out <= b_in
+
+
+heap -> sorted
+- two possibilities:
+  (1) maintain order on each insert
+  (2) make a simple copy as above and then Sort
+
+b_in + r_in*Cost(insert)   (1)
+
+b_in + b_out + Cost(sort(infile)) + b_out    (2)
+

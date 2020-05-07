@@ -1,0 +1,33 @@
+Analysis of cost of scanning a file
+and storing results in another file
+Assuming no indexes on the "x" attribute
+
+#tuples = r = 10,000
+#bytes/tuple = R = 200
+#bytes/page = B = 4096
+#tuples/page = c = floor(B/R) = 20
+#pages = ceil(r/c) = 500
+
+time to read a page = 10msec
+time to check one tuple = 1 usec
+time to form one result tuple = 1 usec
+
+Time cost for: select * from R where x > 10;
+
+#pages read = b = 500
+time to read pages = 500 * 10ms
+
+cost to check all tuples = 10ms
+
+#tuples in result = 5000
+                    (50% of tuples satisfy where clause)
+
+mktuple cost = 5ms
+
+#pages written = ceil(5000/20) = 250
+time to write pages = 250 * 10ms
+
+Total time
+= reading + checking + making + writing
+= ?
+= ?

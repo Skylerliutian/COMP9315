@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Sample Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Sample Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Sample Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <b>[Q6]</b> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 6 <span class='tiny'>(8 marks)</span></h3>
+<p>
+Consider a relation defined as follows:
+</p>
+<pre>
+create type Colour as enum
+    ('white','red','orange','yellow','green','blue','indigo','violet');
+
+create table R (
+    a  integer not null check (a between 0 and 15),
+    b  Colour not null,
+    c  integer not null check (c between 1 and 100)
+);
+</pre>
+<p>
+</p>
+<ol type='a'>
+<li>
+<p>
+If the table contains 1000 tuples, and assuming uniform distribution
+of attribute values, indicate how many tuples are
+likely to appear in the result of each of the following queries:
+</p>
+<ol type='i'>
+<li><p><tt>select * from R where a = 5;</tt></p>
+<li><p><tt>select * from R where b = 'green';</tt></p>
+<li><p><tt>select * from R where c &gt; 80;</tt></p>
+<li><p><tt>select * from R where a is null;</tt></p>
+</ol>
+</li>
+<li>
+<p>
+Consider that we wish to design a <i>multi-attribute hashing</i> index
+for the table, using the following properties:
+</p>
+<ul>
+<li> the file for the relation has <i>b</i> = 128 pages
+<li> query distribution:
+<ul>
+<li> <i>Q<sub>1</sub></i>: &nbsp; <tt>select * from R where a = <i>k</i></tt>,
+	&nbsp; &nbsp; <i>P<sub>Q<sub>1</sub></sub></i> = 0.3
+<li> <i>Q<sub>2</sub></i>: &nbsp; <tt>select * from R where b = <i>j</i></tt>,
+	&nbsp; &nbsp; <i>P<sub>Q<sub>2</sub></sub></i> = 0.2
+<li> <i>Q<sub>3</sub></i>: &nbsp; <tt>select * from R where a = <i>k</i> and b = <i>j</i></tt>,
+	&nbsp; &nbsp; <i>P<sub>Q<sub>3</sub></sub></i> = 0.3
+<li> <i>Q<sub>4</sub></i>: &nbsp; <tt>select * from R where b = <i>j</i> and c = <i>m</i></tt>,
+	&nbsp; &nbsp; <i>P<sub>Q<sub>4</sub></sub></i> = 0.2
+</ul>
+where <i>k</i>, <i>j</i> and <i>m</i> are constants of the appropriate type
+</ul>
+<p>
+Determine the following:
+</p>
+<ol type='i'>
+<li><p>the number of hash bits <i>d</i> required (you can assume that the file is not growing)</p>
+<li><p>the maximum number of hash bits that is useful to allocate to each attribute</p>
+<li><p>an allocation of hash bits (i.e. values for <i>d<sub>a</sub></i>, <i>d<sub>b</sub></i>, <i>d<sub>c</sub></i>) giving minimum average query cost</p>
+<li><p>the weighted average cost of queries under this bit-allocation</p>
+</ol>
+</li>
+</ol>
+<p>
+Show all working.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q6.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 sample_q6 q6.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Sample Exam &gt; Submit Q<nobr>6</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

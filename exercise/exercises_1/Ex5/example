@@ -1,0 +1,15 @@
+Schema:
+
+T1(a,b,c)   T2(d,e)   T3(x,y,z)
+
+
+Query output
+
+(T1, a, 1)
+(T1, b, 2)
+(T1, c, 3)
+(T2, d, 1)
+(T2, e, 2)
+(T3, x, 1)
+(T3, y, 2)
+(T3, z, 3)

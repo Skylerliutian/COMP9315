@@ -1,0 +1,30 @@
+Assume that k is primary key
+
+Search process for
+
+	select * from R where k = 51;
+
+h = hash(51);
+p = get_page(R,h);
+for each tuple t in page p {
+	if (t.k = 51) found match
+}
+for each overflow page ov of p {
+	for each tuple t in page ov {
+		if (t.k = 51) found match
+	}
+}
+
+Best case = 1
+Worst case = 1 + length-of-longest-overflow-chain
+Average case = 1 + average-overflow-chain-length/2
+
+
+
+search process for
+
+	select * from R where k > 50;
+
+Hashing does not help; need to read everything
+
+All cases = b + b_Ov

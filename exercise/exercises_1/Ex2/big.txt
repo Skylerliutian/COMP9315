@@ -1,0 +1,1000 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = off;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET escape_string_warning = off;
+
+--
+-- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: -
+--
+
+CREATE OR REPLACE PROCEDURAL LANGUAGE plpgsql;
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: shortname; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN shortname AS character varying(16);
+
+
+--
+-- Name: acadobjectgroupdeftype; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN acadobjectgroupdeftype AS shortname
+	CONSTRAINT acadobjectgroupdeftype_check CHECK (((VALUE)::text = ANY (ARRAY[('enumerated'::character varying)::text, ('pattern'::character varying)::text, ('query'::character varying)::text])));
+
+
+--
+-- Name: acadobjectgrouplogictype; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN acadobjectgrouplogictype AS shortname
+	CONSTRAINT acadobjectgrouplogictype_check CHECK (((VALUE)::text = ANY (ARRAY[('and'::character varying)::text, ('or'::character varying)::text])));
+
+
+--
+-- Name: acadobjectgrouptype; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN acadobjectgrouptype AS shortname
+	CONSTRAINT acadobjectgrouptype_check CHECK (((VALUE)::text = ANY (ARRAY[('subject'::character varying)::text, ('stream'::character varying)::text, ('program'::character varying)::text, ('requirement'::character varying)::text])));
+
+
+--
+-- Name: careertype; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN careertype AS character(2)
+	CONSTRAINT careertype_check CHECK ((VALUE = ANY (ARRAY['UG'::bpchar, 'PG'::bpchar, 'RS'::bpchar, 'NA'::bpchar])));
+
+
+--
+-- Name: courseyeartype; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN courseyeartype AS integer
+	CONSTRAINT courseyeartype_check CHECK ((VALUE > 1945));
+
+
+--
+-- Name: emailstring; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN emailstring AS character varying(64)
+	CONSTRAINT emailstring_check CHECK (((VALUE)::text ~~ '%@%'::text));
+
+
+--
+-- Name: employmentrecord; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE employmentrecord AS (
+	unswid integer,
+	name text,
+	roles text
+);
+
+
+--
+-- Name: evalrecord; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE evalrecord AS (
+	code text,
+	title text,
+	rating numeric(4,2)
+);
+
+
+--
+-- Name: gradetype; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN gradetype AS character(2)
+	CONSTRAINT gradetype_check CHECK ((VALUE = ANY (ARRAY['AF'::bpchar, 'AS'::bpchar, 'CR'::bpchar, 'DF'::bpchar, 'DN'::bpchar, 'EC'::bpchar, 'FL'::bpchar, 'FN'::bpchar, 'GP'::bpchar, 'HD'::bpchar, 'LE'::bpchar, 'NA'::bpchar, 'NC'::bpchar, 'NF'::bpchar, 'PC'::bpchar, 'PE'::bpchar, 'PS'::bpchar, 'PT'::bpchar, 'RC'::bpchar, 'RD'::bpchar, 'RS'::bpchar, 'SS'::bpchar, 'SY'::bpchar, 'UF'::bpchar, 'WA'::bpchar, 'WC'::bpchar, 'WD'::bpchar, 'WJ'::bpchar, 'XE'::bpchar, 'A'::bpchar, 'B'::bpchar, 'C'::bpchar, 'D'::bpchar, 'E'::bpchar])));
+
+
+--
+-- Name: longname; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN longname AS character varying(64);
+
+
+--
+-- Name: longstring; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN longstring AS character varying(256);
+
+
+--
+-- Name: mediumname; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN mediumname AS character varying(32);
+
+
+--
+-- Name: mediumstring; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN mediumstring AS character varying(64);
+
+
+--
+-- Name: phonenumber; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN phonenumber AS character varying(32);
+
+
+--
+-- Name: poprecord; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE poprecord AS (
+	tab_name text,
+	n_records integer
+);
+
+
+--
+-- Name: requirementtype; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN requirementtype AS shortname
+	CONSTRAINT requirementtype_check CHECK (((VALUE)::text = ANY (ARRAY[('compound'::character varying)::text, ('inSubject'::character varying)::text, ('inStream'::character varying)::text, ('inProgram'::character varying)::text, ('doneSubject'::character varying)::text, ('doneStream'::character varying)::text, ('doneProgram'::character varying)::text, ('uoc'::character varying)::text, ('wam'::character varying)::text, ('stage'::character varying)::text, ('misc'::character varying)::text])));
+
+
+--
+-- Name: roletype; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN roletype AS shortname
+	CONSTRAINT roletype_check CHECK (((VALUE)::text = ANY (ARRAY[('academic'::character varying)::text, ('admin'::character varying)::text, ('technical'::character varying)::text, ('general'::character varying)::text])));
+
+
+--
+-- Name: shortstring; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN shortstring AS character varying(16);
+
+
+--
+-- Name: textstring; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN textstring AS character varying(4096);
+
+
+--
+-- Name: trailingspacerecord; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE trailingspacerecord AS (
+	"table" text,
+	"column" text,
+	nexamples integer
+);
+
+
+--
+-- Name: transcriptrecord; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE transcriptrecord AS (
+	code character(8),
+	term character(4),
+	name text,
+	mark integer,
+	grade character(2),
+	uoc integer
+);
+
+
+--
+-- Name: urlstring; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN urlstring AS character varying(128)
+	CONSTRAINT urlstring_check CHECK (((VALUE)::text ~~ 'http://%'::text));
+
+
+--
+-- Name: variationtype; Type: DOMAIN; Schema: public; Owner: -
+--
+
+CREATE DOMAIN variationtype AS shortname
+	CONSTRAINT variationtype_check CHECK (((VALUE)::text = ANY (ARRAY[('advstanding'::character varying)::text, ('substitution'::character varying)::text, ('exemption'::character varying)::text])));
+
+
+--
+-- Name: dbpop(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION dbpop() RETURNS SETOF poprecord
+    LANGUAGE plpgsql
+    AS $$
+declare
+	r record;
+	nr integer;
+	res PopRecord;
+begin
+	for r in select tablename
+		 from pg_tables
+		 where schemaname = 'public'
+		 order by tablename
+	loop
+		execute 'select count(*) from '||quote_ident(r.tablename) into nr;
+		res.tab_name := r.tablename; res.n_records := nr;
+		return next res;
+	end loop;
+	return;
+end;
+$$;
+
+
+--
+-- Name: showschema(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION showschema() RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+declare
+        rec record;
+        rel text := '';
+        att text := '';
+        out text := '';
+begin
+        -- checking table names is a bit of a hack
+        -- should really be checking the schema info
+        for rec in select relname,attname
+                   from   pg_class, pg_attribute
+                   where  relkind='r'
+                          and relname not like 'pg_%'
+                          and relname not like 'sql_%'
+                          and attrelid = pg_class.oid
+                          and attnum > 0
+                   order by relname,attnum
+        loop
+                if (rec.relname <> rel) then
+                        if (rel <> '') then
+                                out := out || rel || '(' || att || E')\n';
+                        end if;
+                        rel := rec.relname;
+                        att := '';
+                end if;
+                if (att <> '') then
+                        att := att || ', ';
+                end if;
+                att := att || rec.attname;
+        end loop;
+        -- deal with last table
+	if (rel <> '') then
+		out := out || rel || '(' || att || E')\n';
+	end if;
+        return out;
+end;
+$$;
+
+
+--
+-- Name: transcript(integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION transcript(_sid integer) RETURNS SETOF transcriptrecord
+    LANGUAGE plpgsql
+    AS $$
+declare
+	rec TranscriptRecord;
+	UOCtotal integer := 0;
+	UOCpassed integer := 0;
+	wsum integer := 0;
+	wam integer := 0;
+	x integer;
+begin
+	select s.id into x
+	from   Students s join People p on (s.id = p.id)
+	where  p.unswid = _sid;
+	if (not found) then
+		raise EXCEPTION 'Invalid student %',_sid;
+	end if;
+	for rec in
+		select su.code, substr(t.year::text,3,2)||lower(t.sess),
+			su.name, e.mark, e.grade, su.uoc
+		from   CourseEnrolments e join Students s on (e.student = s.id)
+			join People p on (s.id = p.id)
+			join Courses c on (e.course = c.id)
+			join Subjects su on (c.subject = su.id)
+			join Terms t on (c.term = t.id)
+		where  p.unswid = _sid
+		order by t.starting,su.code
+	loop
+		if (rec.grade = 'SY') then
+			UOCpassed := UOCpassed + rec.uoc;
+		elsif (rec.mark is not null) then
+			if (rec.grade in ('PT','PC','PS','CR','DN','HD')) then
+				-- only counts towards creditted UOC
+				-- if they passed the course
+				UOCpassed := UOCpassed + rec.uoc;
+			end if;
+			-- we count fails towards the WAM calculation
+			UOCtotal := UOCtotal + rec.uoc;
+			-- weighted sum based on mark and uoc for course
+			wsum := wsum + (rec.mark * rec.uoc);
+		end if;
+		return next rec;
+	end loop;
+	if (UOCtotal = 0) then
+		rec := (null,null,'No WAM available',null,null,null);
+	else
+		wam := wsum / UOCtotal;
+		rec := (null,null,'Overall WAM',wam,null,UOCpassed);
+	end if;
+	-- append the last record containing the WAM
+	return next rec;
+	return;
+end;
+$$;
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: academicstanding; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE academicstanding (
+    id integer NOT NULL,
+    standing shortname NOT NULL,
+    notes textstring
+);
+
+
+--
+-- Name: acadobjectgroups; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE acadobjectgroups (
+    id integer NOT NULL,
+    name longname,
+    gtype acadobjectgrouptype NOT NULL,
+    glogic acadobjectgrouplogictype,
+    gdefby acadobjectgroupdeftype NOT NULL,
+    parent integer,
+    definition longstring
+);
+
+
+--
+-- Name: affiliation; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE affiliation (
+    staff integer NOT NULL,
+    orgunit integer NOT NULL,
+    role integer NOT NULL,
+    isprimary boolean,
+    starting date NOT NULL,
+    ending date
+);
+
+
+--
+-- Name: books; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE books (
+    id integer NOT NULL,
+    isbn character varying(20),
+    title longstring NOT NULL,
+    authors longstring NOT NULL,
+    publisher longstring NOT NULL,
+    edition integer,
+    pubyear integer NOT NULL,
+    CONSTRAINT books_pubyear_check CHECK ((pubyear > 1900))
+);
+
+
+--
+-- Name: buildings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE buildings (
+    id integer NOT NULL,
+    name shortname NOT NULL,
+    longname longname NOT NULL,
+    gridref character(3)
+);
+
+
+--
+-- Name: classenrolments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE classenrolments (
+    student integer NOT NULL,
+    class integer NOT NULL
+);
+
+
+--
+-- Name: classenrolmentwaitlist; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE classenrolmentwaitlist (
+    student integer NOT NULL,
+    class integer NOT NULL,
+    applied timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: classes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE classes (
+    id integer NOT NULL,
+    course integer NOT NULL,
+    room integer NOT NULL,
+    ctype integer NOT NULL,
+    dayofwk integer NOT NULL,
+    starttime integer NOT NULL,
+    endtime integer NOT NULL,
+    startdate date NOT NULL,
+    enddate date NOT NULL,
+    repeats integer,
+    CONSTRAINT classes_dayofwk_check CHECK (((dayofwk >= 0) AND (dayofwk <= 6))),
+    CONSTRAINT classes_endtime_check CHECK (((endtime >= 9) AND (endtime <= 23))),
+    CONSTRAINT classes_starttime_check CHECK (((starttime >= 8) AND (starttime <= 22)))
+);
+
+
+--
+-- Name: classteachers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE classteachers (
+    class integer NOT NULL,
+    teacher integer NOT NULL
+);
+
+
+--
+-- Name: classtypes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE classtypes (
+    id integer NOT NULL,
+    name mediumname NOT NULL,
+    description longstring
+);
+
+
+--
+-- Name: countries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE countries (
+    id integer NOT NULL,
+    code character(3) NOT NULL,
+    name longname NOT NULL
+);
+
+
+--
+-- Name: coursebooks; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE coursebooks (
+    course integer NOT NULL,
+    book integer NOT NULL,
+    bktype character varying(10) NOT NULL,
+    CONSTRAINT coursebooks_bktype_check CHECK (((bktype)::text = ANY (ARRAY[('Text'::character varying)::text, ('Reference'::character varying)::text])))
+);
+
+
+--
+-- Name: courseenrolments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE courseenrolments (
+    student integer NOT NULL,
+    course integer NOT NULL,
+    mark integer,
+    grade gradetype,
+    stueval integer,
+    CONSTRAINT courseenrolments_mark_check CHECK (((mark >= 0) AND (mark <= 100))),
+    CONSTRAINT courseenrolments_stueval_check CHECK (((stueval >= 1) AND (stueval <= 6)))
+);
+
+
+--
+-- Name: courseenrolmentwaitlist; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE courseenrolmentwaitlist (
+    student integer NOT NULL,
+    course integer NOT NULL,
+    applied timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: coursequotas; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE coursequotas (
+    course integer NOT NULL,
+    sgroup integer NOT NULL,
+    quota integer NOT NULL
+);
+
+
+--
+-- Name: courseroles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE courseroles (
+    id integer NOT NULL,
+    name shortname,
+    description mediumstring
+);
+
+
+--
+-- Name: courses; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE courses (
+    id integer NOT NULL,
+    subject integer NOT NULL,
+    term integer NOT NULL,
+    homepage urlstring
+);
+
+
+--
+-- Name: coursestaff; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE coursestaff (
+    course integer NOT NULL,
+    staff integer NOT NULL,
+    role integer NOT NULL
+);
+
+
+--
+-- Name: degrees; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE degrees (
+    id integer NOT NULL,
+    name mediumname,
+    fullname longname
+);
+
+
+--
+-- Name: degreesawarded; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE degreesawarded (
+    student integer NOT NULL,
+    program integer NOT NULL,
+    graduated date
+);
+
+
+--
+-- Name: externalsubjects; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE externalsubjects (
+    id integer NOT NULL,
+    extsubj longname NOT NULL,
+    institution longname NOT NULL,
+    yearoffered courseyeartype,
+    equivto integer NOT NULL
+);
+
+
+--
+-- Name: facilities; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE facilities (
+    id integer NOT NULL,
+    description mediumstring NOT NULL
+);
+
+
+--
+-- Name: orgunits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE orgunits (
+    id integer NOT NULL,
+    utype integer NOT NULL,
+    name shortname NOT NULL,
+    longname longname,
+    unswid shortstring,
+    office integer,
+    phone phonenumber,
+    email emailstring,
+    website urlstring
+);
+
+
+--
+-- Name: orgunittypes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE orgunittypes (
+    id integer NOT NULL,
+    name shortname NOT NULL
+);
+
+
+--
+-- Name: people; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE people (
+    id integer NOT NULL,
+    password shortstring NOT NULL,
+    unswid integer,
+    family longname,
+    given longname NOT NULL,
+    title shortname,
+    sortname longname NOT NULL,
+    name longname NOT NULL,
+    street mediumstring,
+    city mediumstring,
+    state shortstring,
+    postcode shortstring,
+    country integer,
+    homephone phonenumber,
+    mobphone phonenumber,
+    email emailstring NOT NULL,
+    homepage urlstring,
+    gender character(1),
+    birthday date,
+    origin integer,
+    CONSTRAINT people_gender_check CHECK ((gender = ANY (ARRAY['m'::bpchar, 'f'::bpchar])))
+);
+
+
+--
+-- Name: proggroupmembers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE proggroupmembers (
+    program integer NOT NULL,
+    acobjgroup integer NOT NULL
+);
+
+
+--
+-- Name: programdegree; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE programdegree (
+    program integer NOT NULL,
+    degree integer NOT NULL
+);
+
+
+--
+-- Name: programenrolments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE programenrolments (
+    id integer NOT NULL,
+    student integer,
+    term integer,
+    program integer,
+    wam real,
+    standing integer,
+    advisor integer,
+    interview date,
+    notes textstring
+);
+
+
+--
+-- Name: programrequirements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE programrequirements (
+    program integer NOT NULL,
+    requirement integer NOT NULL
+);
+
+
+--
+-- Name: programs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE programs (
+    id integer NOT NULL,
+    code character(4) NOT NULL,
+    name longname,
+    uoc integer,
+    offeredby integer,
+    firstoffer integer,
+    lastoffer integer,
+    career careertype,
+    duration integer,
+    tminuoc integer,
+    tmaxuoc integer,
+    tavguoc integer,
+    description textstring,
+    objectives textstring,
+    othernotes textstring,
+    CONSTRAINT programs_uoc_check CHECK ((uoc >= 0))
+);
+
+
+--
+-- Name: programstream; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE programstream (
+    program integer NOT NULL,
+    stream integer NOT NULL
+);
+
+
+--
+-- Name: publicholidays; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE publicholidays (
+    term integer,
+    description mediumstring,
+    day date
+);
+
+
+--
+-- Name: reqgroupmembers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE reqgroupmembers (
+    requirement integer NOT NULL,
+    acobjgroup integer NOT NULL
+);
+
+
+--
+-- Name: reqsatisfied; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE reqsatisfied (
+    student integer NOT NULL,
+    requirement integer NOT NULL,
+    completed date NOT NULL
+);
+
+
+--
+-- Name: requirements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE requirements (
+    id integer NOT NULL,
+    name longname,
+    iscore boolean,
+    isnegated boolean,
+    reqtype requirementtype NOT NULL,
+    reqgroup integer,
+    reqmin integer,
+    reqmax integer,
+    description longstring
+);
+
+
+--
+-- Name: reusablerequirements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE reusablerequirements (
+    acobjgroup integer NOT NULL,
+    reqt1 integer NOT NULL,
+    reqt2 integer NOT NULL
+);
+
+
+--
+-- Name: roomfacilities; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE roomfacilities (
+    room integer NOT NULL,
+    facility integer NOT NULL
+);
+
+
+--
+-- Name: rooms; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE rooms (
+    id integer NOT NULL,
+    rtype integer,
+    name shortname NOT NULL,
+    longname longname,
+    roomnum shortstring,
+    capacity integer,
+    building integer NOT NULL,
+    CONSTRAINT rooms_capacity_check CHECK ((capacity >= 0))
+);
+
+
+--
+-- Name: roomtypes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE roomtypes (
+    id integer NOT NULL,
+    description mediumstring NOT NULL
+);
+
+
+--
+-- Name: schedules; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE schedules (
+    program integer NOT NULL,
+    stream integer NOT NULL,
+    requirement integer NOT NULL,
+    uoc integer,
+    stage integer NOT NULL,
+    semester integer,
+    CONSTRAINT schedules_semester_check CHECK (((semester = 1) OR (semester = 2))),
+    CONSTRAINT schedules_stage_check CHECK (((stage > 0) AND (stage < 10))),
+    CONSTRAINT schedules_uoc_check CHECK ((uoc > 0))
+);
+
+
+--
+-- Name: staff; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE staff (
+    id integer NOT NULL,
+    office integer,
+    phone phonenumber,
+    employed date,
+    supervisor integer
+);
+
+
+--
+-- Name: staffroles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE staffroles (
+    id integer NOT NULL,
+    rtype roletype,
+    description mediumstring NOT NULL
+);
+
+
+--
+-- Name: streamenrolments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE streamenrolments (
+    partof integer NOT NULL,
+    stream integer NOT NULL
+);
+
+
+--
+-- Name: streamgroupmembers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE streamgroupmembers (
+    stream integer NOT NULL,
+    acobjgroup integer NOT NULL
+);
+
+
+--
+-- Name: streamrequirements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE streamrequirements (
+    stream integer NOT NULL,
+    requirement integer NOT NULL
+);
+
+
+--
+-- Name: streams; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE streams (
+    id integer NOT NULL,
+    code character(10) NOT NULL,
+    name longname,
+    offeredby integer,
+    stype shortstring,
+    outline textstring,
+    firstoffer integer,
+    lastoffer integer
+);
+
+
+--
+-- Name: studentgroups; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE studentgroups (
+    id integer NOT NULL,
+    name longname NOT NULL,
+    definition longstring NOT NULL
+);
+
+
+--
+-- Name: students; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE students (
+    id integer NOT NULL,
+    stype character varying(5),
+    CONSTRAINT students_stype_check CHECK (((stype)::text = ANY (ARRAY[('local'::character varying)::text, ('intl'::character varying)::text])))
+);
+
+
+--
+-- Name: subjectprereq; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE subjectprereq (
+    subject integer NOT NULL,
+    requirement integer NOT NULL
+);
+
+
+--
+-- Name: subjects; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE subjects (
+    id integer NOT NULL,
+    code character(8) NOT NULL,
+    name mediumname NOT NULL,
+    longname longname,
+    uoc integer,
+    offeredby integer,
+    firstoffer integer,
+    lastoffer integer,
+    eftsload double precision,
+    career careertype,
+    syllabus textstring,
+    contacthpw double precision,
+    excluded integer,
+    equivalent integer,
+    CONSTRAINT subjects_uoc_check CHECK ((uoc >= 0))
+);
+

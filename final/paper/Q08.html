@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Final Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Final Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Final Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <b>[Q8]</b> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 8 <span class='tiny'>(6 marks)</span></h3>
+<p>
+Consider the followng three transactions:
+</p>
+<pre>
+T1:                 T2:                 T3:
+read(X)             read(Y)             read(X)
+X = X + 1           Y = Y * 2           read(Y)
+write(X)            read(X)             X = X - Y
+read(Y)             X = X + Y           Y = Y - 3
+Y = Y + 1           write(Y)            write(X)
+write(Y)            write(X)            write(Y)
+commit              commit              commit
+</pre>
+<p>
+Consider also the following concurrent schedule on these three transactions:
+</p>
+<pre>
+T1: R(X)      W(X)      R(Y)                W(Y) C       |
+T2:      R(Y)                R(X)      W(Y)        W(X)  | <small><i>system</i></small>
+T3:                R(X)           R(Y)                   | <small><i>failure</i></small>
+</pre>
+<p>
+Note that we have omitted the computation on <tt>X</tt>
+and <tt>Y</tt> from the schedule.
+You should assume that it occurs somwhere between the
+read and the write of the relevant variable.
+The line of <tt>|</tt> symbols indicates where
+a system failure occurred.
+</p>
+<p>
+Making the following assumptions:
+<ul>
+<li> <tt>R</tt> = read, <tt>W</tt> = write, <tt>C</tt> = commit, <tt>A</tt> = abort
+<li> initial value of <tt>X</tt> was 5, initial value of <tt>Y</tt> was 2 </li>
+<li> the system uses write-ahead undo/redo logging
+<li> log entries are written to disk just before the relevant <tt>write</tt> operation starts </li>
+<li> the log is empty before <tt>T1</tt> starts; scans of the log can go all the way to its start
+<li> the transaction descriptions show all of the <i>intended</i> operations
+<li> any operations not completed before system failure do not actually happen
+</ul>
+<p>
+answer these questions:
+</p>
+<ol type="a">
+<li><p>
+Show all entries written to the log as the transactions progress in the given schedule
+<br> (include <tt>&lt;start T<sub>i</sub>&gt;</tt>,
+<tt>&lt;abort T<sub>i</sub>&gt;</tt>, and 
+<tt>&lt;commit T<sub>i</sub>&gt;</tt>, entries
+as well as entries for updates)
+</p></li>
+<li><p>
+Show how recovery takes place when the system restarts after the system failure
+<ul>
+<li> which transactions are placed on the undo and redo lists </li>
+<li> which undo operations occur; which redo operations occur </li>
+</ul>
+</p></li>
+</ol>
+Show all working.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q8.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 exam_q8 q8.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Final Exam &gt; Submit Q<nobr>8</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

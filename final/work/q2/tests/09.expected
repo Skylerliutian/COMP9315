@@ -1,0 +1,12 @@
+Running: ./bnl 20 100 15
+
+Frames:     [00] [01] [02] [03] [04] [05] [06] [07] [08] [09] [10] [11] [12] [13] [14]
+Contents:    S96  S97  S92  S88  S93  R19  S89  S94  S98  S90  S95  S99  S91  S86  S87
+PinCount:      0    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+Popularity:    2    2    1    0    1    1    0    1    2    0    1    2    1    0    0
+Clock: 12
+
+#requests: 2020
+#releases: 2020
+#hits    : 0
+#reads   : 2020

@@ -1,0 +1,82 @@
+
+tuples per page = c  (determined from R,B,H,D)
+
+R*c <= (B - H - D),  where D = c/8
+
+tuples must fit into "tuple_space" in page
+
+tuple_space = page_size - header_size - directory_size
+page_size = 4096 bytes
+header_size = 96 bytes
+directory_size = c bits = c/8 bytes
+
+when c = 64
+R*c = 3968
+tuple_space = 4096 - 96 - 64/8 = 3992
+
+(with a bit of wasted space ... 3992-3968 = 24 bytes)
+
+
+number of pages b = ceil(r/c) = ceil(2^20/2^6) = 2^14 = 16384
+
+
+
+
+total buffers = N = 9,  for first pass
+input buffers = n = 8,  for passes 2..
+
+first pass yields ceil(b/N) sorted "runs"
+
+ceil(b/N) = ceil(16384/9) = 1821
+
+size of runs:
+after pass 0 = 9
+after pass 1 = 8*9 = 72
+after pass 2 = 8*72 = 576
+after pass 3 = 8*576 = 4608
+after pass 4 = 8*4608 = more than 16384 => all sorted
+
+initial sorting pass + 4 merging passes = 5 passes
+
+Cost = pages read/written = 5 * 2 * 2^14
+
+
+
+
+
+total buffers = N = 33,  for first pass
+input buffers = n = 32,  for passes 2..
+
+first pass yields ceil(b/N) sorted "runs"
+
+ceil(b/N) = ceil(16384/33) = 497
+
+size of runs:
+after pass 0 = 33
+after pass 1 = 32*33 = 1056
+after pass 2 = 32*1056 = more than 16384 => all sorted
+
+initial sorting pass + 2 merging passes = 3 passes
+
+Cost = pages read/written = 3 * 2 * 2^14
+
+
+
+
+
+total buffers = N = 257,  for first pass
+input buffers = n = 256,  for passes 2..
+
+first pass yields ceil(b/N) sorted "runs"
+
+ceil(b/N) = ceil(16384/257) = 64
+
+size of runs:
+after pass 0 = 257
+after pass 1 = 256*257 = more than 16384 => all sorted
+
+initial sorting pass + 1 merging passes = 2 passes
+
+Cost = pages read/written = 2 * 2 * 2^14
+
+

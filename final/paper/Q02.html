@@ -1,0 +1,256 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Final Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Final Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Final Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <b>[Q2]</b> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 2 <span class='tiny'>(14 marks)</span></h3>
+<p>
+In this question, you need to complete a program to simulate a nested-loop
+join that uses a buffer pool with a "clock-sweep" replacement strategy.
+</p>
+<p>
+The code for this question is in the <tt>q2</tt> directory, which
+contains:
+<ul>
+<li><tt>bnl.c</tt> ... main program for buffered nested loop</li>
+<li><tt>bufpool.c</tt> ... implementation of a buffer pool ADT</li>
+<li><tt>bufpool.h</tt> ... interface definitions for buffer pool ADT</li>
+<li><tt>Makefile</tt> ...for building the program</li>
+<li><tt>tests/</tt> ... directory containing test cases</li>
+</ul>
+The program simulates a nested loop join via a command
+called <tt>bnl</tt>, using parameters supplied on the command line:
+</p>
+<ul>
+<li><tt>OuterPages</tt> ... the number of data pages in the join outer relation</li>
+<li><tt>InnerPages</tt> ... the number of data pages in the join inner relation</li>
+<li><tt>nSlots</tt> ... the number of buffers in the buffer pool</li>
+</ul>
+<p>
+The main program implements the following:
+</p>
+<pre>
+initialise pool with nSlots buffers
+for pidR in 0 .. OuterPages-1 {
+    pageR = request(R,pidR)
+    for pidS in 0 .. InnerPages-1 {
+        pageS = request(S,pidS)
+        ... check for join matches ...
+        release(S,pidS)
+    }
+    release(R,pidR)
+}
+print buffer pool state and usage stats
+</pre>
+<p>
+As it simulates the join execution, it computes the following statistics:
+</p>
+<ul>
+<li> total number of <em>requests</em> on the buffer pool</li>
+<li> total number of <em>releases</em> on ththe buffer pool</li>
+<li> total number of <em>hits</em> on the buffer pool</li>
+<li> total number of <em>reads</em> into the buffer pool</li>
+</ul>
+<p>
+You can build the <tt>bnl</tt> executable using the <tt>make</tt> command.
+The program runs the simulation and then prints the final state of the
+buffer pool and the usage statistics.
+Since the simulation doesn't consider output, we don't need to allocate
+a buffer for output. Since we never change the values in the pages we
+read, the #writes count will always be zero.
+</p>
+<p>
+Some (slightly edited) examples of use from a working instance of <tt>bnl</tt>:
+</p>
+<pre>
+$ <b>./bnl</b>
+Usage: ./bnl OuterPages InnerPages Slots
+
+$ <b>./bnl 3 2 1</b>
+<span class="comment">-- not enough buffers to execute the join</span>
+Failed to find slot for S00
+
+$ <b>./bnl 3 4 5</b>
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  R02  S00  S01  S02
+PinCount:      0    0    0    0    0
+Popularity:    2    2    2    2    2
+Clock: 1
+
+#requests: 15
+#releases: 15
+#hits    : 4
+#reads   : 11
+
+$ <b>./bnl 3 4 2</b>
+<span class="comment">-- minimum buffers to execute the join</span>
+<span class="comment">-- every request results in a read</span>
+Frames:     [00] [01]
+Contents:    R02  S03
+PinCount:      0    0
+Popularity:    1    2
+Clock: 0
+
+#requests: 15
+#releases: 15
+#hits    : 0
+#reads   : 15
+
+$ <b>./bnl 5 4 9</b>
+<span class="comment">-- enough buffers to hold relations in pool</span>
+<span class="comment">-- each page is read exactly once</span>
+Frames:     [00] [01] [02] [03] [04] [05] [06] [07] [08]
+Contents:    R00  S00  S01  S02  S03  R01  R02  R03  R04
+PinCount:      0    0    0    0    0    0    0    0    0
+Popularity:    2    3    3    3    3    2    2    2    2
+Clock: 0
+
+#requests: 25
+#releases: 25
+#hits    : 16
+#reads   : 9
+</pre>
+<p>
+Assume that the buffer pool initially starts empty
+and that empty slots are used first, before any replacement is considered.
+Assume also that buffers and pages are indexed starting from 0.
+</p>
+<p>
+By default, the program just shows the final state of the
+buffer pool and the usage statistics.
+If you wish to monitor it's progress (perhaps for debugging),
+there are some commented-out debugging statements in <tt>bufpool.c</tt>.
+You can add them back by changing all of the <tt>#if&nbsp;0</tt>
+to <tt>#if&nbsp;1</tt>.
+Don't forget to restore them before <tt>check</tt>ing or <tt>submit</tt>ting;
+otherwise all your tests will fail.
+</p>
+<p>
+A detailed example of output from <tt>bnl</tt> is available in
+the file <tt>trace.txt</tt> in the  <tt>q2</tt> directory.
+This shows the output if you turn on all of the debugging
+statements, as shown above.
+It also shows some debugging internal to <tt>findVictim()</tt>;
+you can add something like this to your code if you want,
+but you should remove or comment it before submission.
+</p>
+<br>
+<p><B>Your Task</b>: complete the <tt>findVictim()</tt> function in <tt>bufpool.c</tt></p>
+<p>
+The <tt>findVictim()</tt> function determines the slot to be replaced
+when a request is made for a page not currently in the buffer pool,
+and when all of the buffers in the pool are full.
+To do this it uses a "clock hand" (<tt>pool->clock</tt>) which
+does a circular scan of the buffer pool.
+It uses the following approach to choose the "victim":
+</p>
+<ul>
+<li>a buffer with a non-zero popularity count cannot be evicted</li>
+<li>a buffer with a non-zero pin count cannot be evicted</li>
+<li>if a buffer is considered, but not evicted, its popularity count is decremented by 1</li>
+<li>a buffer's popularity count cannot drop below 0, and is capped at <tt>MAX_USAGE</tt> (3)</li>
+</ul>
+<p>
+Popularity counts are updated as follows:
+</p>
+<ul>
+<li> the popularity count is incremented by 1 when a page is requested  </li>
+<li> the popularity count is incremented by 1 when a page is released  </li>
+</ul>
+<p>
+The second may seem counter-intuitive, but it gives us a handle on
+when the page is being "looked at".
+Note that above two popularity count updates are already implemented
+in the <tt>request_page()</tt> and <tt>release_page()</tt> functions.
+The popularity count is also, as noted above, decremented when it is
+considered by <tt>findVictim()</tt>, but not selected.
+</p>
+<p>
+The <tt>findVictim()</tt> function behaves roughly as follows:
+</p>
+<pre>
+while (haven't found a victim*) {
+    check the buffer under the clock hand
+    if it has zero pin and popularity counts, found a victim
+    decrement popularity count, if > 0
+    advance clock hand
+} 
+*if no victim found after enough attempts, return NONE
+write buffer out if dirty
+advance clock hand
+</pre>
+<p>
+Note that the above is an abstract view of the process;
+you can't literally follow the control structures above
+and expect to get a working solution.
+Note also that the clock hand should always be left one
+slot beyond the selected victim.
+</p>
+<p>
+The <tt>tests</tt> directory contains a number of test cases for the
+<tt>bnl</tt> program.
+You can execute an individual test case by running a command like
+</p>
+<pre>
+$ <b>sh tests/01.sh</b>
+</pre>
+<p>
+which runs the "<tt>3 4 5</tt>" example above.
+</p>
+<p>
+You should also be able to devise your own test cases easily
+enough.
+</p>
+<p>
+To help you check whether your program is working correctly,
+there is a script called <tt>run_tests.sh</tt> which will run
+the program against all of the tests and report the results.
+It will also add the output from your program into the 
+<tt>tests</tt> directory; comparing your output against the
+expected output might help you to debug your code.
+You can run the testing script as:
+</p>
+<pre>
+$ <b>sh run_tests.sh</b>
+</pre>
+<p>
+Once your function is working (passes all tests), follow
+the submission instructions below.
+Even if it fails some (or even all) tests, you should submit because
+you can get <i>some</i> marks.
+If your program does not compile, or if you simply submit
+the supplied code, then your "answer" is worth zero marks.
+</p>
+<p><b>Submission Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>bnl.c</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 exam_q2 bufpool.c</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Final Exam &gt; Submit Q<nobr>2</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

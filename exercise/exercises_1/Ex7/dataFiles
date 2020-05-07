@@ -1,0 +1,48 @@
+First, we assume that you've loaded pizza.dump
+Second, you will not see the same oid's in your database
+
+The following two queries will give you the oid's
+
+pizza=# select oid, datname from pg_database where datname='pizza';
+  oid  | datname 
+-------+---------
+ 16473 | pizza
+(1 row)
+
+pizza=# select oid, relname from pg_class where relname in ('pizzas','people');
+  oid  | relname 
+-------+---------
+ 16480 | people
+ 16483 | pizzas
+(2 rows)
+
+I can find the data files in /srvr/jas/pgsql/data/base/16473
+
+The data file for Pizzas is 16483
+The command "ls -l 16483" gives
+-rw------- 1 jas jas 8192 Jun 11 12:06 16480
+The command "strings 16483" gives the names of some pizza types, e.g.
+Beef Mia
+Pepperoni Mia
+Chicken Mia
+Margherita
+...
+
+The data file for People is 16480
+The command "ls -l 16480" gives
+-rw------- 1 jas jas 73728 Jun 11 12:06 16480
+The command "strings 16480" gives the names of some people, e.g.
+Andrew
+	Pak
+Alex
+Vicki
+StewartO
+Daniel
+Jason
+
+You won't necessarily see the strings in exactly the same order.
+
+
+The sizes of the files have something in common. What is it?
+(apart from the file update time)
+There is another file for People called 16480_fsm. What is this?

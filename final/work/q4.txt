@@ -1,0 +1,78 @@
+# COMP9315 20T1 Final Exam Q4
+
+Type your answer(s) to replace the xxx's
+Submit this file as your answer for Q4
+
+a.
+
+Denote:
+Tuples per page c.
+Total pages b.
+c = floor(page size / record size) = 128
+b = ceil(total records / c) = 79 pages
+So 79 pages are there in data file.
+
+b.
+
+Denote:
+signatures per page c.
+Total pages b.
+
+If we do padding for signature size:
+m = 58 bits, this m doesn't divide nicely into the block size(4096 bytes) and neither is it a multiple of 4-bytes, so we increase the size of each signature to 64 bytes. Which means m = 64 bits.
+c = floor(page size / (signature size / 8)) = 512
+b = ceil(total records / c) = 20 pages
+So 20 pages are there in signature file.
+
+If not do padding:
+c = floor(page size / (signature size / 8)) = 564
+b = ceil(total records / c) = 18 pages
+So 18 pages are there in signature file.
+
+
+c.
+
+Denote:
+Case1: do padding for signature size
+Case2: not do padding for signature size
+Answer query R(?,b,c,d), we need read all signature pages, and find all genuine matches on 4 pages plus 10 false match pages.
+
+So in Case1:
+signature pages read: 20 pages
+data pages read: 4(genuine) + 10(flase) = 14 pages
+Total read = 20 + 4 + 10 = 34 pages
+
+In Case2:
+signature pages read: 18 pages
+data pages read: 4(genuine) + 10(flase) = 14 pages
+Total read = 18 + 4 + 10 = 32 pages
+
+
+d.
+
+Answer query R(?,?,?,?), we need to read all data pages and signature pages as all attributes are unknown.
+So in Case1,
+signature pages read: 20 pages
+data pages read: 79 pages
+Total read = 20 + 79 = 99 pages
+
+In Case2:
+signature pages read: 18 pages
+data pages read: 79 pages
+Total read = 18 + 79 = 97 pages
+
+e.
+As the query is R(?,?,?,?), all of the attributes are unknown which means the query signature is 0, So we don't need to read signature pages, only read the entire data pages. Which reduce the cost of read signature files.
+
+
+f.
+Assume we Use the following to compute page signature properties,
+k = loge(1/pF) / (loge2)
+m = n * c * loge(1/pF) / ((loge2)2)    (c is tuples per page, n is the #attributes)
+
+k will remain 10 bits, but the signature size will be tuples per page times original m which is 7362.
+
+So the result is:
+k = 10
+m = 7362
+

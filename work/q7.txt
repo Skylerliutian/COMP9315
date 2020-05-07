@@ -1,0 +1,13 @@
+# COMP9315 20T1 Sample Exam Q7
+
+Type your answer(s) to replace the xxx's
+
+(a) cost of simple hash join with 10 memory buffers
+
+xxx
+
+
+(b) cost of hybrid hash join with 20 memory buffers
+
+xxx
+

@@ -1,0 +1,4 @@
+# Create a Bits struct
+N A 10
+# Free the Bits struct
+F A

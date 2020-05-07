@@ -1,0 +1,22 @@
+# COMP9315 20T1 Sample Exam Q8
+
+Type your answer(s) to replace the xxx's
+
+(a) locking operations for two-phase locking
+
+xxx
+
+
+(b) example schedule produced by (a)
+
+xxx
+
+
+(c) locking operations that are *not* two-phase
+
+xxx
+
+
+(d) example schedule produced by (c)
+
+xxx

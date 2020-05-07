@@ -1,0 +1,12 @@
+Running: ./bnl 5 4 10
+
+Frames:     [00] [01] [02] [03] [04] [05] [06] [07] [08] [09]
+Contents:    R00  S00  S01  S02  S03  R01  R02  R03  R04    _
+PinCount:      0    0    0    0    0    0    0    0    0    0
+Popularity:    2    3    3    3    3    2    2    2    2    0
+Clock: 0
+
+#requests: 25
+#releases: 25
+#hits    : 16
+#reads   : 9

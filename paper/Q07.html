@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Sample Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Sample Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Sample Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <b>[Q7]</b> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 7 <span class='tiny'>(10 marks)</span></h3>
+<p>
+Consider two relations <em>R(id,x,y)</em> and <em>S(rid,a,b,c)</em>,
+with <em>b<sub>R</sub></em> = 100
+and <em>b<sub>S</sub></em> = 500, and a join operation on these two tables:
+</p>
+<pre>
+select * from R join S on (R.id = S.rid)
+</pre>
+<p>
+Assume that each <em>R</em> tuple joins with exactly one <em>S</em> tuple,
+and that any hash functions used distribute the tuples uniformly.
+</p>
+<p>
+Ignoring the cost of writing the final output (the joined tuples), describe
+how each of the following joins would occur and calculate the number of reads
+and writes that would occur in evaluating them:
+<ol type="a">
+<li><p>
+using <em>simple</em> hash join with 10 memory buffers
+</p></li>
+<li><p>
+using <em>hybrid</em> hash join with 20 memory buffers, and holding one bucket of <em>R</em> in memory
+</p></li>
+</ol>
+<p>
+Show all working.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q7.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 sample_q7 q7.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Sample Exam &gt; Submit Q<nobr>7</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

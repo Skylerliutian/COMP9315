@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Sample Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Sample Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Sample Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <b>[Q8]</b> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 8 <span class='tiny'>(10 marks)</span></h3>
+<p>
+Consider the following transactions:
+</p>
+<pre>
+T1:  R(X)  R(Y)  W(X)  W(Y)
+T2:  W(X)  R(Y)
+T3:  R(Y)  R(X)  W(Y)
+</pre>
+<p>
+Note that above is <em>not</em> a schedule; it simply gives the sequence
+of read/write operations for each transaction. We assume that all transactions
+eventually commit successfully.
+</p>
+<p>
+Using the transactions above, answer the following questions:
+</p>
+<ol type='a'>
+<li><p>
+Add appropriate lock/unlock operations for a two-phase locking strategy.
+</p></li>
+<li><p>
+Give a possible schedule that might arise from executing the transactions
+defined in part (a).
+</p></li>
+<li><p>
+Add lock/unlock operations which are definitely <em>not</em> based on two-phase locking.
+</p></li>
+<li><p>
+Give a possible schedule that might arise from executing the transactions
+defined in part (c).
+</p></li>
+</ol>
+<p>
+In answering the questions above ...
+<ul>
+<li><p>
+show lock operations as follows:
+</p>
+<ul>
+<li> <i>Lr(X)</i> = a request for a read-lock on the object <i>X</i>
+<li> <i>Lw(X)</i> = a request for a write-lock on the object <i>X</i>
+<li> <i>U(X)</i> = a request to release the lock currently held on object <i>X</i>
+</ul>
+</li>
+<li><p>
+use the following notation in giving schedules:
+</p>
+<ul>
+<li> write them with time increasing left-to-right, and with each transaction on a separate line
+<li> each column should contain only one operation (i.e. only one operation executes at a given point in time)
+<li> indicate a delay waiting on a lock by a dotted line from the lock request until the operation that is eventually executed when the lock is acquired
+</ul>
+</li>
+</ul>
+<p>
+In other words, use the same kind of notation that is used on
+pages <a target="notes" href="notes/I/notes.html">I-67 and I-69</a> of the Course Notes.
+</p></li>
+<li><p>
+in giving possible schedules, you may use any order of operations that you wish,
+provided that
+</p>
+<ul>
+<li> there is some overlap between the transaction operations
+<li> the order is consistent with the operations within each transaction
+<li> the order follows what would be induced by your lock operations
+</ul>
+</li>
+</ul>
+<p>
+Show all working.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q8.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 sample_q8 q8.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Sample Exam &gt; Submit Q<nobr>8</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

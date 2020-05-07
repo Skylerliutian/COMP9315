@@ -1,0 +1,18 @@
+N A 10
+s A 0
+s A 2
+s A 4
+s A 6
+s A 8
+O A
+
+N B 10
+s B 0
+s B 2
+s B 4
+s B 6
+s B 8
+O B
+
+I A B
+I B A

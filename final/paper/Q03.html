@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Final Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Final Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Final Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <b>[Q3]</b> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 3 <span class='tiny'>(6 marks)</span></h3>
+<p>
+Consider the following SQL statements to create three tables:
+</p>
+<pre>
+create table Students (
+    id      integer primary key,
+    name    text not null
+);
+
+create table Courses (
+    id      integer primary key,
+    code    char(8),
+    title   text not null
+);
+
+create table Enrolments (
+    stude   integer references Students(id),
+    course  integer references Courses(id),
+    mark    integer check (mark between 0 and 100),
+    grade   char(2) check (grade in ('FL','PS','CR','DN','HD')),
+    primary key (stude,course)
+);
+</pre>
+<p>
+Consider also that you insert 1000 tuples into each of the
+<tt>Students</tt> and <tt>Courses</tt> tables, and insert
+exactly 4 <tt>Enrolments</tt> tuples for each student.
+</p>
+<p>
+The <tt>pg_class</tt> catalog table has a field <tt>reltuples</tt>
+that indicates the total number of tuples stored in the pages of
+the relation. This includes tuples that have been deleted, but
+not yet <tt>vacuum</tt>'d.
+</p>
+<p>
+For each parts (a), (b) and (c), what values will be produced
+from the queries:
+</p>
+<pre>
+select count(*) from Enrolments;
+select reltuples from pg_class where relname='enrolments';
+</pre>
+<ol type='a'>
+<li><p> after all the tuples are initially inserted (as above) </p></li>
+<li><p> after the SQL statement
+	<tt>delete from Enrolments where stude = 1234567;</tt> <br/>
+	<small>(but before any vaccuuming)</small> </p></li>
+<li><p> after the SQL statement <tt>delete from Enrolments;</tt>
+	<small>(but before any vaccuuming)</small> </p></li>
+<li><p> if the SQL statement <tt>drop table Enrolments;</tt> is executed,
+	which of the following tables in the PostgreSQL catalog will be modified:</p>
+<pre>
+pg_aggregate,  pg_attrdef,  pg_attribute,  pg_class,  pg_collation,
+pg_constraint,  pg_conversion,  pg_database,  pg_depend,  pg_enum,
+pg_foreign_table,  pg_index,  pg_proc,  pg_range,  pg_rewrite,
+pg_sequence,  pg_transform,  pg_tablespace,  pg_trigger,  pg_type
+</pre>
+<p>
+Note: incorrect table names are penalised; just writing them all scores zero.
+</p></li>
+</ol>
+<p>
+The PostgreSQL catalog tables are described in detail in
+<a target="postgresql" href="http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/catalogs.html">Chapter 48</a>
+of the PostgreSQL documentation.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q3.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 exam_q3 q3.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Final Exam &gt; Submit Q<nobr>3</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

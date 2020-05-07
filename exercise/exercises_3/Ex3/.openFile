@@ -1,0 +1,18 @@
+// Rough sketch of PathNameOpenFilePerm
+
+File PathNameOpenFilePerm(char *fname, int flags, int mode)
+{
+	i = scan VfdCache looking for fname
+	if (i == NotFound) {
+		if (VfdCache is full) double its size
+		add fname to next available VfdCache[i]
+	}
+	if (!open) {
+		if (max open files reached) {
+			victim = index of LRU VfdCache entry
+			close file at VfdCache[victim]
+		}
+		open file at VfdCache[i]
+	}
+	return i
+}

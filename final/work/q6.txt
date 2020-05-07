@@ -1,0 +1,26 @@
+# COMP9315 20T1 Final Exam Q6
+  
+Type your answer(s) to replace the xxx's
+Submit this file as your answer for Q6
+
+a.
+
+There are 2 nodes in the quad-tree.
+
+b.
+
+For this query, A > 40 and B < 'f', 
+At level 1 we examine NW, NE
+For NW -> data page but no matching tuples
+For NE we examine NE-NW, NE-NE, NE-SW, NE-SE
+    NE-NW -> data page containing 1 matching tuple
+    NE-NE -> data page containing 2 matching tuples
+    NE-SW -> data page containing 1 matching tuple
+    NE-SE -> data page no matching tuples
+
+So, quadrants NW, NE and sub-quadrants NE-NW, NE-NE, NE-SW, NE-SE need to be examined.
+
+c.
+
+According to part b, 4 tuples would be in the result set.
+

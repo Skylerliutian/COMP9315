@@ -1,0 +1,43 @@
+# COMP9315 20T1 Sample Exam Q6
+
+Type your answer(s) to replace the xxx's
+
+
+(a) Likely number of result tuples for ...
+
+
+(i) select * from R where a = 5;
+
+xxx
+
+(ii) select * from R where b = 'green';
+
+xxx
+
+(iii) select * from R where c > 80;
+
+xxx
+
+(iv) select * from R where a is null;
+
+xxx
+
+
+(b) Design of MAH scheme (bit allocation) ...
+
+
+(i) number of hash bits required
+
+xxx
+
+(ii) maximum hash bits for each attribute
+
+xxx
+
+(iii) min cost allocation of hash bits to attributes
+
+xxx
+
+(iv) weighted average query cost for allocation
+
+xxx

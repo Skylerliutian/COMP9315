@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Final Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Final Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Final Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <b>[Q5]</b> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 5 <span class='tiny'>(5 marks)</span></h3>
+<p>
+Consider two tables <tt>R(x,y,z)</tt> and <tt>S(a,x,b)</tt>
+with <nobr><i>b<sub>R</i> = 100</nobr>
+and <nobr><i>b<sub>S</i> = 20</nobr>,
+and a natural join on these two tables (via attribute <tt>x</tt>).
+If we have a buffer pool with <nobr><i>B</i> = 20</i></nobr>
+buffers, then calculate how many pages would be read/written
+when performing the join operation using the methods below.
+Do not include the cost of writing the final result.
+</p>
+<ol type="a">
+<li><p>
+Block nested loop join, with <tt>R</tt> as outer table and <tt>S</tt> as inner.
+</p></li>
+<li><p>
+Sort merge join, using intermediate files for sorting. <br>
+Do not assume any sort order on the original files.
+</p></li>
+<li><p>
+Grace hash join, with <tt>R</tt> as outer table and <tt>S</tt> as inner. <br>
+Use buffers as appropriate for input, output and in-memory hash tables. <br>
+You can assume that all hash functions distribute tuples uniformly <br>
+and that all partitions of <tt>R</tt> will fit in the in-memory hash table.
+</p></li>
+</ol>
+</p>
+<p>
+Show all working.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q5.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 exam_q5 q5.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Final Exam &gt; Submit Q<nobr>5</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

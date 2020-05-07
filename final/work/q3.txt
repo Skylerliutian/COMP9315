@@ -1,0 +1,31 @@
+# COMP9315 20T1 Final Exam Q3
+
+Type your answer(s) to replace the xxx's
+Submit this file as your answer for Q3
+
+a. 
+From the question we got 4 enrolments tuples for each student and total number of student is 1000.
+So,
+The first query: 4000
+The second query: 4000
+
+b.
+Delete the student when student = 1234567, which means deleted 4 tuples in enrolments table, but before any vacuuming.
+So, 
+The first query: 3996
+The second query: 4000
+
+c.
+Delete the all tuples of enrolments, but before any vacuuming.
+So,
+The first query: 0
+The second query: 4000
+
+d.
+Those PostgreSQL catalog will be modified, as show below:
+pg_attribute
+pg_class
+pg_constraint
+pg_index
+pg_type
+

@@ -1,0 +1,30 @@
+# COMP9315 20T1 Sample Exam Q3
+
+Type your answer(s) to replace the xxx's
+
+
+(a) number of tuples per page in People table
+
+assume k tuples per page
+k / 8 + 32 * k = 4096
+So k is 127
+
+(b) number of pages in People table
+
+Number of pages = 1234567 / 127 = 9721
+
+
+(c) cost of duplicate removal using sorting
+
+
+
+
+(d) cost of duplicate removal using hashing
+
+xxx
+
+
+(e) effect on hashing if only 91 buffers available
+
+xxx
+

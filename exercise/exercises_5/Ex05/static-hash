@@ -1,0 +1,21 @@
+k  hash(k)   k  hash(k)   k  hash(k)   k  hash(k)
+a  10001     g  00000     m  11001     s  01110
+b  11010     h  00000     n  01000     t  10011
+c  01111     i  10010     o  00110     u  00010
+d  01111     j  10110     p  11101     v  11111
+e  01100     k  00101     q  00010     w  10000
+f  00010     l  00101     r  00000     x  00111
+z  00010
+
+b = 4, d = 2,  c = 3,  pid = hash(k) & 0x00000003
+
+Page  Data     Overflow
+
+[0]   e,g,h -> n,r
+
+[1]   a,k,l -> m,p
+
+[2]   b,f,i -> j,o,q -> s,u
+
+[3]   c,d,t
+

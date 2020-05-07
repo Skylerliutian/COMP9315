@@ -1,0 +1,35 @@
+# COMP9315 20T1 Sample Exam Q2
+
+Type your answer(s) to replace the xxx's
+
+(a) catalog tuples produced for CREATE TYPE Gender ...
+
+pg_type(oid, typname, typtype, typisdefined, typrelid) 
+(G, gender, 'e', true, 0)
+pg_enum(enumtypid, enumlabel)
+(G, 'male')
+(G, 'female')
+(G, 'none of your business')
+
+
+(b) catalog tuples produced for CREATE TABLE People ...
+I = select oid from pg_type where name = 'int4';
+T = select oid from pg_type where name = 'text';
+
+pg_class(oid, relname, relkind, relnatts, relhaspkey, relhasindex)
+(P, 'people', 'r', 3, true, true)
+(PK, 'people_pkey', 'i', 1, false, false)
+
+pg_attribute(oid, attrelid, attname, atttypid, attlen, attnum, attnotnull)
+(P, 'id', I, 4, 1, true)
+(P, 'name', T, -1, 2, true)
+(P, 'sex', G, 4, 3, false)
+(PK, 'id', I, 4, 1, false)
+
+pg_index(indexrelid, indrelid, indnatts, indisunique, indisprimary)
+(PK, P, 1, true, true)
+
+pg_type(oid, typname, typtype, typisdefined, typrelid)
+(PT, 'people', c, true, P)
+
+

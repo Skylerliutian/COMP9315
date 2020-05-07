@@ -1,0 +1,22 @@
+k  hash(k)   k  hash(k)   k  hash(k)   k  hash(k)
+a  10001     g  00000     m  11001     s  01110
+b  11010     h  00000     n  01000     t  10011
+c  01111     i  10010     o  00110     u  00010
+d  01111     j  10110     p  11101     v  11111
+e  01100     k  00101     q  00010     w  10000
+f  00010     l  00101     r  00000     x  00111
+
+b_init = 4,  sp = 0,  d = 2,  c = 3
+i = 0   split after each 6 insertions
+
+new: d=3, sp=0
+
+Page   Data     Overflow
+[000]* g,h,n -> r,w
+[001]  a,m
+[010]  b,f,i -> q,u
+[011]  t
+[100]  e
+[101]  k,l,p
+[110]  j,o,s
+[111]  c,d,v -> x

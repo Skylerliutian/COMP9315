@@ -1,0 +1,10 @@
+typedef struct
+{
+	table name
+	attributes
+	file names
+	file descriptors
+}
+RelationData;
+
+typedef RelationData *Relation;

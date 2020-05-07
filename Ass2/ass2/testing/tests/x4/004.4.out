@@ -1,0 +1,89 @@
+Global Info:
+Dynamic:
+  #items:  tuples: 10  tsigs: 10  psigs: 1  bsigs: 13720
+  #pages:  tuples: 1  tsigs: 1  psigs: 1  bsigs: 4
+Static:
+  tups   #attrs: 9  size: 77 bytes  max/page: 53
+  sigs   bits/attr: 19
+  tsigs  size: 264 bits (33 bytes)  max/page: 124
+  psigs  size: 13720 bits (1715 bytes)  max/page: 2
+  bsigs  size: 8 bits (1 bytes)  max/page: 4092
+1000000,swkvmlTUpjZTexFJuVfQ,a3-000,a4-000,a5-000,a6-000,a7-000,a8-000,a9-000
+1000001,fXcSFNzxhjzbhlwtYRPo,a3-001,a4-001,a5-001,a6-001,a7-001,a8-001,a9-001
+1000002,brJfOoriLwARtDJASiAB,a3-002,a4-002,a5-002,a6-002,a7-002,a8-002,a9-002
+1000003,TBeaNAWnTnBUEMCsbvBM,a3-003,a4-003,a5-003,a6-003,a7-003,a8-003,a9-003
+1000004,RbDMgmPAWpbrQfUfhQVb,a3-004,a4-004,a5-004,a6-004,a7-004,a8-004,a9-004
+1000005,dwxkjBCMWFypjEcpsRsR,a3-005,a4-005,a5-005,a6-005,a7-005,a8-005,a9-005
+1000006,ItiabcgKubnaZLkKOMYL,a3-006,a4-006,a5-006,a6-006,a7-006,a8-006,a9-006
+1000007,sZaBDEsxvKodGxeHzMTU,a3-007,a4-007,a5-007,a6-007,a7-007,a8-007,a9-007
+1000008,phwQSGdisbTmawpfakDY,a3-008,a4-008,a5-008,a6-008,a7-008,a8-008,a9-008
+1000009,wRDcQjlqxfMMmifGqKOI,a3-009,a4-009,a5-009,a6-009,a7-009,a8-009,a9-009
+Query Stats:
+# sig pages read:    1
+# signatures read:   1
+# data pages read:   1
+# tuples examined:   10
+# false match pages: 0
+1000000,swkvmlTUpjZTexFJuVfQ,a3-000,a4-000,a5-000,a6-000,a7-000,a8-000,a9-000
+Query Stats:
+# sig pages read:    1
+# signatures read:   1
+# data pages read:   1
+# tuples examined:   10
+# false match pages: 0
+1000000,swkvmlTUpjZTexFJuVfQ,a3-000,a4-000,a5-000,a6-000,a7-000,a8-000,a9-000
+Query Stats:
+# sig pages read:    1
+# signatures read:   1
+# data pages read:   1
+# tuples examined:   10
+# false match pages: 0
+1000000,swkvmlTUpjZTexFJuVfQ,a3-000,a4-000,a5-000,a6-000,a7-000,a8-000,a9-000
+Query Stats:
+# sig pages read:    1
+# signatures read:   1
+# data pages read:   1
+# tuples examined:   10
+# false match pages: 0
+1000000,swkvmlTUpjZTexFJuVfQ,a3-000,a4-000,a5-000,a6-000,a7-000,a8-000,a9-000
+Query Stats:
+# sig pages read:    1
+# signatures read:   1
+# data pages read:   1
+# tuples examined:   10
+# false match pages: 0
+1000000,swkvmlTUpjZTexFJuVfQ,a3-000,a4-000,a5-000,a6-000,a7-000,a8-000,a9-000
+Query Stats:
+# sig pages read:    1
+# signatures read:   1
+# data pages read:   1
+# tuples examined:   10
+# false match pages: 0
+1000000,swkvmlTUpjZTexFJuVfQ,a3-000,a4-000,a5-000,a6-000,a7-000,a8-000,a9-000
+Query Stats:
+# sig pages read:    1
+# signatures read:   1
+# data pages read:   1
+# tuples examined:   10
+# false match pages: 0
+1000000,swkvmlTUpjZTexFJuVfQ,a3-000,a4-000,a5-000,a6-000,a7-000,a8-000,a9-000
+Query Stats:
+# sig pages read:    1
+# signatures read:   1
+# data pages read:   1
+# tuples examined:   10
+# false match pages: 0
+1000009,wRDcQjlqxfMMmifGqKOI,a3-009,a4-009,a5-009,a6-009,a7-009,a8-009,a9-009
+Query Stats:
+# sig pages read:    1
+# signatures read:   1
+# data pages read:   1
+# tuples examined:   10
+# false match pages: 0
+1000005,dwxkjBCMWFypjEcpsRsR,a3-005,a4-005,a5-005,a6-005,a7-005,a8-005,a9-005
+Query Stats:
+# sig pages read:    1
+# signatures read:   1
+# data pages read:   1
+# tuples examined:   10
+# false match pages: 0

@@ -1,0 +1,22 @@
+Examine the content of the $PGDATA directory
+
+
+find the directory containing the pizza database
+
+?
+
+find the file in this directory for the People table
+
+?
+
+examine the contents of the People file
+
+?
+
+what are the other files in the directory?
+
+?
+
+are there forks in any of your databases?
+
+unlikely; data too small

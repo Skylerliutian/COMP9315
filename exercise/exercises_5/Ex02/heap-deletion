@@ -1,0 +1,20 @@
+Employees table with b = 100,  b_q2 = 3,  b_q3 = 20
+Table not sorted on any attributes (e.g. hashed)
+
+q1: delete from Employees where id = 12345 
+
+Cost = Cost_one + 1 write
+Best = 1*reads + 1*writes
+Worst = b*reads + 1*writes
+
+
+q2: delete from Employees where dept = 'Marketing'
+
+Cost = Cost_pmr + b_q2*writes
+All  = b*reads + b_q2*writes
+
+
+q3: delete from Employees where 40 <= age and age < 50
+
+Cost = Cost_range + b_q3*writes
+All  = b*reads + b_q3*writes

@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP9315 Sample Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP9315 Sample Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP9315 DBMS Implementation <br>  Sample Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>DBMS Implementation</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Notes' href='http://www.cse.unsw.edu.au/~cs9315/20T1/notes/index1.html'>[Notes]</a> <a target='PostgreSQL' href='http://www.cse.unsw.edu.au/~cs9315/20T1/postgresql/documentation/index.html'>[PostgreSQL]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <b>[Q4]</b> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 4 <span class='tiny'>(10 marks)</span></h3>
+<p>
+Consider a DBMS which has a range of possible buffer-management policies.
+You can specify the total number of buffers to be allocated in the buffer
+pool.
+For replacement, unpinned buffers are favoured over pinned buffers.
+You can specify that the buffer manager should use either least-recently-used
+(LRU) or most-recently-used (MRU) in determining which buffer to re-use.
+This DBMS defines recency relative to "the time of the last request or
+release operation on the buffer", <em>not</em> relative to the last time
+the buffer was accessed, because it is simpler to keep track of the time
+of request/release operations.
+The buffer manager also allows you to allocate multiple buffer pools of
+varying sizes and specify how tables should be associated to pools.
+</p>
+<p>
+For each of the scenarios below, do the following:
+</p>
+<ol type='i'>
+<li> <p>Calculate the total numbers of <em>requests</em> on each buffer pool</p>
+<li> <p>Calculate the total number of <em>hits</em> on each buffer pool</p>
+<li> <p>Calculate the total number of disk <em>reads</em> on each buffer pool</p>
+<li> <p>Show the state of the buffer pools after exactly 15 requests; show all
+	pools and all slots. For each slot, show the table name and page number
+	for the current contents of that slot</p>
+</ol>
+<p>
+The following shows what your state should look like (this shows the state
+after 3 requests for scenario (a)):
+<pre>
+Pool [0]
+Buffers  [0] [1] [2] [3] [4]
+Contents  P0  P1  P2  -   -
+</pre>
+</ul>
+<p>
+Scenarios:
+</p>
+<ol type='a'>
+<li><p>
+One sequential scan of a single table <i>P</i>
+(with <i>b<sub>P</sub>=20</i> pages) using a single buffer
+pool with LRU replacement strategy and 5 buffers.
+The scan behaves as follows:
+</p>
+<pre>
+for i in 0..19 { request page i from P;  process page i;  release page i }
+</pre>
+</li>
+<li><p>
+Two sequential scans of a single table <i>R</i>
+(with <i>b<sub>R</sub>=10</i> pages) using a single buffer
+pool with MRU replacement strategy and 5 buffers.
+The scans behave as follows:
+</p>
+<pre>
+for i in 0..9 { request page i from R;  process page i;  release page i }
+for i in 0..9 { request page i from R;  process page i;  release page i }
+</pre>
+</li>
+<li><p>
+Simple nested loop join on two tables <i>S</i> and <i>T</i>
+(with <i>b<sub>S</sub>=5</i> and <i>b<sub>T</sub>=10</i>)
+using a buffer pool with MRU replacement strategy and 10 buffers.
+The join behaves as follows.</p>
+<pre>
+for i in 0..4 {
+    request page i of S
+    for j in 0..9 {
+        request page j of T
+        process join on page i of S and page j of T
+        release page j of T
+    }
+    release page i of S
+}
+</pre>
+</p></li>
+</ol>
+<p>
+In all scenarios, assume that the buffer pool initially starts empty
+and that empty slots are used first, before any replacement is considered.
+Assume also that pools, buffers and pages are indexed starting from 0.
+</p>
+<p>
+Show enough working; you don't need to show the state after every request/release.
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q4.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs9315 sample_q4 q4.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Sample Exam &gt; Submit Q<nobr>4</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

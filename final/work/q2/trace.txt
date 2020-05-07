@@ -1,0 +1,537 @@
+This is a trace of the command "./bnl 5 5 5"
+
+It shows the requests and releases and the state
+of the buffer pool after each operation is done.
+
+It also shows how the clock hand sweeps in the
+findVictim() function, which you need to write.
+
+You should interpret the Sweep relative to the
+buffer pool state immediately *above* the request.
+
+The Sweep may make several passes over the pool,
+each time reducing the popularity by one, until
+it finally produces a slot which is not pinned
+*and* has popularity zero.
+
+The buffer pool state below the Sweep shows the
+state after the victim was found and replaced.
+Notice that the clock hand advances from the slot
+where the victim was found.
+
+
+Request R00
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00    _    _    _    _
+PinCount:      1    0    0    0    0
+Popularity:    1    0    0    0    0
+Clock: 0
+
+Request S00
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S00    _    _    _
+PinCount:      1    1    0    0    0
+Popularity:    1    1    0    0    0
+Clock: 0
+
+Release S00
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S00    _    _    _
+PinCount:      1    0    0    0    0
+Popularity:    1    2    0    0    0
+Clock: 0
+
+Request S01
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S00  S01    _    _
+PinCount:      1    0    1    0    0
+Popularity:    1    2    1    0    0
+Clock: 0
+
+Release S01
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S00  S01    _    _
+PinCount:      1    0    0    0    0
+Popularity:    1    2    2    0    0
+Clock: 0
+
+Request S02
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S00  S01  S02    _
+PinCount:      1    0    0    1    0
+Popularity:    1    2    2    1    0
+Clock: 0
+
+Release S02
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S00  S01  S02    _
+PinCount:      1    0    0    0    0
+Popularity:    1    2    2    2    0
+Clock: 0
+
+Request S03
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S00  S01  S02  S03
+PinCount:      1    0    0    0    1
+Popularity:    1    2    2    2    1
+Clock: 0
+
+Release S03
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S00  S01  S02  S03
+PinCount:      1    0    0    0    0
+Popularity:    1    2    2    2    2
+Clock: 0
+
+Request S04
+Sweep -> 0 -> 1 -> 2 -> 3 -> 4 -> 0 -> 1 -> 2 -> 3 -> 4 -> 0 -> 1
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S04  S01  S02  S03
+PinCount:      1    1    0    0    0
+Popularity:    0    1    0    0    0
+Clock: 2
+
+Release S04
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S04  S01  S02  S03
+PinCount:      1    0    0    0    0
+Popularity:    0    2    0    0    0
+Clock: 2
+
+Release R00
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S04  S01  S02  S03
+PinCount:      0    0    0    0    0
+Popularity:    1    2    0    0    0
+Clock: 2
+
+Request R01
+Sweep -> 2
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S04  R01  S02  S03
+PinCount:      0    0    1    0    0
+Popularity:    1    2    1    0    0
+Clock: 3
+
+Request S00
+Sweep -> 3
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S04  R01  S00  S03
+PinCount:      0    0    1    1    0
+Popularity:    1    2    1    1    0
+Clock: 4
+
+Release S00
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S04  R01  S00  S03
+PinCount:      0    0    1    0    0
+Popularity:    1    2    1    2    0
+Clock: 4
+
+Request S01
+Sweep -> 4
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S04  R01  S00  S01
+PinCount:      0    0    1    0    1
+Popularity:    1    2    1    2    1
+Clock: 0
+
+Release S01
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    R00  S04  R01  S00  S01
+PinCount:      0    0    1    0    0
+Popularity:    1    2    1    2    2
+Clock: 0
+
+Request S02
+Sweep -> 0 -> 1 -> 2 -> 3 -> 4 -> 0
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S04  R01  S00  S01
+PinCount:      1    0    1    0    0
+Popularity:    1    1    0    1    1
+Clock: 1
+
+Release S02
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S04  R01  S00  S01
+PinCount:      0    0    1    0    0
+Popularity:    2    1    0    1    1
+Clock: 1
+
+Request S03
+Sweep -> 1 -> 2 -> 3 -> 4 -> 0 -> 1
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  R01  S00  S01
+PinCount:      0    1    1    0    0
+Popularity:    1    1    0    0    0
+Clock: 2
+
+Release S03
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  R01  S00  S01
+PinCount:      0    0    1    0    0
+Popularity:    1    2    0    0    0
+Clock: 2
+
+Request S04
+Sweep -> 2 -> 3
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  R01  S04  S01
+PinCount:      0    0    1    1    0
+Popularity:    1    2    0    1    0
+Clock: 4
+
+Release S04
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  R01  S04  S01
+PinCount:      0    0    1    0    0
+Popularity:    1    2    0    2    0
+Clock: 4
+
+Release R01
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  R01  S04  S01
+PinCount:      0    0    0    0    0
+Popularity:    1    2    1    2    0
+Clock: 4
+
+Request R02
+Sweep -> 4
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  R01  S04  R02
+PinCount:      0    0    0    0    1
+Popularity:    1    2    1    2    1
+Clock: 0
+
+Request S00
+Sweep -> 0 -> 1 -> 2 -> 3 -> 4 -> 0
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S00  S03  R01  S04  R02
+PinCount:      1    0    0    0    1
+Popularity:    1    1    0    1    0
+Clock: 1
+
+Release S00
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S00  S03  R01  S04  R02
+PinCount:      0    0    0    0    1
+Popularity:    2    1    0    1    0
+Clock: 1
+
+Request S01
+Sweep -> 1 -> 2
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S00  S03  S01  S04  R02
+PinCount:      0    0    1    0    1
+Popularity:    2    0    1    1    0
+Clock: 3
+
+Release S01
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S00  S03  S01  S04  R02
+PinCount:      0    0    0    0    1
+Popularity:    2    0    2    1    0
+Clock: 3
+
+Request S02
+Sweep -> 3 -> 4 -> 0 -> 1
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S00  S02  S01  S04  R02
+PinCount:      0    1    0    0    1
+Popularity:    1    1    2    0    0
+Clock: 2
+
+Release S02
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S00  S02  S01  S04  R02
+PinCount:      0    0    0    0    1
+Popularity:    1    2    2    0    0
+Clock: 2
+
+Request S03
+Sweep -> 2 -> 3
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S00  S02  S01  S03  R02
+PinCount:      0    0    0    1    1
+Popularity:    1    2    1    1    0
+Clock: 4
+
+Release S03
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S00  S02  S01  S03  R02
+PinCount:      0    0    0    0    1
+Popularity:    1    2    1    2    0
+Clock: 4
+
+Request S04
+Sweep -> 4 -> 0 -> 1 -> 2 -> 3 -> 4 -> 0
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S04  S02  S01  S03  R02
+PinCount:      1    0    0    0    1
+Popularity:    1    1    0    1    0
+Clock: 1
+
+Release S04
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S04  S02  S01  S03  R02
+PinCount:      0    0    0    0    1
+Popularity:    2    1    0    1    0
+Clock: 1
+
+Release R02
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S04  S02  S01  S03  R02
+PinCount:      0    0    0    0    0
+Popularity:    2    1    0    1    1
+Clock: 1
+
+Request R03
+Sweep -> 1 -> 2
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S04  S02  R03  S03  R02
+PinCount:      0    0    1    0    0
+Popularity:    2    0    1    1    1
+Clock: 3
+
+Request S00
+Sweep -> 3 -> 4 -> 0 -> 1
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S04  S00  R03  S03  R02
+PinCount:      0    1    1    0    0
+Popularity:    1    1    1    0    0
+Clock: 2
+
+Release S00
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S04  S00  R03  S03  R02
+PinCount:      0    0    1    0    0
+Popularity:    1    2    1    0    0
+Clock: 2
+
+Request S01
+Sweep -> 2 -> 3
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S04  S00  R03  S01  R02
+PinCount:      0    0    1    1    0
+Popularity:    1    2    0    1    0
+Clock: 4
+
+Release S01
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S04  S00  R03  S01  R02
+PinCount:      0    0    1    0    0
+Popularity:    1    2    0    2    0
+Clock: 4
+
+Request S02
+Sweep -> 4
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S04  S00  R03  S01  S02
+PinCount:      0    0    1    0    1
+Popularity:    1    2    0    2    1
+Clock: 0
+
+Release S02
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S04  S00  R03  S01  S02
+PinCount:      0    0    1    0    0
+Popularity:    1    2    0    2    2
+Clock: 0
+
+Request S03
+Sweep -> 0 -> 1 -> 2 -> 3 -> 4 -> 0
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  S00  R03  S01  S02
+PinCount:      1    0    1    0    0
+Popularity:    1    1    0    1    1
+Clock: 1
+
+Release S03
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  S00  R03  S01  S02
+PinCount:      0    0    1    0    0
+Popularity:    2    1    0    1    1
+Clock: 1
+
+Request S04
+Sweep -> 1 -> 2 -> 3 -> 4 -> 0 -> 1
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  S04  R03  S01  S02
+PinCount:      0    1    1    0    0
+Popularity:    1    1    0    0    0
+Clock: 2
+
+Release S04
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  S04  R03  S01  S02
+PinCount:      0    0    1    0    0
+Popularity:    1    2    0    0    0
+Clock: 2
+
+Release R03
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  S04  R03  S01  S02
+PinCount:      0    0    0    0    0
+Popularity:    1    2    1    0    0
+Clock: 2
+
+Request R04
+Sweep -> 2 -> 3
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  S04  R03  R04  S02
+PinCount:      0    0    0    1    0
+Popularity:    1    2    0    1    0
+Clock: 4
+
+Request S00
+Sweep -> 4
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  S04  R03  R04  S00
+PinCount:      0    0    0    1    1
+Popularity:    1    2    0    1    1
+Clock: 0
+
+Release S00
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  S04  R03  R04  S00
+PinCount:      0    0    0    1    0
+Popularity:    1    2    0    1    2
+Clock: 0
+
+Request S01
+Sweep -> 0 -> 1 -> 2
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  S04  S01  R04  S00
+PinCount:      0    0    1    1    0
+Popularity:    0    1    1    1    2
+Clock: 3
+
+Release S01
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S03  S04  S01  R04  S00
+PinCount:      0    0    0    1    0
+Popularity:    0    1    2    1    2
+Clock: 3
+
+Request S02
+Sweep -> 3 -> 4 -> 0
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S04  S01  R04  S00
+PinCount:      1    0    0    1    0
+Popularity:    1    1    2    0    1
+Clock: 1
+
+Release S02
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S04  S01  R04  S00
+PinCount:      0    0    0    1    0
+Popularity:    2    1    2    0    1
+Clock: 1
+
+Request S03
+Sweep -> 1 -> 2 -> 3 -> 4 -> 0 -> 1
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  S01  R04  S00
+PinCount:      0    1    0    1    0
+Popularity:    1    1    1    0    0
+Clock: 2
+
+Release S03
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  S01  R04  S00
+PinCount:      0    0    0    1    0
+Popularity:    1    2    1    0    0
+Clock: 2
+
+Request S04
+Sweep -> 2 -> 3 -> 4
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  S01  R04  S04
+PinCount:      0    0    0    1    1
+Popularity:    1    2    0    0    1
+Clock: 0
+
+Release S04
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  S01  R04  S04
+PinCount:      0    0    0    1    0
+Popularity:    1    2    0    0    2
+Clock: 0
+
+Release R04
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  S01  R04  S04
+PinCount:      0    0    0    0    0
+Popularity:    1    2    0    1    2
+Clock: 0
+
+Frames:     [00] [01] [02] [03] [04]
+Contents:    S02  S03  S01  R04  S04
+PinCount:      0    0    0    0    0
+Popularity:    1    2    0    1    2
+Clock: 0
+
+#requests: 30
+#releases: 30
+#hits    : 0
+#reads   : 30
